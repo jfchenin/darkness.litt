@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions'
 import katexCSS from 'katex/dist/katex.min.css?url'
 import { allLocales, base, defaultLocale, themeConfig } from '@/config'
+import { langMap } from '@/i18n/config'
 import { ui } from '@/i18n/ui'
 import { getPageInfo } from '@/utils/page'
 
@@ -15,7 +16,7 @@ interface Props {
 const { postTitle, postDescription, postSlug } = Astro.props
 const { currentLang } = getPageInfo(Astro.url.pathname)
 const currentUI = ui[currentLang as keyof typeof ui] ?? {}
-const lang = currentLang === defaultLocale ? '' : `${currentLang}/`
+const lang = currentLang === defaultLocale ? 'fr' : `${currentLang}/`
 
 // Site Configuration
 const { title, subtitle, description, i18nTitle, author, favicon } = themeConfig.site
@@ -71,7 +72,7 @@ const pageImage = postSlug
   <link
     rel="alternate"
     href={`${Astro.url.origin}${base}${lang === defaultLocale ? '' : `/${lang}/`}`}
-    hreflang={lang === 'zh-tw' ? 'zh-TW' : lang}
+    hreflang={langMap[lang][0]}
   />
 ))}
 

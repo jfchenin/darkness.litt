@@ -6,7 +6,7 @@ tags:
   - Blog Theme
   - Guide
 pin: 99
-lang: en
+lang: fr
 abbrlink: theme-guide
 ---
 

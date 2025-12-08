@@ -6,7 +6,7 @@ tags:
   - Guide
 pin: 98
 toc: false
-lang: en
+lang: fr
 abbrlink: markdown-style-guide
 ---
 

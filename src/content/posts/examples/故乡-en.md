@@ -4,7 +4,7 @@ published: 1921-01-10
 tags:
   - Lu Xun
   - Modern Literature
-lang: en
+lang: fr
 abbrlink: my-native-heath
 ---
 

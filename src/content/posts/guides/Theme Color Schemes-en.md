@@ -4,7 +4,7 @@ published: 2025-04-11
 tags:
   - Guide
 toc: false
-lang: en
+lang: fr
 abbrlink: theme-color-schemes
 ---
 

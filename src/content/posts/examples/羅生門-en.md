@@ -4,7 +4,7 @@ published: 1915-11-05
 tags:
   - Ryunosuke Akutagawa
   - Modern Literature
-lang: en
+lang: fr
 abbrlink: rashomon
 ---
 
