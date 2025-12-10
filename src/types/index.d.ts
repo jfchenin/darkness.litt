@@ -31,14 +31,29 @@ export interface ThemeConfig {
       secondary: string
       background: string
       highlight: string
+      highlights: {
+        home: string
+        darkness: string
+        emileMoselly: string
+        tags: string
+        about: string
+      }
     }
     dark: {
       primary: string
       secondary: string
       background: string
       highlight: string
+      highlights: {
+        home: string
+        darkness: string
+        emileMoselly: string
+        tags: string
+        about: string
+      }
     }
   }
+
   global: {
     locale: Language
     moreLocales: Language[]

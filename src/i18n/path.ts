@@ -22,12 +22,14 @@ export function getTagPath(tagName: string, lang: Language): string {
  *
  * @param slug Post slug
  * @param lang Current language code
+ * @param collection Collection name (optional, defaults to 'posts')
  * @returns Path to post page
  */
-export function getPostPath(slug: string, lang: Language): string {
+export function getPostPath(slug: string, lang: Language, collection?: 'darkness' | 'emileMoselly'): string {
+  const collectionPath = collection === 'emileMoselly' ? 'emile-moselly' : (collection || 'posts')
   const postPath = lang === defaultLocale
-    ? `/posts/${slug}/`
-    : `/${lang}/posts/${slug}/`
+    ? `/${collectionPath}/${slug}/`
+    : `/${lang}/${collectionPath}/${slug}/`
 
   return base ? `${base}${postPath}` : postPath
 }

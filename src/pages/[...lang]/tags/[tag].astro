@@ -1,0 +1,57 @@
+---
+import PostList from '@/components/PostList.astro'
+import TagList from '@/components/TagList.astro'
+import { allLocales } from '@/config'
+import { getLangFromLocale, getLangRouteParam } from '@/i18n/lang'
+import Layout from '@/layouts/Layout.astro'
+import { getPostsByTag as getDarknessPostsByTag } from '@/utils/darkness'
+import { getPostsByTag as getMosellyPostsByTag } from '@/utils/emileMoselly'
+import { getAllTags, getTagSupportedLangs } from '@/utils/tags'
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(allLocales.map(async (lang) => {
+    const langTags = await getAllTags(lang)
+    return langTags.map(tag => ({
+      params: { lang: getLangRouteParam(lang), tag },
+      props: { tag },
+    }))
+  }))
+  return paths.flat()
+}
+
+interface Props {
+  tag: string
+}
+
+const { tag } = Astro.props
+const currentLang = getLangFromLocale(Astro.currentLocale)
+const darknessPosts = await getDarknessPostsByTag(tag, currentLang)
+const mosellyPosts = await getMosellyPostsByTag(tag, currentLang)
+const allTags = await getAllTags(currentLang)
+const supportedLangs = await getTagSupportedLangs(tag)
+---
+<Layout supportedLangs={supportedLangs}>
+  <!-- Decorative Line -->
+  <div class="uno-decorative-line" />
+  <!-- Tag List -->
+  <TagList
+    tags={allTags}
+    currentTag={tag}
+    lang={currentLang}
+  />
+  <!-- Posts Lists -->
+  <div class="mt-10.5">
+    {darknessPosts.length > 0 && (
+      <PostList
+        posts={darknessPosts}
+        lang={currentLang}
+      />
+    )}
+    {mosellyPosts.length > 0 && (
+      <PostList
+        posts={mosellyPosts}
+        lang={currentLang}
+      />
+    )}
+  </div>
+</Layout>

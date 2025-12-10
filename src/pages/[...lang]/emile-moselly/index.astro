@@ -1,9 +1,9 @@
 ---
+// [...lang]/emile-moselly/index.astro
 import PostList from '@/components/PostList.astro'
 import { allLocales } from '@/config'
 import { getLangFromLocale, getLangRouteParam } from '@/i18n/lang'
 import Layout from '@/layouts/Layout.astro'
-import { getDarknessPostsByYear, getPinnedDarknessPosts } from '@/utils/darkness'
 import { getEmileMosellyPostsByYear, getPinnedEmileMosellyPosts } from '@/utils/emileMoselly'
 
 export async function getStaticPaths() {
@@ -14,30 +14,12 @@ export async function getStaticPaths() {
 
 const currentLang = getLangFromLocale(Astro.currentLocale)
 
-const pinnedDarknessPosts = await getPinnedDarknessPosts(currentLang)
-const darknessPostsByYear = await getDarknessPostsByYear(currentLang)
 const pinnedEmileMosellyPosts = await getPinnedEmileMosellyPosts(currentLang)
 const emileMosellyPostsByYear = await getEmileMosellyPostsByYear(currentLang)
 ---
 
 <Layout>
-  <!-- Pinned Darkness -->
-  {pinnedDarknessPosts.length > 0 && (
-    <section class="mb-7.5">
-      <div class="uno-decorative-line" />
-      <PostList posts={pinnedDarknessPosts} lang={currentLang} pinned={true} />
-    </section>
-  )}
-
-  <!-- Regular Darkness -->
-  {[...darknessPostsByYear.entries()].map(([_year, posts]) => (
-    <section class="mb-7.5">
-      <div class="uno-decorative-line" />
-      <PostList posts={posts} lang={currentLang} />
-    </section>
-  ))}
-
-  <!-- Pinned Emile Moselly -->
+ <!-- Pinned Emile Moselly -->
   {pinnedEmileMosellyPosts.length > 0 && (
     <section class="mb-7.5">
       <div class="uno-decorative-line" />

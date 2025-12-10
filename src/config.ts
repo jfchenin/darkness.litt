@@ -41,7 +41,15 @@ export const themeConfig: ThemeConfig = {
       // highlight color
       // used for navbar, selected text, etc
       highlight: 'oklch(0.93 0.195089 103.2532 / 0.5)', // rgba(255,235,0,0.5)
+      highlights: {
+        home: 'oklch(0.93 0.195089 103.2532 / 0.5)',
+        darkness: 'oklch(0.9129 0.0381 255.61 / 0.5)',
+        emileMoselly: 'oklch(0.7952 0.1158 48.18 / 0.3)',
+        tags: 'oklch(0.7617 0.082 311.71 / 0.3)',
+        about: 'oklch(0.817 0.0819 146.35 / 0.3)',
+      },
     },
+    // #f9a579 #88bfd3 #c3a3d8 #a1d2a4 #d2e4fc #c5b4b0
     dark: {
       // primary color
       primary: 'oklch(92% 0.005 298)',
@@ -51,6 +59,13 @@ export const themeConfig: ThemeConfig = {
       background: 'oklch(22% 0.005 298)',
       // highlight color
       highlight: 'oklch(0.93 0.195089 103.2532 / 0.2)', // rgba(255,235,0,0.2)
+      highlights: {
+        home: 'oklch(0.93 0.195089 103.2532 / 0.5)',
+        darkness: 'oklch(0.9129 0.0381 255.61 / 0.5)',
+        emileMoselly: 'oklch(0.7952 0.1158 48.18 / 0.3)',
+        tags: 'oklch(0.7617 0.082 311.71 / 0.3)',
+        about: 'oklch(0.817 0.0819 146.35 / 0.3)',
+      },
     },
   },
   // COLOR SETTINGS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END
@@ -204,3 +219,4 @@ export const base = themeConfig.site.base === '/' ? '' : themeConfig.site.base.r
 export const defaultLocale = themeConfig.global.locale
 export const moreLocales = themeConfig.global.moreLocales
 export const allLocales = [defaultLocale, ...moreLocales]
+export default themeConfig

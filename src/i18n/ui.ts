@@ -4,13 +4,16 @@ interface Translation {
   title: string
   subtitle: string
   description: string
+  home: string
   darkness: string
   emileMoselly: string
   // posts: string
-  darknessTags: string
-  emileMosellyTags: string
-  // tags: string
+  // darknessTags: string
+  // emileMosellyTags: string
+  tags: string
   about: string
+  blogRoll: string
+  contact: string
   toc: string
 }
 
@@ -19,13 +22,16 @@ export const ui: Record<Language, Translation> = {
     title: 'Darkness',
     subtitle: 'La nuit au coin d\'une table',
     description: '...',
+    home: 'Accueil',
     darkness: 'Darkness',
     emileMoselly: 'Emile Moselly',
     // posts: 'Articles',
-    darknessTags: 'Étiquettes de Darkness',
-    emileMosellyTags: 'Étiquettes de Emile Moselly',
-    // tags: 'Étiquettes',
+    // darknessTags: 'Étiquettes de Darkness',
+    // emileMosellyTags: 'Étiquettes de Emile Moselly',
+    tags: 'Catégories',
     about: 'À propos',
+    blogRoll: 'Ressources',
+    contact: 'Contact',
     toc: 'Table des matières',
   },
 }

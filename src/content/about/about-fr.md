@@ -2,4 +2,13 @@
 lang: fr
 ---
 
-Retypeset est un thème statique pour blog basé sur le framework [Astro](https://astro.build/). Inspiré par [Typography](https://astro-theme-typography.vercel.app/), Retypeset établit une nouvelle norme visuelle et repense la mise en page de toutes les pages, offrant une expérience de lecture proche de celle des livres papier et faisant revivre la beauté de la typographie. Des détails soignés, une élégance omniprésente..
+# JFCHENIN
+
+## À propos
+**Lorem ipsum** dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget aliquam nisl nisl eget nisl.
+### Qui suis-je ?
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget aliquam nisl nisl eget nisl. Sed euismod, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget aliquam nisl nisl eget nisl.
+### Où suis-je ?
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget aliquam nisl nisl eget nisl. Sed euismod, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget aliquam nisl nisl eget nisl.
+### Quand suis-je ?
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget aliquam nisl nisl eget nisl. Sed euismod, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget aliquam nisl nisl eget nisl.

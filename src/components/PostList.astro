@@ -15,6 +15,8 @@ export interface Props {
 
 const { posts, lang, pinned = false } = Astro.props
 const isHome = isHomePage(Astro.url.pathname)
+
+const collection = posts.length > 0 ? posts[0].collection : undefined
 ---
 
 <ul>
@@ -35,7 +37,7 @@ const isHome = isHomePage(Astro.url.pathname)
               'cjk:tracking-wide',
               isHome ? 'lg:font-medium lg:text-4.5' : '',
             ]}
-            href={getPostPath(slug, lang)}
+            href={getPostPath(slug, lang, collection as 'darkness' | 'emileMoselly')}
             transition:name={`post-${slug}${lang ? `-${lang}` : ''}`}
             data-disable-theme-transition
           >
