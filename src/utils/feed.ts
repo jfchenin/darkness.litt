@@ -17,9 +17,9 @@ const { title, description, i18nTitle, url, author } = themeConfig.site
 const { follow } = themeConfig.seo ?? {}
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-// Dynamically import all images from /src/content/posts/_images
+// Dynamically import all images from /src/content/{darkness,emileMoselly}/_images
 const imagesGlob = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/content/posts/_images/**/*.{jpeg,jpg,png,gif,webp}',
+  '/src/content/{darkness,emileMoselly}/_images/**/*.{jpeg,jpg,png,gif,webp}',
 )
 
 /**
@@ -29,10 +29,10 @@ const imagesGlob = import.meta.glob<{ default: ImageMetadata }>(
  * @param baseUrl - Site base URL
  * @returns Optimized image URL or null if processing fails
  */
-async function _getAbsoluteImageUrl(srcPath: string, baseUrl: string) {
+async function _getAbsoluteImageUrl(srcPath: string, baseUrl: string, collection: 'darkness' | 'emileMoselly') {
   // Remove relative path prefixes (../ and ./) from image source path
   const prefixRemoved = srcPath.replace(/^(?:\.\.\/)+|^\.\//, '')
-  const absolutePath = `/src/content/posts/${prefixRemoved}`
+  const absolutePath = `/src/content/${collection}/${prefixRemoved}`
   const imageImporter = imagesGlob[absolutePath]
 
   if (!imageImporter) {
@@ -64,9 +64,10 @@ const getAbsoluteImageUrl = memoize(_getAbsoluteImageUrl)
  *
  * @param htmlContent HTML content string
  * @param baseUrl Base URL of the site
+ * @param collection Collection name ('darkness' or 'emileMoselly')
  * @returns Processed HTML string with all image paths converted to absolute URLs
  */
-async function fixRelativeImagePaths(htmlContent: string, baseUrl: string): Promise<string> {
+async function fixRelativeImagePaths(htmlContent: string, baseUrl: string, collection: 'darkness' | 'emileMoselly'): Promise<string> {
   const htmlDoc = parse(htmlContent)
   const images = htmlDoc.getElementsByTagName('img')
   const imagePromises = []
@@ -85,7 +86,7 @@ async function fixRelativeImagePaths(htmlContent: string, baseUrl: string): Prom
         }
 
         // Process images from src/content/posts/_images directory
-        const absoluteImageUrl = await getAbsoluteImageUrl(src, baseUrl)
+        const absoluteImageUrl = await getAbsoluteImageUrl(src, baseUrl, collection)
         if (absoluteImageUrl) {
           img.setAttribute('src', absoluteImageUrl)
         }
@@ -136,27 +137,44 @@ export async function generateFeed({ lang }: { lang?: Language } = {}) {
   })
 
   // Filter posts by language and exclude drafts
-  const posts = await getCollection(
-    'posts',
-    ({ data }: { data: CollectionEntry<'posts'>['data'] }) => {
-      const isNotDraft = !data.draft
-      const isCorrectLang = data.lang === lang
-        || data.lang === ''
-        || (lang === undefined && data.lang === defaultLocale)
+  const [darknessPosts, emileMosellyPosts] = await Promise.all([
+    getCollection(
+      'darkness',
+      ({ data }: { data: CollectionEntry<'darkness'>['data'] }) => {
+        const isNotDraft = !data.draft
+        const isCorrectLang = data.lang === lang
+          || data.lang === ''
+          || (lang === undefined && data.lang === defaultLocale)
 
-      return isNotDraft && isCorrectLang
-    },
-  )
+        return isNotDraft && isCorrectLang
+      },
+    ),
+    getCollection(
+      'emileMoselly',
+      ({ data }: { data: CollectionEntry<'emileMoselly'>['data'] }) => {
+        const isNotDraft = !data.draft
+        const isCorrectLang = data.lang === lang
+          || data.lang === ''
+          || (lang === undefined && data.lang === defaultLocale)
 
+        return isNotDraft && isCorrectLang
+      },
+    ),
+  ])
+
+  const allPosts = [
+    ...darknessPosts.map(post => ({ ...post, collection: 'darkness' as const })),
+    ...emileMosellyPosts.map(post => ({ ...post, collection: 'emileMoselly' as const })),
+  ]
   // Sort posts by published date in descending order and limit to the latest 25
-  const recentPosts = [...posts]
+  const recentPosts = allPosts
     .sort((a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime())
     .slice(0, 25)
 
   // Add posts to feed
   for (const post of recentPosts) {
     const slug = post.data.abbrlink || post.id
-    const link = new URL(`posts/${slug}/`, siteURL).toString()
+    const link = new URL(`${post.collection}/${slug}/`, siteURL).toString()
 
     // Optimize content processing
     const postContent = post.body
@@ -165,6 +183,7 @@ export async function generateFeed({ lang }: { lang?: Language } = {}) {
             // Remove HTML comments before rendering markdown
             markdownParser.render(post.body.replace(/<!--[\s\S]*?-->/g, '')),
             `${url}${base}/`,
+            post.collection,
           ),
           {
             // Allow <img> tags in feed content

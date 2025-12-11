@@ -1,0 +1,18 @@
+---
+import { themeConfig } from '@/config'
+import { isDarknessPage, isEmileMosellyPage } from '@/utils/page'
+
+
+interface Props {
+  postAuthor: string;
+}
+
+const { postAuthor } = Astro.props
+const siteAuthor = themeConfig['site']['author']
+const Author = postAuthor || siteAuthor;
+const isPost = isDarknessPage(Astro.url.pathname) || isEmileMosellyPage(Astro.url.pathname)
+---
+
+<p class="post-author mb-0">
+  <span class="font-title">{Author}</span>
+</p>

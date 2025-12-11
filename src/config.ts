@@ -4,17 +4,17 @@ export const themeConfig: ThemeConfig = {
   // SITE INFORMATION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> START
   site: {
     // site title
-    title: 'Retypeset',
+    title: 'Darkness',
     // site subtitle
-    subtitle: 'Revive the beauty of typography',
+    subtitle: 'La nuit au coin d\'une table',
     // site description
-    description: 'Retypeset is a static blog theme based on the Astro framework. Inspired by Typography, Retypeset establishes a new visual standard and reimagines the layout of all pages, creating a reading experience reminiscent of paper books, reviving the beauty of typography. Details in every sight, elegance in every space.',
+    description: 'Parler de la légèreté de l\'âme et des gravités du cœur.',
     // use i18n title/subtitle/description from src/i18n/ui.ts instead of static ones above
     i18nTitle: true, // true | false
     // author name
-    author: 'radishzz',
+    author: 'JFChenin',
     // site url
-    url: 'https://retypeset.radishzz.cc',
+    url: 'https://darkness.chenin.fr',
     // base path
     // root directory for all pages and assets
     base: '/', // e.g., '/blog', '/docs'
@@ -41,6 +41,15 @@ export const themeConfig: ThemeConfig = {
       // highlight color
       // used for navbar, selected text, etc
       highlight: 'oklch(0.93 0.195089 103.2532 / 0.5)', // rgba(255,235,0,0.5)
+      highlights: {
+        home: 'oklch(0.93 0.195089 103.2532 / 0.5)',
+        darkness: 'oklch(0.7214 0.1399 49.34 / 0.3)',
+        emileMoselly: 'oklch(0.645 0.0458 56.37/ 0.3)',
+        tags: 'oklch(0.6755 0.0574 127.47 / 0.4)',
+        about: 'oklch(0.817 0.0819 146.35 / 0.3)',
+        blogRoll: 'oklch(0.4746 0.0915 233.1 / 0.2)',
+        contact: 'oklch(0.9129 0.0381 255.61 / 0.3)',
+      },
     },
     dark: {
       // primary color
@@ -51,6 +60,15 @@ export const themeConfig: ThemeConfig = {
       background: 'oklch(22% 0.005 298)',
       // highlight color
       highlight: 'oklch(0.93 0.195089 103.2532 / 0.2)', // rgba(255,235,0,0.2)
+      highlights: {
+        home: 'oklch(0.93 0.195089 103.2532 / 0.5)',
+        darkness: 'oklch(0.7976 0.1105 6.19 / 0.3)',
+        emileMoselly: 'oklch(0.5852 0.1158 48.18 / 0.3)',
+        tags: 'oklch(0.7617 0.082 311.71 / 0.3)',
+        about: 'oklch(0.817 0.0819 146.35 / 0.3)',
+        blogRoll: 'oklch(0.7158 0.1287 175.87 / 0.3)',
+        contact: 'oklch(0.9129 0.0381 255.61 / 0.3)',
+      },
     },
   },
   // COLOR SETTINGS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END
@@ -58,18 +76,18 @@ export const themeConfig: ThemeConfig = {
   // GLOBAL SETTINGS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> START
   global: {
     // default language
-    locale: 'zh', // de | en | es | fr | ja | ko | pl | pt | ru | zh | zh-tw
+    locale: 'fr', // de | en | es | fr | ja | ko | pl | pt | ru | zh | zh-tw
     // more languages
     // not fill in the locale code above again, can be an empty array []
-    moreLocales: ['en', 'es', 'ja', 'ru', 'zh-tw'], // ['de', 'en', 'es', 'fr', 'ja', 'ko', 'pl', 'pt', 'ru', 'zh', 'zh-tw']
+    moreLocales: [], // ['de', 'en', 'es', 'fr', 'ja', 'ko', 'pl', 'pt', 'ru', 'zh', 'zh-tw']
     // post font style
     fontStyle: 'sans', // sans | serif
     // post date format
-    dateFormat: 'YYYY-MM-DD', // YYYY-MM-DD | MM-DD-YYYY | DD-MM-YYYY | MMM D YYYY | D MMM YYYY
+    dateFormat: 'DD-MM-YYYY', // YYYY-MM-DD | MM-DD-YYYY | DD-MM-YYYY | MMM D YYYY | D MMM YYYY
     // enable table of contents
     toc: true, // true | false
     // enable katex math rendering
-    katex: true, // true | false
+    katex: false, // true | false
     // reduce motion
     reduceMotion: false, // true | false
   },
@@ -78,7 +96,7 @@ export const themeConfig: ThemeConfig = {
   // COMMENT SETTINGS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> START
   comment: {
     // enable comment system
-    enabled: true, // true | false
+    enabled: false, // true | false
     // giscus
     // https://giscus.app/
     giscus: {
@@ -120,7 +138,7 @@ export const themeConfig: ThemeConfig = {
   // SEO SETTINGS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> START
   seo: {
     // @twitter ID
-    twitterID: '@radishzz_',
+    twitterID: '',
     // site verification
     verification: {
       // google search console
@@ -162,16 +180,16 @@ export const themeConfig: ThemeConfig = {
     // social links
     links: [
       {
-        name: 'RSS',
-        url: '/atom.xml', // or /rss.xml
-      },
-      {
-        name: 'GitHub',
-        url: 'https://github.com/radishzzz/astro-theme-retypeset',
+        name: 'Blog d\'images',
+        url: 'https://darkness.coexpro.com/',
       },
       {
         name: 'Email',
-        url: 'email@radishzz.cc',
+        url: 'jfrançois@chenin.fr',
+      },
+      {
+        name: 'RSS',
+        url: '/atom.xml', // or /rss.xml
       },
       // {
       //   name: 'X',
@@ -187,7 +205,7 @@ export const themeConfig: ThemeConfig = {
   preload: {
     // image hosting url
     // optimize remote images and generate low-quality placeholders
-    imageHostURL: 'image.radishzz.cc',
+    imageHostURL: '',
     // custom google analytics js
     // for users who proxy tracking scripts to a custom domain
     // see https://gist.github.com/xiaopc/0602f06ca465d76bd9efd3dda9393738
@@ -204,3 +222,4 @@ export const base = themeConfig.site.base === '/' ? '' : themeConfig.site.base.r
 export const defaultLocale = themeConfig.global.locale
 export const moreLocales = themeConfig.global.moreLocales
 export const allLocales = [defaultLocale, ...moreLocales]
+export default themeConfig

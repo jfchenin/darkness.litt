@@ -1,7 +1,7 @@
 ---
 import type { ThemeConfig } from '@/types'
 import { themeConfig } from '@/config'
-import { isPostPage } from '@/utils/page'
+import { isDarknessPage, isEmileMosellyPage } from '@/utils/page'
 
 type DateFormat = ThemeConfig['global']['dateFormat']
 
@@ -13,7 +13,7 @@ interface Props {
 
 const { date, updatedDate, minutes } = Astro.props
 const { dateFormat: format } = themeConfig.global
-const isPost = isPostPage(Astro.url.pathname)
+const isPost = isDarknessPage(Astro.url.pathname) || isEmileMosellyPage(Astro.url.pathname)
 const timeSpacingClass = isPost ? 'ml-1.75' : 'ml-1.5'
 
 function formatDate(date: Date, format: DateFormat) {

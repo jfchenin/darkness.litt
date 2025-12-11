@@ -67,7 +67,7 @@ function getExcerpt(text: string, lang: Language, scene: ExcerptScene): string {
 
 // Generates post description from existing description or content
 export function getPostDescription(
-  post: CollectionEntry<'posts'>,
+  post: CollectionEntry<'darkness'> | CollectionEntry<'emileMoselly'>,
   scene: ExcerptScene,
 ): string {
   const lang = (post.data.lang || defaultLocale) as Language

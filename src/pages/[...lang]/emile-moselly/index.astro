@@ -1,0 +1,37 @@
+---
+// [...lang]/emile-moselly/index.astro
+import PostList from '@/components/PostList.astro'
+import { allLocales } from '@/config'
+import { getLangFromLocale, getLangRouteParam } from '@/i18n/lang'
+import Layout from '@/layouts/Layout.astro'
+import { getEmileMosellyPostsByYear, getPinnedEmileMosellyPosts } from '@/utils/emileMoselly'
+
+export async function getStaticPaths() {
+  return allLocales.map(lang => ({
+    params: { lang: getLangRouteParam(lang) },
+  }))
+}
+
+const currentLang = getLangFromLocale(Astro.currentLocale)
+
+const pinnedEmileMosellyPosts = await getPinnedEmileMosellyPosts(currentLang)
+const emileMosellyPostsByYear = await getEmileMosellyPostsByYear(currentLang)
+---
+
+<Layout>
+ <!-- Pinned Emile Moselly -->
+  {pinnedEmileMosellyPosts.length > 0 && (
+    <section class="mb-7.5">
+      <div class="uno-decorative-line" />
+      <PostList posts={pinnedEmileMosellyPosts} lang={currentLang} pinned={true} />
+    </section>
+  )}
+
+  <!-- Regular Emile Moselly -->
+  {[...emileMosellyPostsByYear.entries()].map(([_year, posts]) => (
+    <section class="mb-7.5">
+      <div class="uno-decorative-line" />
+      <PostList posts={posts} lang={currentLang} />
+    </section>
+  ))}
+</Layout>

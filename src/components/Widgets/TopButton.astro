@@ -1,0 +1,45 @@
+---
+import GoTopIcon from "@/assets/icons/top-icon.svg";
+---
+
+<button
+  id="top-button"
+  class="hidden"
+  lg="aspect-square w-4 c-secondary transition-colors ease-out hover:c-primary active:scale-90!"
+  type="button"
+  aria-label="Go top"
+>
+  <GoTopIcon aria-hidden="true" fill="currentColor" />
+</button>
+
+<!-- Go Back Script >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+<script>
+  function handleTopButtonClick(e: MouseEvent) {
+    if (!(e.target instanceof Element)) {
+      return;
+    }
+    if (!e.target.closest("#top-button")) {
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleTopButtonVisibility() {
+    const topButton = document.getElementById("top-button");
+    if (!topButton) {
+      return;
+    }
+
+    if (window.scrollY > 300) {
+      topButton.classList.remove("hidden");
+    } else {
+      topButton.classList.add("hidden");
+    }
+  }
+
+  document.addEventListener("click", handleTopButtonClick);
+  document.addEventListener("scroll", handleTopButtonVisibility);
+  // Check initial state
+  handleTopButtonVisibility();
+</script>

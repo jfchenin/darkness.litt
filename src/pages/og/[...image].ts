@@ -4,11 +4,14 @@ import { getCollection } from 'astro:content'
 import { getPostDescription } from '@/utils/description'
 
 // eslint-disable-next-line antfu/no-top-level-await
-const posts = await getCollection('posts')
-
+const [darknessPosts, emileMosellyPosts] = await Promise.all([
+  getCollection('darkness'),
+  getCollection('emileMoselly'),
+])
+const posts = [...darknessPosts, ...emileMosellyPosts]
 // Create slug-to-metadata lookup object for blog posts
 const pages = Object.fromEntries(
-  posts.map((post: CollectionEntry<'posts'>) => [
+  posts.map((post: CollectionEntry<'darkness' | 'emileMoselly'>) => [
     post.id,
     {
       title: post.data.title,

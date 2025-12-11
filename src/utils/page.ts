@@ -30,32 +30,68 @@ export function isHomePage(path: string) {
   return matchPageType(path)
 }
 
-export function isPostPage(path: string) {
-  return matchPageType(path, 'posts')
-}
+// export function isPostPage(path: string) {
+//   return matchPageType(path, 'posts')
+// }
 
 export function isTagPage(path: string) {
   return matchPageType(path, 'tags')
+}
+
+export function isDarknessPage(path: string) {
+  return matchPageType(path, 'darkness')
+}
+
+export function isEmileMosellyPage(path: string) {
+  return matchPageType(path, 'emile-moselly')
+}
+
+export function isDarknessTagPage(path: string) {
+  return matchPageType(path, 'darkness-tags')
+}
+
+export function isEmileMosellyTagPage(path: string) {
+  return matchPageType(path, 'emile-moselly-tags')
 }
 
 export function isAboutPage(path: string) {
   return matchPageType(path, 'about')
 }
 
+export function isBlogRollPage(path: string) {
+  return matchPageType(path, 'blogroll')
+}
+
+export function isContactPage(path: string) {
+  return matchPageType(path, 'contact')
+}
+
 // Returns page context with language, page types and localization helper
 export function getPageInfo(path: string) {
   const currentLang = getLangFromPath(path)
   const isHome = isHomePage(path)
-  const isPost = isPostPage(path)
+  // const isPost = isPostPage(path)
   const isTag = isTagPage(path)
+  const isDarkness = isDarknessPage(path)
+  const isEmileMoselly = isEmileMosellyPage(path)
+  const isDarknessTag = isDarknessTagPage(path)
+  const isEmileMosellyTag = isEmileMosellyTagPage(path)
   const isAbout = isAboutPage(path)
+  const isBlogRoll = isBlogRollPage(path)
+  const isContact = isContactPage(path)
 
   return {
     currentLang,
     isHome,
-    isPost,
+    isDarkness,
+    isEmileMoselly,
+    isDarknessTag,
+    isEmileMosellyTag,
+    // isPost,
     isTag,
     isAbout,
+    isBlogRoll,
+    isContact,
     getLocalizedPath: (targetPath: string) =>
       getLocalizedPath(targetPath, currentLang),
   }

@@ -24,6 +24,7 @@ body::selection {
 .highlight-hover::after {
   --at-apply: 'absolute left-0 z--1 h-0.5em w-full bg-highlight';
   content: '';
+  background-color: var(--highlight-color);
 }
 .highlight-static::after,
 .highlight-hover:hover::after {
