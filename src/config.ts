@@ -43,10 +43,12 @@ export const themeConfig: ThemeConfig = {
       highlight: 'oklch(0.93 0.195089 103.2532 / 0.5)', // rgba(255,235,0,0.5)
       highlights: {
         home: 'oklch(0.93 0.195089 103.2532 / 0.5)',
-        darkness: 'oklch(0.9129 0.0381 255.61 / 0.5)',
-        emileMoselly: 'oklch(0.7952 0.1158 48.18 / 0.3)',
-        tags: 'oklch(0.7617 0.082 311.71 / 0.3)',
+        darkness: 'oklch(0.7214 0.1399 49.34 / 0.3)',
+        emileMoselly: 'oklch(0.645 0.0458 56.37/ 0.3)',
+        tags: 'oklch(0.6755 0.0574 127.47 / 0.4)',
         about: 'oklch(0.817 0.0819 146.35 / 0.3)',
+        blogRoll: 'oklch(0.4746 0.0915 233.1 / 0.2)',
+        contact: 'oklch(0.9129 0.0381 255.61 / 0.3)',
       },
     },
     dark: {
@@ -60,10 +62,12 @@ export const themeConfig: ThemeConfig = {
       highlight: 'oklch(0.93 0.195089 103.2532 / 0.2)', // rgba(255,235,0,0.2)
       highlights: {
         home: 'oklch(0.93 0.195089 103.2532 / 0.5)',
-        darkness: 'oklch(0.9129 0.0381 255.61 / 0.5)',
-        emileMoselly: 'oklch(0.7952 0.1158 48.18 / 0.3)',
+        darkness: 'oklch(0.7976 0.1105 6.19 / 0.3)',
+        emileMoselly: 'oklch(0.5852 0.1158 48.18 / 0.3)',
         tags: 'oklch(0.7617 0.082 311.71 / 0.3)',
         about: 'oklch(0.817 0.0819 146.35 / 0.3)',
+        blogRoll: 'oklch(0.7158 0.1287 175.87 / 0.3)',
+        contact: 'oklch(0.9129 0.0381 255.61 / 0.3)',
       },
     },
   },
@@ -134,7 +138,7 @@ export const themeConfig: ThemeConfig = {
   // SEO SETTINGS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> START
   seo: {
     // @twitter ID
-    twitterID: '@radishzz_',
+    twitterID: '',
     // site verification
     verification: {
       // google search console
@@ -176,16 +180,16 @@ export const themeConfig: ThemeConfig = {
     // social links
     links: [
       {
-        name: 'RSS',
-        url: '/atom.xml', // or /rss.xml
-      },
-      {
-        name: 'GitHub',
-        url: 'https://github.com/jfchenin/darkness',
+        name: 'Blog d\'images',
+        url: 'https://darkness.coexpro.com/',
       },
       {
         name: 'Email',
         url: 'jfrançois@chenin.fr',
+      },
+      {
+        name: 'RSS',
+        url: '/atom.xml', // or /rss.xml
       },
       // {
       //   name: 'X',
@@ -201,7 +205,7 @@ export const themeConfig: ThemeConfig = {
   preload: {
     // image hosting url
     // optimize remote images and generate low-quality placeholders
-    imageHostURL: 'image.radishzz.cc',
+    imageHostURL: '',
     // custom google analytics js
     // for users who proxy tracking scripts to a custom domain
     // see https://gist.github.com/xiaopc/0602f06ca465d76bd9efd3dda9393738

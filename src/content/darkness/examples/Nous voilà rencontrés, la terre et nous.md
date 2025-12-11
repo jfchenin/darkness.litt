@@ -4,6 +4,7 @@ title: Nous voilà rencontrés, la terre et nous...
 published: 2005-10-11
 
 # Facultatif
+author: René Descartes
 updated: 2025-12-10
 tags:
   - littérature
@@ -11,12 +12,12 @@ tags:
 
 # Avancé, facultatif
 draft: false
-pin: 2
-toc: false
+pin: 99
+toc: true
 lang: fr
 abbrlink: nous-voila-rencontres-la-terre-et-nous
 ---
-
+## titre 1
 *Nous cassons comme du verre dès qu'il s'agit de dire les raisons de notre écriture. Nous avançons et nous comprenons l'extrême lassitude qui nous mène et nous fait réagir. Mais à ce jeu de sauts et de signes, nous sommes toujours tentés d'apporter des réponses rapides et facilement définitives.*
 
 *Avouons nos contradictions, nos heurts répétés à tracer des signes parfois dérisoires.  
@@ -89,7 +90,7 @@ mais durer à contresens, à contre-trouble
 mais durer dans la mesure incomplète des êtres  
 mais durer pour finir d'oublier.  
 Une question : puis-je faire silence autrement qu'en disant très haut : mon oubli est illusion !
-
+#### titre3
 XI - Ma raison n'a pas de prise sur les faits qui guident mon oubli. Mon oubli se construit seul.  
 Oubli de choses, d'êtres, fausse mémoire des lieux, lieux inventés, hasard rencontré d'un rêve, hasard transformé en réalité, perception rayée, réception d'irréel.  
 Ce qui décide de ma vie est cette seule volonté d'observer mon oubli ou l'oubli des autres, les autres qui effacent, s'évertuent à perpétuer leur absence, leur dérisoire souffrance de vide.  

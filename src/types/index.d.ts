@@ -37,6 +37,8 @@ export interface ThemeConfig {
         emileMoselly: string
         tags: string
         about: string
+        blogRoll: string
+        contact: string
       }
     }
     dark: {
@@ -50,6 +52,8 @@ export interface ThemeConfig {
         emileMoselly: string
         tags: string
         about: string
+        blogRoll: string
+        contact: string
       }
     }
   }

@@ -6,7 +6,7 @@ abbrlink: emile-moselly-biographie
 ---
 
 # Émile Moselly
-![Image Description](../_images/Emile_Moselly-01.jpg)
+![](../_images/Emile_Moselly-01.jpg)
 ## Une existence trop vite interrompue
 
 Fils de Marguerite Joséphine Gantois et d'Auguste François Achille Chénin, Émile François Achille Chénin est né à la Bibliothèque nationale, site de la rue de Richelieu à Paris[3], où son père travaille en tant que gardien. Il rejoint très tôt la Lorraine et Chaudeney-sur-Moselle (canton de Toul) dont sa famille est originaire, village où il passera son enfance dès 1874.

@@ -4,6 +4,7 @@ import type { Language } from '@/i18n/config'
 import { getCollection, render } from 'astro:content'
 import Comment from '@/components/Comment/Index.astro'
 import PostDate from '@/components/PostDate.astro'
+import PostAuthor from '@/components/PostAuthor.astro'
 import TagList from '@/components/TagList.astro'
 import BackButton from '@/components/Widgets/BackButton.astro'
 import TOC from '@/components/Widgets/TOC.astro'
@@ -108,11 +109,15 @@ const { Content, headings, remarkPluginFrontmatter } = await render(post)
       transition:name={`time-${slug}${currentLang ? `-${currentLang}` : ''}`}
       data-disable-theme-transition
     >
+      <PostAuthor
+        postAuthor={post.data.author}
+      />
       <PostDate
         date={post.data.published}
         updatedDate={post.data.updated}
         minutes={remarkPluginFrontmatter.minutes}
       />
+
     </div>
     <!-- TOC -->
     {post.data.toc && <TOC headings={headings} />}

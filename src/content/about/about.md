@@ -1,9 +1,6 @@
 ---
 lang: fr
 ---
-
-# JFCHENIN
-
 ## À propos
 **Lorem ipsum** dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl eget aliquam aliquet, nunc nisl aliquet nisl, eget aliquam nisl nisl eget nisl.
 ### Qui suis-je ?

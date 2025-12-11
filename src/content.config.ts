@@ -5,6 +5,7 @@ import { allLocales, themeConfig } from '@/config'
 // Shared schema for both collections
 const contentSchema = z.object({
   title: z.string(),
+  author: z.string().optional().default('JFChenin'),
   published: z.date(),
   description: z.string().optional().default(''),
   updated: z.preprocess(val => val === '' ? undefined : val, z.date().optional()),
