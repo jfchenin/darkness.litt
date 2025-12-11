@@ -8,10 +8,10 @@ lang: fr
 abbrlink: les-terrasses-d
 ---
 
-Inventaires en prévision de la lumière, en prévision du retournement de la lumière, en prévision d’un salut, d’un signe, en prévision d’un dédouanement compliqué, passé la première barrière.  
-Inventaires en prévision d’une chute libre, d’un fil de fer rouillé, en prévision d’un bout de chemin à faire, en prévision de la résignation, d’un enfant qui pleure et qui se cache.  
-Inventaires en prévision des grandes migrations, en lambeaux, en prévision du jour d’après, d’un quai de gare, d’une route sur nulle part, en prévision d’une absence et de toutes les absences, insupportables, répétées.  
-Inventaires en prévision du désespoir, l’assujettissement maximum dans un espace minimum, un désir recollé à la vie, un regard de plus, un mot en trop, une identité perdue.  
+Inventaires en prévision de la lumière, en prévision du retournement de la lumière, en prévision d’un salut, d’un signe, en prévision d’un dédouanement compliqué, passé la première barrière.
+Inventaires en prévision d’une chute libre, d’un fil de fer rouillé, en prévision d’un bout de chemin à faire, en prévision de la résignation, d’un enfant qui pleure et qui se cache.
+Inventaires en prévision des grandes migrations, en lambeaux, en prévision du jour d’après, d’un quai de gare, d’une route sur nulle part, en prévision d’une absence et de toutes les absences, insupportables, répétées.
+Inventaires en prévision du désespoir, l’assujettissement maximum dans un espace minimum, un désir recollé à la vie, un regard de plus, un mot en trop, une identité perdue.
 Inventaires en prévision d’un retour attendu, en prévision des coups de feu, en bas, tout en bas, en prévision d’une position naturelle de la mort, naturelle et soudaine.
 
 ***
@@ -20,7 +20,7 @@ Inventaires en prévision d’un retour attendu, en prévision des coups de feu,
 
 Nous nous obligeons à d'incessants détours, dire pour ne pas dire, ne pas dire pour dire, enfin. Obligeance de cette rencontre, si fortuite, si nécessaire. Sur le devant de la scène, c'est un plaisir invisible pour ceux qui pensent savoir. Mais ils ne savent rien.
 
-***  
+***
 
 Nous nous partagerons entre ce talus d'herbe blonde et le désir à perte de sens. Aurons-nous le temps de nous enraciner dans les reflux du regard ? Ce demain recèle tous les pièges, tant de lumières comme des doigts pointés martelés par des forgerons aveugles.
 
@@ -120,22 +120,21 @@ Je révoquerai l'amant qui a pris ma place, je dégorgerai toute cette patience 
 
 Nouvelle année - Franchir tant d'espace ! Est-ce possible ? Qui le demande ? Qui voudrait voir et entendre ? Ai-je assez encaissé de silence ? Ce sont d'autres vies qui reviennent. Ma mémoire est rassasiée. Mais franchir tout cet espace que je n'ai pas habité ! C'est comme un saut dans le vide. Instantanément, on tombe et en tombant, on s'enflamme.
 
-
-**  
+**
 LA TABLE DES ETOILES** (1)\*
 
 *Le silence a fermé le silence* (2)*. Premières heures de disgrâce, feints sursauts que la main ne réprime pas* (3)*, tu abandonnes à la réalité les simulacres de ton existence.*
 
-*Que de vrais mensonges faits à toi-même ! Que de vraies rumeurs et tant de faux-semblants* (4) !  
-  
+*Que de vrais mensonges faits à toi-même ! Que de vraies rumeurs et tant de faux-semblants* (4) !
+
 \* Les  notes renvoient à "En écrivant *la table des étoiles*".
 
-1 - C'est comment être seul ? Passes-tu parfois ? J'abrite une maison vide, blanche, muselée contre le ciel.  
-C'est comment être absent ? Où se fabrique la pensée quand elle demeure seule ? Qui répondra (5) ? Donnes-tu vie à la main que tu touches ? Les branches glissaient sous la verrière, les arbres grandissaient, j'ai atteint le bout du monde (6).  
-C'est comment ton nom ? Il crie encore, pour lui, face au bruit, face à lui. Il ne sait plus se regarder. Qu'as-tu dit pour enfreindre son silence ? Quels mots lui ont fermé la bouche ?  
-C'est comment être seul quand on est seul, qu'il ne suffit plus de marcher ou de se convaincre que l'on vit encore, ou d'aimer ? Ma maison tient par effondrements successifs, elle domine une terre évidée aux reliefs de larmes (7).  
-C'est comment ta vie quand tu la brades au silence, c'est comment la danse quand tu boites ? Tu achèveras sans moi chaque phrase (8).  
-C'est comment rire seul, dénoué du monde, affranchi de l'humain ? J'avais une maison, battue de jour, où voisinaient le soleil et ton indifférence (9).  
+1 - C'est comment être seul ? Passes-tu parfois ? J'abrite une maison vide, blanche, muselée contre le ciel.
+C'est comment être absent ? Où se fabrique la pensée quand elle demeure seule ? Qui répondra (5) ? Donnes-tu vie à la main que tu touches ? Les branches glissaient sous la verrière, les arbres grandissaient, j'ai atteint le bout du monde (6).
+C'est comment ton nom ? Il crie encore, pour lui, face au bruit, face à lui. Il ne sait plus se regarder. Qu'as-tu dit pour enfreindre son silence ? Quels mots lui ont fermé la bouche ?
+C'est comment être seul quand on est seul, qu'il ne suffit plus de marcher ou de se convaincre que l'on vit encore, ou d'aimer ? Ma maison tient par effondrements successifs, elle domine une terre évidée aux reliefs de larmes (7).
+C'est comment ta vie quand tu la brades au silence, c'est comment la danse quand tu boites ? Tu achèveras sans moi chaque phrase (8).
+C'est comment rire seul, dénoué du monde, affranchi de l'humain ? J'avais une maison, battue de jour, où voisinaient le soleil et ton indifférence (9).
 C'est comment ton nom ? Il t'appelle, il t'appelle, pourvoyeuse d'enfants morts. Ma tête n'est plus assez grande pour t'accueillir. Déserter demeure (10).
 
 ***

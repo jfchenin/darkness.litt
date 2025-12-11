@@ -1,44 +1,44 @@
 ---
-import type { Language } from "@/i18n/config";
-import type { darknessPost, emileMoselyPost } from "@/types";
-import PinIcon from "@/assets/icons/pin-icon.svg";
-import PostDate from "@/components/PostDate.astro";
-import { getPostPath } from "@/i18n/path";
-import { getPostDescription } from "@/utils/description";
-import { isHomePage } from "@/utils/page";
+import type { Language } from '@/i18n/config'
+import type { darknessPost, emileMoselyPost } from '@/types'
+import PinIcon from '@/assets/icons/pin-icon.svg'
+import PostDate from '@/components/PostDate.astro'
+import { getPostPath } from '@/i18n/path'
+import { getPostDescription } from '@/utils/description'
+import { isHomePage } from '@/utils/page'
 
 export interface Props {
-  posts: darknessPost[] | emileMoselyPost[];
-  lang: Language;
-  pinned?: boolean;
+  posts: darknessPost[] | emileMoselyPost[]
+  lang: Language
+  pinned?: boolean
 }
 
-const { posts, lang, pinned = false } = Astro.props;
-const isHome = isHomePage(Astro.url.pathname);
+const { posts, lang, pinned = false } = Astro.props
+const isHome = isHomePage(Astro.url.pathname)
 
-const collection = posts.length > 0 ? posts[0].collection : undefined;
+const collection = posts.length > 0 ? posts[0].collection : undefined
 ---
 
 <ul>
   {
     posts.map((post) => {
-      const slug = post.data.abbrlink || post.id;
+      const slug = post.data.abbrlink || post.id
 
       return (
-        <li class:list={["mb-5.5", isHome ? "lg:mb-10" : ""]}>
+        <li class:list={['mb-5.5', isHome ? 'lg:mb-10' : '']}>
           {/* post title */}
-          <h3 class="font-title inline transition-colors hover:c-primary">
+          <h3 class="inline font-title transition-colors hover:c-primary">
             <a
               class:list={[
-                "cjk:tracking-wide",
-                isHome ? "lg:font-medium lg:text-4.5" : "",
+                'cjk:tracking-wide',
+                isHome ? 'lg:font-medium lg:text-4.5' : '',
               ]}
               href={getPostPath(
                 slug,
                 lang,
-                collection as "darkness" | "emileMoselly",
+                collection as 'darkness' | 'emileMoselly',
               )}
-              transition:name={`post-${slug}${lang ? `-${lang}` : ""}`}
+              transition:name={`post-${slug}${lang ? `-${lang}` : ''}`}
               data-disable-theme-transition
             >
               {post.data.title}
@@ -56,7 +56,7 @@ const collection = posts.length > 0 ? posts[0].collection : undefined;
           {/* mobile post time */}
           <div
             class="py-0.8 text-3.5 font-time lg:hidden"
-            transition:name={`time-${slug}${lang ? `-${lang}` : ""}`}
+            transition:name={`time-${slug}${lang ? `-${lang}` : ''}`}
             data-disable-theme-transition
           >
             <PostDate
@@ -76,11 +76,11 @@ const collection = posts.length > 0 ? posts[0].collection : undefined;
           {/* desktop post description */}
           {isHome && (
             <div class="heti hidden" lg="mt-2.25 block">
-              <p>{getPostDescription(post, "list")}</p>
+              <p>{getPostDescription(post, 'list')}</p>
             </div>
           )}
         </li>
-      );
+      )
     })
   }
 </ul>

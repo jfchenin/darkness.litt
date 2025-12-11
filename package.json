@@ -17,13 +17,13 @@
     "update-theme": "tsx scripts/update-theme.ts"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.12",
+    "@astrojs/mdx": "^4.3.13",
     "@astrojs/partytown": "^2.1.4",
     "@astrojs/sitemap": "^3.6.0",
     "@fontsource-variable/bricolage-grotesque": "^5.2.10",
     "@fontsource-variable/inter": "^5.2.8",
     "@waline/client": "^3.8.0",
-    "astro": "^5.16.4",
+    "astro": "^5.16.5",
     "astro-compress": "^2.3.8",
     "astro-og-canvas": "^0.7.2",
     "canvaskit-wasm": "^0.40.0",
@@ -46,10 +46,10 @@
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.5.1",
+    "@antfu/eslint-config": "^6.6.1",
     "@astrojs/check": "^0.9.6",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.10.3",
     "@types/sanitize-html": "^2.16.0",
     "@unocss/eslint-plugin": "66.5.10",
     "@unocss/preset-attributify": "66.5.10",

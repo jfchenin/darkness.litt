@@ -11,8 +11,8 @@ abbrlink: exemple-de-note
 
 # Retypeset Blog - Code Base Explanation
 
-**Version:** 1.0.0  
-**Framework:** Astro 5.16.4  
+**Version:** 1.0.0
+**Framework:** Astro 5.16.4
 **Current Configuration:** French-only blog (simplified from multi-language)
 
 ---
@@ -571,14 +571,14 @@ const { getLocalizedPath } = getPageInfo(Astro.url.pathname)
 
 ```typescript
 export const ui: Record<Language, Translation> = {
-  'fr': {
+  fr: {
     title: 'Retypographie',
     subtitle: 'Raviver la beauté de la typographie',
     description: '...',
-    drknss: 'DRKNSS',        // New
-    em: 'EM',                 // New
+    drknss: 'DRKNSS', // New
+    em: 'EM', // New
     drknssTags: 'DRKNSS Tags', // New
-    emTags: 'EM Tags',        // New
+    emTags: 'EM Tags', // New
     tags: 'Étiquettes',
     about: 'À propos',
     toc: 'Table des matières',
@@ -642,10 +642,10 @@ export function isEMTagPage(path: string) {
 export function getPageInfo(path: string) {
   const currentLang = getLangFromPath(path)
   const isHome = isHomePage(path)
-  const isPost = isPostPage(path)  // Keep for backward compatibility
+  const isPost = isPostPage(path) // Keep for backward compatibility
   const isDRKNSS = isDRKNSSPage(path)
   const isEM = isEMPage(path)
-  const isTag = isTagPage(path)  // Keep for backward compatibility
+  const isTag = isTagPage(path) // Keep for backward compatibility
   const isDRKNSSTag = isDRKNSSTagPage(path)
   const isEMTag = isEMTagPage(path)
   const isAbout = isAboutPage(path)
@@ -653,10 +653,10 @@ export function getPageInfo(path: string) {
   return {
     currentLang,
     isHome,
-    isPost,  // Deprecated: use isDRKNSS or isEM
+    isPost, // Deprecated: use isDRKNSS or isEM
     isDRKNSS,
     isEM,
-    isTag,  // Deprecated: use isDRKNSSTag or isEMTag
+    isTag, // Deprecated: use isDRKNSSTag or isEMTag
     isDRKNSSTag,
     isEMTag,
     isAbout,
