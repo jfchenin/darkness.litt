@@ -1,9 +1,6 @@
 import type { CollectionEntry } from 'astro:content'
 import { OGImageRoute } from 'astro-og-canvas'
 import { getCollection } from 'astro:content'
-import notoSansBoldPath from '@/assets/fonts/NotoSansSC-Bold.otf'
-import notoSansRegularPath from '@/assets/fonts/NotoSansSC-Regular.otf'
-import logoPngPath from '@/assets/icons/og-logo.png'
 import { getPostDescription } from '@/utils/description'
 
 // eslint-disable-next-line antfu/no-top-level-await
@@ -31,7 +28,7 @@ export const { getStaticPaths, GET } = OGImageRoute({
     title: page.title,
     description: page.description,
     logo: {
-      path: logoPngPath.src, // Required local path and PNG format
+      path: './public/icons/og-logo.png', // Required local path and PNG format
       size: [250],
     },
     border: {
@@ -52,8 +49,8 @@ export const { getStaticPaths, GET } = OGImageRoute({
       },
     },
     fonts: [
-      notoSansBoldPath,
-      notoSansRegularPath,
+      './public/fonts/NotoSansSC-Bold.otf',
+      './public/fonts/NotoSansSC-Regular.otf',
     ],
     bgGradient: [[242, 241, 245]],
   }),
