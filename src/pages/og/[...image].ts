@@ -3,9 +3,9 @@ import { OGImageRoute } from 'astro-og-canvas'
 import { getCollection } from 'astro:content'
 import { getPostDescription } from '@/utils/description'
 
-const notoSansBoldPath = new URL('../../public/fonts/NotoSansSC-Bold.otf', import.meta.url).pathname
-const notoSansRegularPath = new URL('../../public/fonts/NotoSansSC-Regular.otf', import.meta.url).pathname
-const logoPngPath = new URL('../../public/icons/og-logo.png', import.meta.url).pathname
+const notoSansBoldPath = new URL('@/assets/fonts/NotoSansSC-Bold.otf', import.meta.url).pathname
+const notoSansRegularPath = new URL('@/assets/fonts/NotoSansSC-Regular.otf', import.meta.url).pathname
+const logoPngPath = new URL('@/assets/icons/og-logo.png', import.meta.url).pathname
 // eslint-disable-next-line antfu/no-top-level-await
 const [darknessPosts, emileMosellyPosts] = await Promise.all([
   getCollection('darkness'),
