@@ -1,0 +1,18 @@
+---
+import { allLocales } from '@/config'
+import { getLangRouteParam } from '@/i18n/lang'
+import Layout from '@/layouts/Layout.astro'
+
+export async function getStaticPaths() {
+  return allLocales.map(lang => ({
+    params: { lang: getLangRouteParam(lang) },
+  }))
+}
+---
+
+<Layout>
+  <div class="prose">
+    <h1>Contact</h1>
+    <p>Contact page placeholder</p>
+  </div>
+</Layout>

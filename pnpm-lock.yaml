@@ -43,9 +43,6 @@ importers:
       astro-og-canvas:
         specifier: ^0.7.2
         version: 0.7.2(astro@5.16.5(@types/node@24.10.3)(jiti@2.6.1)(lightningcss@1.29.3)(rollup@4.53.3)(terser@5.39.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      canvaskit-wasm:
-        specifier: ^0.40.0
-        version: 0.40.0
       feed:
         specifier: ^5.1.0
         version: 5.1.0
@@ -128,6 +125,9 @@ importers:
       autocorrect-node:
         specifier: ^2.14.0
         version: 2.14.0
+      canvaskit-wasm:
+        specifier: ^0.40.0
+        version: 0.40.0
       eslint:
         specifier: ^9.39.1
         version: 9.39.1(jiti@2.6.1)
