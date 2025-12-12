@@ -99,6 +99,22 @@ export default defineConfig({
   },
 
   vite: {
+    define: {
+      '__dirname': JSON.stringify('/'),
+      'import.meta.dirname': JSON.stringify('/'),
+    },
+    optimizeDeps: {
+      include: ['canvaskit-wasm'],
+      exclude: ['astro-og-canvas'],
+    },
+    resolve: {
+      alias: {
+        'canvaskit-wasm/full': 'canvaskit-wasm/bin/full/canvaskit.js',
+      },
+    },
+    ssr: {
+      noExternal: ['astro-og-canvas', 'canvaskit-wasm'],
+    },
     plugins: [
       {
         name: 'prefix-font-urls-with-base',
@@ -124,5 +140,7 @@ export default defineConfig({
     },
   },
 
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'compile',
+  }),
 })
