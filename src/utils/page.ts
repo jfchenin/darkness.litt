@@ -66,6 +66,14 @@ export function isContactPage(path: string) {
   return matchPageType(path, 'contact')
 }
 
+export function isLegalNoticesPage(path: string) {
+  return matchPageType(path, 'legalNotices')
+}
+
+export function isPrivacyPolicyPage(path: string) {
+  return matchPageType(path, 'privacyPolicy')
+}
+
 // Returns page context with language, page types and localization helper
 export function getPageInfo(path: string) {
   const currentLang = getLangFromPath(path)
@@ -79,6 +87,8 @@ export function getPageInfo(path: string) {
   const isAbout = isAboutPage(path)
   const isBlogRoll = isBlogRollPage(path)
   const isContact = isContactPage(path)
+  const isLegalNotices = isLegalNoticesPage(path)
+  const isPrivacyPolicy = isPrivacyPolicyPage(path)
 
   return {
     currentLang,
@@ -92,6 +102,8 @@ export function getPageInfo(path: string) {
     isAbout,
     isBlogRoll,
     isContact,
+    isLegalNotices,
+    isPrivacyPolicy,
     getLocalizedPath: (targetPath: string) =>
       getLocalizedPath(targetPath, currentLang),
   }

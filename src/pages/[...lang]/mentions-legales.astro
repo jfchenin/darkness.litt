@@ -1,0 +1,28 @@
+---
+import { getCollection, render } from 'astro:content'
+import { allLocales } from "@/config"
+import { getLangFromLocale, getLangRouteParam } from "@/i18n/lang"
+import Layout from "@/layouts/Layout.astro"
+
+export async function getStaticPaths() {
+  return allLocales.map((lang) => ({
+    params: { lang: getLangRouteParam(lang) },
+  }));
+}
+
+const currentLang = getLangFromLocale(Astro.currentLocale)
+// Get legalNotices page content with different language
+const allLegalNoticesEntries = await getCollection('legalNotices')
+const legalNoticesEntry = allLegalNoticesEntries.find(entry => entry.data.lang === currentLang)
+  ?? allLegalNoticesEntries.find(entry => entry.data.lang === '')
+const { Content } = legalNoticesEntry ? await render(legalNoticesEntry) : { Content: null }
+---
+
+<Layout>
+  <!-- Decorative Line -->
+  <div class="uno-decorative-line" />
+  <!-- Legal Notices Page Content -->
+  <div class="heti">
+    {Content && <Content />}
+  </div>
+</Layout>

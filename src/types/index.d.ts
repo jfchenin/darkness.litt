@@ -111,6 +111,10 @@ export interface ThemeConfig {
       name: string
       url: string
     }[]
+    legals: {
+      name: string
+      url: string
+    }[]
     startYear: number
   }
   preload?: {

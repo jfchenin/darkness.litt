@@ -1,1 +1,11 @@
-ajouter author
+- distinction entre categories sur la page d'accueil et sur la page de catégories
+- make favicon
+- make og .png
+- make legal pages
+- make contact page
+- SEO
+- analytics tools
+- configuration cloudflare for preview route
+- look obsidian
+- look at obsidian
+- update goBack
