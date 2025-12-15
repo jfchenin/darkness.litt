@@ -22,7 +22,7 @@ const darknessPostsByYear = await getDarknessPostsByYear(currentLang)
   {pinnedDarknessPosts.length > 0 && (
     <section class="mb-7.5">
       <div class="uno-decorative-line" />
-      <PostList posts={pinnedDarknessPosts} lang={currentLang} pinned={true} />
+      <PostList posts={pinnedDarknessPosts} lang={currentLang} />
     </section>
   )}
 

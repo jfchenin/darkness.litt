@@ -14,6 +14,8 @@ interface Translation {
   about: string
   blogRoll: string
   contact: string
+  legalNotices: string
+  privacyPolicy: string
   toc: string
 }
 
@@ -32,6 +34,8 @@ export const ui: Record<Language, Translation> = {
     about: 'À propos',
     blogRoll: 'Ressources',
     contact: 'Contact',
+    legalNotices: 'Mentions légales',
+    privacyPolicy: 'Politique de confidentialité',
     toc: 'Table des matières',
   },
 }

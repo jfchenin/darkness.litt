@@ -12,6 +12,7 @@ const {
   isAbout,
   getLocalizedPath,
   isBlogRoll,
+  isContact,
 } = getPageInfo(Astro.url.pathname)
 const currentUI = ui[currentLang as keyof typeof ui] ?? {}
 
@@ -21,6 +22,7 @@ const isHomeActive = isHome
 const isTagActive = isTag
 const isAboutActive = isAbout
 const isBlogRollActive = isBlogRoll
+const isContactActive = isContact
 
 function getNavItemClass(isActive: boolean, colorClass: string) {
   const base = 'after:bottom-0.7em transition-[colors,font-weight]'
@@ -72,6 +74,13 @@ const navItems = [
     active: isBlogRollActive,
     colorClass: 'c-primary',
     highlightColor: themeConfig.color.light.highlights.blogRoll,
+  },
+  {
+    href: '/contact/',
+    label: currentUI.contact,
+    active: isContactActive,
+    colorClass: 'c-primary',
+    highlightColor: themeConfig.color.light.highlights.contact,
   },
 ];
 ---

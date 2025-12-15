@@ -40,4 +40,14 @@ const blogroll = defineCollection({
   schema: z.object({ lang: z.enum(['', ...allLocales]).optional().default('') }),
 })
 
-export const collections = { darkness, emileMoselly, about, blogroll }
+const legalNotices = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/legalNotices' }),
+  schema: z.object({ lang: z.enum(['', ...allLocales]).optional().default('') }),
+})
+
+const privacyPolicy = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/privacyPolicy' }),
+  schema: z.object({ lang: z.enum(['', ...allLocales]).optional().default('') }),
+})
+
+export const collections = { darkness, emileMoselly, about, blogroll, legalNotices, privacyPolicy }

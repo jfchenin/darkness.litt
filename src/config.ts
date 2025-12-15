@@ -40,15 +40,15 @@ export const themeConfig: ThemeConfig = {
       background: 'oklch(96% 0.005 298)',
       // highlight color
       // used for navbar, selected text, etc
-      highlight: 'oklch(0.93 0.195089 103.2532 / 0.5)', // rgba(255,235,0,0.5)
+      highlight: 'oklch(0.7291 0.06 35 / 0.4)',
       highlights: {
-        home: 'oklch(0.93 0.195089 103.2532 / 0.5)',
-        darkness: 'oklch(0.7214 0.1399 49.34 / 0.3)',
-        emileMoselly: 'oklch(0.645 0.0458 56.37/ 0.3)',
-        tags: 'oklch(0.6755 0.0574 127.47 / 0.4)',
-        about: 'oklch(0.817 0.0819 146.35 / 0.3)',
-        blogRoll: 'oklch(0.4746 0.0915 233.1 / 0.2)',
-        contact: 'oklch(0.9129 0.0381 255.61 / 0.3)',
+        home: 'oklch(0.90 0.14 103 / 0.6)',
+        darkness: 'oklch(0.68 0.06 105 / 0.45)',
+        emileMoselly: 'oklch(0.76 0.04 169 / 0.5)',
+        tags: 'oklch(0.80 0.04 266 / 0.6)',
+        about: 'oklch(0.76 0.04 359 / 0.5)',
+        blogRoll: 'oklch(0.82 0.04 284 / 0.6)',
+        contact: 'oklch(0.80 0.04 256 / 0.6)',
       },
     },
     dark: {
@@ -59,15 +59,15 @@ export const themeConfig: ThemeConfig = {
       // background color
       background: 'oklch(22% 0.005 298)',
       // highlight color
-      highlight: 'oklch(0.93 0.195089 103.2532 / 0.2)', // rgba(255,235,0,0.2)
+      highlight: 'oklch(0.7291 0.06 35 / 0.4)',
       highlights: {
-        home: 'oklch(0.93 0.195089 103.2532 / 0.5)',
-        darkness: 'oklch(0.7976 0.1105 6.19 / 0.3)',
-        emileMoselly: 'oklch(0.5852 0.1158 48.18 / 0.3)',
-        tags: 'oklch(0.7617 0.082 311.71 / 0.3)',
-        about: 'oklch(0.817 0.0819 146.35 / 0.3)',
-        blogRoll: 'oklch(0.7158 0.1287 175.87 / 0.3)',
-        contact: 'oklch(0.9129 0.0381 255.61 / 0.3)',
+        home: 'oklch(0.90 0.14 103 / 0.6)',
+        darkness: 'oklch(0.68 0.06 105 / 0.45)',
+        emileMoselly: 'oklch(0.76 0.04 169 / 0.5)',
+        tags: 'oklch(0.80 0.04 266 / 0.6)',
+        about: 'oklch(0.76 0.04 359 / 0.5)',
+        blogRoll: 'oklch(0.82 0.04 284 / 0.6)',
+        contact: 'oklch(0.80 0.04 256 / 0.6)',
       },
     },
   },
@@ -195,6 +195,16 @@ export const themeConfig: ThemeConfig = {
       //   name: 'X',
       //   url: 'https://x.com/radishzz_',
       // },
+    ],
+    legals: [
+      {
+        name: 'Mentions légales',
+        url: '/mentions-legales',
+      },
+      {
+        name: 'Politique de confidentialité',
+        url: '/politique-de-confidentialite',
+      },
     ],
     // year of website start
     startYear: 2025,

@@ -4,7 +4,8 @@ import { getLangFromPath } from '@/i18n/lang'
 import { getLocalizedPath } from '@/i18n/path'
 
 const { author } = themeConfig.site
-const { links, startYear } = themeConfig.footer
+const { links, legals, startYear } = themeConfig.footer
+const  { highlight } = themeConfig.color.light
 
 const currentYear = new Date().getFullYear()
 const year = Number(startYear) === currentYear
@@ -49,6 +50,27 @@ const socialLinks = links.map(({ name, url }) => {
     'data-umami-event-url': url,
   }
 })
+
+const legalLinks = legals.map(({ name, url }) => {
+  const isInternalPath = url.startsWith('/')
+
+  if (isInternalPath) {
+    const localizedPath = getLocalizedPath(url, currentLang)
+    return {
+      name,
+      href: localizedPath,
+    }
+  }
+
+  return {
+    name,
+    'href': url,
+    'target': '_blank',
+    'rel': 'noopener noreferrer',
+    'data-umami-event': 'outbound-link-click',
+    'data-umami-event-url': url,
+  }
+})
 ---
 
 <footer
@@ -58,7 +80,7 @@ const socialLinks = links.map(({ name, url }) => {
   <p>
     {socialLinks.map((link, index) => (
       <>
-        <a class="highlight-hover py-0.8 transition-colors after:bottom-0.35em hover:c-primary" {...link}>{link.name}</a>
+        <a class="highlight-hover py-0.8 transition-colors after:bottom-0.35em hover:c-primary" style={`--highlight-color: ${highlight}`} {...link}>{link.name}</a>
         {index < socialLinks.length - 1 && '/'}
       </>
     ))}
@@ -69,6 +91,11 @@ const socialLinks = links.map(({ name, url }) => {
   </p>
 
   <p>
-    Powered by <a class="highlight-hover py-0.8 transition-colors after:bottom-0.35em hover:c-primary" href="https://astro.build/" target="_blank" rel="noopener noreferrer" data-umami-event="outbound-link-click" data-umami-event-url="https://astro.build/">Astro</a> and <a class="highlight-hover py-0.8 transition-colors after:bottom-0.35em hover:c-primary" href="https://github.com/radishzzz/astro-theme-retypeset" target="_blank" rel="noopener noreferrer" data-umami-event="outbound-link-click" data-umami-event-url="https://github.com/radishzzz/astro-theme-retypeset">Retypeset</a>
+  {legalLinks.map((link, index) => (
+    <>
+      <a class="text-2.5 highlight-hover py-0.8 transition-colors after:bottom-0.5em hover:c-primary" style={`--highlight-color: ${highlight}`} {...link}>{link.name}</a>
+      {index < legalLinks.length - 1 && '/'}
+    </>
+  ))}
   </p>
 </footer>
