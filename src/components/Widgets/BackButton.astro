@@ -7,7 +7,7 @@ import GoBackIcon from '@/assets/icons/go-back.svg';
   class="hidden"
   lg="absolute left--10 top-3.8 block aspect-square w-4.5 c-secondary/60 transition-colors ease-out hover:c-primary active:scale-90!"
   type="button"
-  aria-label="Go back"
+  aria-label="Retour"
 >
   <GoBackIcon
     aria-hidden="true"
@@ -26,11 +26,14 @@ function handleBackButtonClick(e: MouseEvent) {
     return
   }
 
+  e.preventDefault()
+  e.stopPropagation()
+
   // Navigate back if history exists
-  if (window.history.length > 1) {
-    window.history.back()
-    return
-  }
+  // if (window.history.length > 1) {
+  //   window.history.back()
+  //   return
+  // }
 
   // Fallback to homepage
   const siteTitleLink = document.getElementById('site-title-link')
@@ -39,5 +42,58 @@ function handleBackButtonClick(e: MouseEvent) {
   }
 }
 
-document.addEventListener('click', handleBackButtonClick)
+// Fix button position after animation
+function fixButtonPosition() {
+  const button = document.getElementById('back-button')
+  if (!button || window.innerWidth < 1024) return
+
+  const rect = button.getBoundingClientRect()
+  button.style.position = 'fixed'
+  button.style.left = `${rect.left}px`
+  button.style.top = `${rect.top}px`
+  button.style.zIndex = '50'
+}
+
+// Initialize button behavior
+function initBackButton() {
+  const button = document.getElementById('back-button')
+
+  // Add click listener
+  document.addEventListener('click', handleBackButtonClick)
+
+  if (!button) return
+
+  // Fix position immediately on first load (solves the reload issue)
+  fixButtonPosition()
+
+  // Also fix position after animation completes (for view transitions)
+  button.addEventListener('animationend', fixButtonPosition)
+}
+
+// Support for both initial load and view transitions
+if (document.readyState === 'loading') {
+  // DOM not ready yet, wait for it
+  document.addEventListener('DOMContentLoaded', initBackButton)
+} else {
+  // DOM already ready
+  initBackButton()
+}
+
+// Support Astro view transitions (if enabled)
+document.addEventListener('astro:page-load', initBackButton)
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  const button = document.getElementById('back-button')
+  if (!button) return
+
+  button.style.position = ''
+  button.style.left = ''
+  button.style.top = ''
+  button.style.zIndex = ''
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(fixButtonPosition)
+  })
+})
 </script>

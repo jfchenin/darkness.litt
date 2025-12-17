@@ -17,10 +17,7 @@ export interface Props {
 // const { posts, lang, pinned = false } = Astro.props
 const { posts, lang } = Astro.props;
 const isHome = isHomePage(Astro.url.pathname);
-
-const collection = posts.length > 0 ? posts[0].collection : undefined;
 ---
-
 
 <ul>
   {
@@ -43,7 +40,7 @@ const collection = posts.length > 0 ? posts[0].collection : undefined;
               href={getPostPath(
                 slug,
                 lang,
-                collection as "darkness" | "emileMoselly",
+                post.collection as "darkness" | "emileMoselly",
               )}
               transition:name={`post-${slug}${lang ? `-${lang}` : ""}`}
               data-disable-theme-transition

@@ -22,7 +22,12 @@ export interface ThemeConfig {
     author: string
     url: string
     base: string
-    favicon: string
+    faviconSvg: string
+    faviconPng96: string
+    faviconPng: string
+    faviconIco: string
+    webManifest: string
+    appleTouchIcon: string
   }
   color: {
     mode: 'light' | 'dark' | 'auto'
