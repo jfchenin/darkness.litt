@@ -2,11 +2,11 @@
   "name": "astro-theme-retypeset",
   "type": "module",
   "version": "1.0.0",
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@10.26.0+sha512.3b3f6c725ebe712506c0ab1ad4133cf86b1f4b687effce62a9b38b4d72e3954242e643190fc51fa1642949c735f403debd44f5cb0edd657abe63a8b6a7e1e402",
   "repository": "https://github.com/radishzzz/astro-theme-retypeset",
   "scripts": {
     "dev": "astro check && astro dev",
-    "build": "astro check && astro build && pnpm apply-lqip && wrangler deploy",
+    "build": "git submodule update --init --recursive && astro check && astro build && pnpm apply-lqip && wrangler deploy",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
@@ -24,7 +24,7 @@
     "@fontsource-variable/bricolage-grotesque": "^5.2.10",
     "@fontsource-variable/inter": "^5.2.8",
     "@waline/client": "^3.8.0",
-    "astro": "^5.16.5",
+    "astro": "^5.16.6",
     "astro-compress": "^2.3.8",
     "astro-og-canvas": "^0.7.2",
     "feed": "^5.1.0",
@@ -49,7 +49,7 @@
     "@antfu/eslint-config": "^6.7.1",
     "@astrojs/check": "^0.9.6",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^24.10.4",
+    "@types/node": "^25.0.3",
     "@types/sanitize-html": "^2.16.0",
     "@unocss/eslint-plugin": "66.5.10",
     "@unocss/preset-attributify": "66.5.10",
@@ -67,7 +67,7 @@
     "typescript": "~5.9.3",
     "unocss": "66.5.10",
     "unocss-preset-theme": "^0.14.1",
-    "wrangler": "^4.54.0"
+    "wrangler": "^4.55.0"
   },
   "pnpm": {
     "patchedDependencies": {
