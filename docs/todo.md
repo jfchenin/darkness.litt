@@ -4,3 +4,4 @@
 - analytics tools
 - configuration cloudflare for preview route
 - look at obsidian
+- email fonctionne pas
