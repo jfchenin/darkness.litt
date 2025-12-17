@@ -23,7 +23,7 @@ const currentUI = ui[currentLang as keyof typeof ui] ?? {}
 const lang = currentLang === defaultLocale ? 'fr' : `${currentLang}/`
 
 // Site Configuration
-const { title, subtitle, description, i18nTitle, author, favicon } = themeConfig.site
+const { title, subtitle, description, i18nTitle, author, faviconSvg, faviconPng96, faviconPng, faviconIco, webManifest, appleTouchIcon  } = themeConfig.site
 const { mode: defaultMode, light: { background: lightMode }, dark: { background: darkMode } } = themeConfig.color
 const { katex: katexEnabled, reduceMotion } = themeConfig.global
 const { verification = {}, twitterID = '', googleAnalyticsID = '', umamiAnalyticsID = '', apiflashKey = '' } = themeConfig.seo ?? {}
@@ -50,9 +50,24 @@ const pageImage = postSlug
 <!-- Basic Info -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-{favicon.toLowerCase().endsWith('.svg') && <link rel="icon" type="image/svg+xml" href={`${base}${favicon}`} />}
-{favicon.toLowerCase().endsWith('.png') && <link rel="icon" type="image/png" href={`${base}${favicon}`} />}
-{favicon.toLowerCase().endsWith('.ico') && <link rel="icon" type="image/x-icon" href={`${base}${favicon}`} />}
+{ /* Favicon - Modern browsers */}
+{faviconSvg && (
+<link rel="icon" type="image/svg+xml" href={`${base}${faviconSvg}`} />)}
+{ /* Favicon - PNG fallbacks */}
+{faviconPng96 && (
+<link rel="icon" type="image/png" sizes="96x96" href={`${base}${faviconPng96}`} />)}
+{faviconPng && (
+<link rel="icon" type="image/png" href={`${base}${faviconPng}`} />)}
+{ /* Favicon - Legacy */}
+{faviconIco && (
+<link rel="icon" type="image/x-icon" href={`${base}${faviconIco}`} />)}
+{ /* Apple Touch Icon */}
+{appleTouchIcon && (
+<link rel="apple-touch-icon" href={`${base}${appleTouchIcon}`} />)}
+{ /* Web App Manifest */}
+{webManifest && (
+<link rel="manifest" href={`${base}${webManifest}`} />)}
+
 <title>{pageTitle}</title>
 <meta name="description" content={pageDescription} />
 <meta name="author" content={author} />

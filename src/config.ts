@@ -20,7 +20,12 @@ export const themeConfig: ThemeConfig = {
     base: '/', // e.g., '/blog', '/docs'
     // favicon url
     // recommended formats: svg, png or ico
-    favicon: '/icons/favicon.svg', // or https://example.com/favicon.svg
+    faviconSvg: '/icons/favicons/favicon.svg', // or https://example.com/favicon.svg
+    faviconPng96: '/icons/favicons/favicon-96x96.png',
+    faviconPng: '/icons/favicons/favicon.png',
+    faviconIco: '/icons/favicons/favicon.ico',
+    appleTouchIcon: '/icons/favicons/apple-touch-icon.png',
+    webManifest: 'icons/favicons/manifest.webmanifest',
   },
   // SITE INFORMATION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END
 
