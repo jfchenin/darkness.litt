@@ -6,7 +6,7 @@
   "repository": "https://github.com/radishzzz/astro-theme-retypeset",
   "scripts": {
     "dev": "astro check && astro dev",
-    "build": "astro check && astro build && pnpm apply-lqip && wrangler deploy",
+    "build": "git submodule update --init --recursive && astro check && astro build && pnpm apply-lqip && wrangler deploy",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
