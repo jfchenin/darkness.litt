@@ -27,7 +27,7 @@ jobs:
           git fetch origin
           
           # Hard reset to latest commit (no merge needed)
-          git reset --hard origin/master
+          git reset --hard origin/main
           
           # Get the new commit hash
           NEW_COMMIT=$(git rev-parse HEAD)
