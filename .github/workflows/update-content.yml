@@ -13,30 +13,26 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.MAIN_REPO_PAT }}
-          submodules: false  # Don't auto-init submodules yet
+          submodules: recursive
       
-      - name: Initialize and update submodule
+      - name: Update submodule to latest
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Remove existing submodule if it exists
-          if [ -d "src/content" ]; then
-            git submodule deinit -f src/content
-            rm -rf .git/modules/src/content
-            rm -rf src/content
-          fi
+          # Navigate to submodule
+          cd src/content
           
-          # Initialize submodule fresh
-          git submodule update --init --recursive src/content
+          # Fetch latest changes
+          git fetch origin
           
-          # Update to latest
-          git submodule update --remote --merge src/content
+          # Hard reset to latest commit (no merge needed)
+          git reset --hard origin/master
           
           # Get the new commit hash
-          cd src/content
           NEW_COMMIT=$(git rev-parse HEAD)
           cd ../..
+          
           echo "Updated to commit: $NEW_COMMIT"
       
       - name: Commit and push changes
