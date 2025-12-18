@@ -190,7 +190,7 @@ export const themeConfig: ThemeConfig = {
       },
       {
         name: 'Email',
-        url: 'jfrançois@chenin.fr',
+        url: 'mailto:jfrançois@chenin.fr',
       },
       {
         name: 'RSS',

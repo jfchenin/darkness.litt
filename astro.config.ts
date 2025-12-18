@@ -7,6 +7,7 @@ import { defineConfig } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import rehypeMermaid from 'rehype-mermaid'
 import rehypeSlug from 'rehype-slug'
+import remarkBreaks from 'remark-breaks'
 import remarkDirective from 'remark-directive'
 import remarkMath from 'remark-math'
 import UnoCSS from 'unocss/astro'
@@ -72,6 +73,7 @@ export default defineConfig({
     remarkPlugins: [
       remarkDirective,
       remarkMath,
+      remarkBreaks,
       remarkContainerDirectives,
       remarkLeafDirectives,
       remarkReadingTime,
