@@ -37,20 +37,20 @@ export const { getStaticPaths, GET } = OGImageRoute({
     },
     font: {
       title: {
-        families: ['Noto Sans SC'],
+        families: ['Noto Sans'],
         weight: 'Bold',
         color: [34, 33, 36],
         lineHeight: 1.5,
       },
       description: {
-        families: ['Noto Sans SC'],
+        families: ['Noto Sans'],
         color: [72, 71, 74],
         lineHeight: 1.5,
       },
     },
     fonts: [
-      './public/fonts/NotoSansSC-Bold.otf',
-      './public/fonts/NotoSansSC-Regular.otf',
+      './public/fonts/NotoSans-Bold.otf',
+      './public/fonts/NotoSans-Regular.otf',
     ],
     bgGradient: [[242, 241, 245]],
   }),
