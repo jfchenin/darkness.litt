@@ -51,7 +51,7 @@ jobs:
           EOF
 
           git commit -F commit_message.txt
-          git push origin main
+          git push origin master
 
       - name: Summary
         run: |
