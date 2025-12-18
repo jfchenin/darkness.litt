@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository with submodules
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.MAIN_REPO_PAT }}
           submodules: recursive
 
       - name: Update submodule to latest
