@@ -1,26 +1,24 @@
-# Retypeset
+# darkness.litt 
+
+## a tailored version of Retypeset for the personal use of Jean-François Chénin.
 
 ![Cover Image](assets/images/v1/retypeset-en-desktop.webp)
 ![Cover Image](assets/images/v1/retypeset-en-mobile.webp)
 
-[简体中文](assets/docs/README.zh.md)｜[繁体中文](assets/docs/README.zh-tw.md)｜[日本語](assets/docs/README.ja.md)｜[Español](assets/docs/README.es.md)｜[Français](assets/docs/README.fr.md)｜[Русский](assets/docs/README.ru.md)
+[Français](assets/docs/README.fr.md)
 
-Retypeset is a static blog theme based on the [Astro](https://astro.build/) framework. Inspired by [Typography](https://astro-theme-typography.vercel.app/), Retypeset establishes a new visual standard and reimagines the layout of all pages, creating a reading experience reminiscent of paper books, reviving the beauty of typography. Details in every sight, elegance in every space.
+darkness.litt is a fork of Retypeset, a static blog theme based on the [Astro](https://astro.build/) framework. 
+The source code of this site, derived from the [Retypeset](https://github.com/radishzzz/astro-theme-retypeset) theme under MIT license, includes substantial modifications.
 
-## Demo
+### Online Access
 
-- [Retypeset](https://retypeset.radishzz.cc/en/)
-- [Retipografía](https://retypeset.radishzz.cc/es/)
-- [Переверстка](https://retypeset.radishzz.cc/ru/)
-- [重新编排](https://retypeset.radishzz.cc/)
-- [重新編排](https://retypeset.radishzz.cc/zh-tw/)
-- [再組版](https://retypeset.radishzz.cc/ja/)
+- [Darkness](https://darkness.chenin.fr/)
 
-## Features
+### Features
 
 - Built with Astro and UnoCSS
 - Support for SEO, Sitemap, OpenGraph, RSS, MDX, LaTeX, Mermaid, and TOC
-- i18n support
+- i18n support 
 - Light / Dark mode
 - Elegant view transitions
 - Rich theme customization
@@ -28,18 +26,18 @@ Retypeset is a static blog theme based on the [Astro](https://astro.build/) fram
 - Responsive design
 - Comment system
 
-## Performance
+### Performance
 
 <br>
 <p align="center">
-  <a href="https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fretypeset.radishzz.cc%2Fen%2F&form_factor=desktop">
+  <a href="https://pagespeed.web.dev/analysis/https-darkness-chenin-fr/wame74hk2w?form_factor=desktop">
     <img width="710" alt="Retypeset Lighthouse Score" src="assets/images/retypeset-lighthouse-score.svg">
   <a>
 </p>
 
-## Getting Started
+#### Getting Started
 
-1. [Fork](https://github.com/radishzzz/astro-theme-retypeset/fork) this repository, or use this template to create a new repository.
+1. [Fork](https://github.com/jfchenin/darkness.litt/fork) this repository, or use this template to create a new repository.
 2. Run the following commands in your terminal:
 
    ```bash
@@ -64,26 +62,27 @@ Retypeset is a static blog theme based on the [Astro](https://astro.build/) fram
 
 &emsp;[![Deploy to Netlify](assets/images/deploy-netlify.svg)](https://app.netlify.com/start) [![Deploy to Vercel](assets/images/deploy-vercel.svg)](https://vercel.com/new)
 
-## Updates
+### Updates
 
 Retypeset releases [new features](https://github.com/radishzzz/astro-theme-retypeset/issues/18) from time to time. Simply run `pnpm update-theme` to update the theme. If you encounter merge conflicts, please refer to [this video](https://youtu.be/lz5OuKzvadQ?si=sH_ALNgqxrYqNVQT) for manual resolution.
 
-## Credits
+### Credits
 
-- [Typography](https://github.com/moeyua/astro-theme-typography)
-- [Fuwari](https://github.com/saicaca/fuwari)
-- [Redefine](https://github.com/EvanNotFound/hexo-theme-redefine)
-- [AstroPaper](https://github.com/satnaing/astro-paper)
-- [heti](https://github.com/sivan/heti)
-- [EarlySummerSerif](https://github.com/GuiWonder/EarlySummerSerif)
+#### Astro blog theme
 
-## Star History
+- **Retypeset** — ©2025 [Retypeset](https://github.com/radishzzz/astro-theme-retypeset)
 
-<p align="center">
-<a href="https://star-history.com/#radishzzz/astro-theme-retypeset&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=radishzzz/astro-theme-retypeset&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=radishzzz/astro-theme-retypeset&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=radishzzz/astro-theme-retypeset&type=Date" />
-  </picture>
-</p>
+#### Fonts
+
+- **Bricolage Grotesque** — ©2022 [The Bricolage Grotesque Project Authors](https://github.com/ateliertriay/bricolage), sous SIL Open Font License
+- **Inter** — ©2016 [The Inter Project Authors](https://github.com/rsms/inter), sous SIL Open Font License 1.1
+
+#### Services
+
+- **Formspark** — ©2018 [Formspark](https://github.com/formspark)
+- **Botpoison** — ©2021 [Botpoison](https://botpoison.com/)
+- **Newsletter** — [Service à préciser]
+
+---
+
+***Last update : 28 décembre 2025***
