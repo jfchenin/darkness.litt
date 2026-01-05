@@ -61,6 +61,10 @@
 .heti :where(img:not(figure img):not(.no-heti):not(.no-heti *)) {
   --at-apply: "my-6";
 }
+.heti img[data-orientation="landscape"],
+.heti figure[data-orientation="landscape"] img,
+.heti div[data-orientation="landscape"] img {
+  max-width: 45%; }
 .heti :where(figure) {
   --at-apply: "my-6 w-full";
 }

@@ -1,7 +1,7 @@
-- make legal pages
+
 - make contact page
 - SEO
-- analytics tools
+
 - configuration cloudflare for preview route
-- look at obsidian
+- obsidian quickAdd
 - email fonctionne pas
