@@ -21,6 +21,7 @@ interface ContactFormData {
   consent: boolean
   newsletterConsent?: boolean
   _botpoison: string
+  _botpoison_error?: string
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -41,8 +42,18 @@ export const POST: APIRoute = async ({ request }) => {
       )
     }
 
-    // Validate Botpoison solution is present
-    if (!body._botpoison) {
+    // Check if Botpoison is available or if graceful fallback is needed
+    if (body._botpoison === 'SERVICE_UNAVAILABLE') {
+      // Graceful fallback - Botpoison service was unavailable
+      console.warn('⚠️ Form submitted without Botpoison verification (service unavailable)')
+      console.warn('Submission details:', {
+        email: body.email,
+        error: body._botpoison_error,
+        timestamp: new Date().toISOString(),
+      })
+      // Continue to Formspark without verification
+    }
+    else if (!body._botpoison) {
       return new Response(
         JSON.stringify({
           error: 'Vérification anti-bot manquante',
@@ -53,50 +64,58 @@ export const POST: APIRoute = async ({ request }) => {
         },
       )
     }
+    else {
+      // Normal Botpoison verification flow
+      const secretKey = import.meta.env.BOTPOISON_SECRET_KEY
 
-    // Get secret key from environment
-    const secretKey = import.meta.env.BOTPOISON_SECRET_KEY
+      if (!secretKey) {
+        console.error('BOTPOISON_SECRET_KEY not configured')
+        return new Response(
+          JSON.stringify({
+            error: 'Configuration serveur incorrecte',
+          }),
+          {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+          },
+        )
+      }
 
-    if (!secretKey) {
-      console.error('BOTPOISON_SECRET_KEY not configured')
-      return new Response(
-        JSON.stringify({
-          error: 'Configuration serveur incorrecte',
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
-    }
+      // Verify Botpoison solution using REST API
+      try {
+        const botpoisonResponse = await fetch('https://api.botpoison.com/verify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            secretKey,
+            solution: body._botpoison,
+          }),
+        })
 
-    // Verify Botpoison solution using REST API
-    const botpoisonResponse = await fetch('https://api.botpoison.com/verify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        secretKey,
-        solution: body._botpoison,
-      }),
-    })
+        const botpoisonData: BotpoisonVerifyResponse = await botpoisonResponse.json()
 
-    const botpoisonData: BotpoisonVerifyResponse = await botpoisonResponse.json()
-
-    // Check if verification failed
-    if (!botpoisonData.ok) {
-      console.warn('Botpoison verification failed:', botpoisonData.message)
-      return new Response(
-        JSON.stringify({
-          error: 'Vérification anti-bot échouée',
-          details: botpoisonData.message,
-        }),
-        {
-          status: 403,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+        // Check if verification failed
+        if (!botpoisonData.ok) {
+          console.warn('Botpoison verification failed:', botpoisonData.message)
+          return new Response(
+            JSON.stringify({
+              error: 'Vérification anti-bot échouée',
+              details: botpoisonData.message,
+            }),
+            {
+              status: 403,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          )
+        }
+      }
+      catch (verifyError) {
+        // If verification fails, log but allow submission (graceful degradation)
+        console.error('Botpoison verification error:', verifyError)
+        console.warn('Allowing submission despite verification error')
+      }
     }
 
     // Botpoison verification succeeded, now forward to Formspark
@@ -114,13 +133,22 @@ export const POST: APIRoute = async ({ request }) => {
       )
     }
 
-    // Prepare data for Formspark (exclude _botpoison)
+    console.warn('Submitting to Formspark:', {
+      formsparkId: `${formsparkId.substring(0, 30)}...`,
+      email: body.email,
+    })
+
+    // Prepare data for Formspark (exclude _botpoison fields)
     const formsparkData = {
       fullName: body.fullName,
       email: body.email,
       message: body.message || '',
       consent: body.consent,
       newsletterConsent: body.newsletterConsent || false,
+      // Add note if submitted without bot protection
+      ...(body._botpoison === 'SERVICE_UNAVAILABLE' && {
+        _note: 'Submitted without bot protection (service unavailable)',
+      }),
     }
 
     // Submit to Formspark
@@ -131,6 +159,12 @@ export const POST: APIRoute = async ({ request }) => {
         'Accept': 'application/json',
       },
       body: JSON.stringify(formsparkData),
+    })
+
+    console.warn('Formspark response:', {
+      status: formsparkResponse.status,
+      statusText: formsparkResponse.statusText,
+      ok: formsparkResponse.ok,
     })
 
     if (!formsparkResponse.ok) {
@@ -148,6 +182,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Success!
+    console.warn('✓ Form submitted successfully to Formspark')
     return new Response(
       JSON.stringify({
         success: true,

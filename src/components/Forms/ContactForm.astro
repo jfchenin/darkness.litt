@@ -250,14 +250,9 @@ form.addEventListener('submit', async (e) => {
   submitButton.textContent = 'Envoi en cours...';
 
   try {
-    // Get Botpoison solution
-    const solution = await getBotpoisonSolution();
-
     // Prepare form data
     const formData = new FormData(form);
-    const data: Record<string, any> = {
-      _botpoison: solution,
-    };
+    const data: Record<string, any> = {};
 
     formData.forEach((value, key) => {
       if (key === 'consent' || key === 'newsletterConsent') {
@@ -266,6 +261,19 @@ form.addEventListener('submit', async (e) => {
         data[key] = value;
       }
     });
+
+    // Try to get Botpoison solution with graceful fallback
+    try {
+      const solution = await getBotpoisonSolution();
+      data._botpoison = solution;
+      console.log('✓ Botpoison verification successful');
+    } catch (error) {
+      // Graceful fallback - allow submission without Botpoison
+      console.warn('⚠️ Botpoison unavailable, submitting without bot protection:', error);
+      data._botpoison = 'SERVICE_UNAVAILABLE';
+      data._botpoison_error = error instanceof Error ? error.message : 'Unknown error';
+      // Continue with submission - don't block users
+    }
 
     // Submit form
     const response = await fetch(form.action, {
@@ -299,9 +307,7 @@ form.addEventListener('submit', async (e) => {
   } catch (error) {
     console.error('Form submission error:', error);
     showFormError(
-      error instanceof Error && error.message.includes('Bot protection')
-        ? 'Erreur de vérification de sécurité. Veuillez réessayer.'
-        : 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.'
+      'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.'
     );
   } finally {
     // Re-enable submit button
