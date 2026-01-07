@@ -48,7 +48,7 @@ async function solveChallenge(payload: any, signature: string): Promise<string> 
 export async function getBotpoisonSolution(): Promise<string> {
   try {
     // Get challenge from backend (avoids CORS)
-    const challengeResponse = await fetch('/api/botpoison-challenge', {
+    const challengeResponse = await fetch('/api/botpoison-challenge/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     })
