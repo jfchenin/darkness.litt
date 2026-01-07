@@ -83,6 +83,12 @@ export const POST: APIRoute = async ({ request }) => {
 
       // Verify Botpoison solution using REST API
       try {
+        console.warn('Verifying Botpoison solution:', {
+          secretKeyPrefix: secretKey.substring(0, 3),
+          solutionLength: body._botpoison.length,
+          solutionPreview: body._botpoison.substring(0, 50),
+        })
+
         const botpoisonResponse = await fetch('https://api.botpoison.com/verify', {
           method: 'POST',
           headers: {
@@ -94,11 +100,24 @@ export const POST: APIRoute = async ({ request }) => {
           }),
         })
 
+        console.warn('Botpoison API response:', {
+          status: botpoisonResponse.status,
+          statusText: botpoisonResponse.statusText,
+        })
+
         const botpoisonData: BotpoisonVerifyResponse = await botpoisonResponse.json()
+
+        console.warn('Botpoison verification result:', {
+          ok: botpoisonData.ok,
+          message: botpoisonData.message,
+        })
 
         // Check if verification failed
         if (!botpoisonData.ok) {
-          console.warn('Botpoison verification failed:', botpoisonData.message)
+          console.error('Botpoison verification failed:', {
+            message: botpoisonData.message,
+            email: body.email,
+          })
           return new Response(
             JSON.stringify({
               error: 'Vérification anti-bot échouée',

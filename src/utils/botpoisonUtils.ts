@@ -1,77 +1,59 @@
 /**
- * Botpoison Utilities
- * Handles challenge generation and solving via backend
+ * Botpoison Browser Utilities
+ * Client-side bot protection using official Botpoison library
+ *
+ * @see https://botpoison.com/documentation
  */
 
-/**
- * Solve a Botpoison challenge using Web Crypto API
- */
-async function solveChallenge(payload: any, signature: string): Promise<string> {
-  const { nonce, difficulty } = payload
-
-  let solution = 0
-  const encoder = new TextEncoder()
-
-  while (true) {
-    const data = encoder.encode(`${nonce}${solution}`)
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-    const hashArray = new Uint8Array(hashBuffer)
-
-    // Check if hash meets difficulty requirement
-    let leadingZeros = 0
-    for (const byte of hashArray) {
-      if (byte === 0) {
-        leadingZeros += 8
-      }
-      else {
-        leadingZeros += Math.clz32(byte) - 24
-        break
-      }
-    }
-
-    if (leadingZeros >= difficulty) {
-      return JSON.stringify({ payload: { ...payload, solution }, signature })
-    }
-
-    solution++
-
-    // Safety limit
-    if (solution > 10000000) {
-      throw new Error('Challenge solving timeout')
-    }
-  }
-}
+import PoisonBrowser from '@botpoison/browser'
 
 /**
- * Get a Botpoison challenge solution using backend-generated challenges
+ * Get a Botpoison challenge solution
+ * Uses the official Botpoison browser library for proper challenge/solution handling
+ *
+ * @returns {Promise<string>} The solution token to be sent to the server
+ * @throws {Error} If challenge generation fails
  */
 export async function getBotpoisonSolution(): Promise<string> {
   try {
-    // Get challenge from backend (avoids CORS)
-    const challengeResponse = await fetch('/api/botpoison-challenge/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    })
+    const publicKey = import.meta.env.PUBLIC_BOTPOISON_PUBLIC_KEY
 
-    if (!challengeResponse.ok) {
-      throw new Error('Failed to get challenge from backend')
+    if (!publicKey) {
+      console.error('PUBLIC_BOTPOISON_PUBLIC_KEY not configured')
+      throw new Error('Bot protection not configured')
     }
 
-    const challenge = await challengeResponse.json()
+    // Initialize Botpoison with public key
+    const botpoison = new PoisonBrowser({
+      publicKey,
+    })
 
-    // Solve the challenge
-    const solution = await solveChallenge(challenge.payload, challenge.signature)
+    // Generate and solve challenge using official library
+    // This handles everything: challenge generation, solving, and formatting
+    const { solution } = await botpoison.challenge()
 
     return solution
   }
   catch (error) {
     console.error('Failed to generate Botpoison solution:', error)
+
+    // Log additional details for debugging
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+      })
+    }
+
     throw new Error('Bot protection challenge failed')
   }
 }
 
 /**
  * Verify if Botpoison is properly configured
+ * Useful for development/debugging
+ *
+ * @returns {boolean} True if public key is configured
  */
 export function isBotpoisonConfigured(): boolean {
   return !!import.meta.env.PUBLIC_BOTPOISON_PUBLIC_KEY
