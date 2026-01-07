@@ -170,14 +170,18 @@ export const POST: APIRoute = async ({ request }) => {
       }),
     }
 
-    // Submit to Formspark
+    // Submit to Formspark using form-encoded data
+    const formParams = new URLSearchParams()
+    for (const [key, value] of Object.entries(formsparkData)) {
+      formParams.append(key, String(value))
+    }
+
     const formsparkResponse = await fetch(formsparkId, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify(formsparkData),
+      body: formParams.toString(),
     })
 
     console.warn('Formspark response:', {
@@ -188,10 +192,20 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (!formsparkResponse.ok) {
       const errorText = await formsparkResponse.text()
-      console.error('Formspark submission failed:', errorText)
+
+      console.error('Formspark submission failed:', {
+        status: formsparkResponse.status,
+        statusText: formsparkResponse.statusText,
+        body: errorText,
+        contentType: formsparkResponse.headers.get('content-type'),
+        submittedData: formsparkData,
+      })
+
       return new Response(
         JSON.stringify({
           error: 'Échec de l\'envoi du formulaire',
+          details: errorText,
+          status: formsparkResponse.status,
         }),
         {
           status: 500,
@@ -200,8 +214,12 @@ export const POST: APIRoute = async ({ request }) => {
       )
     }
 
+    const formsparkResult = await formsparkResponse.text()
+    console.warn('✓ Form submitted successfully to Formspark:', {
+      response: formsparkResult.substring(0, 100),
+    })
+
     // Success!
-    console.warn('✓ Form submitted successfully to Formspark')
     return new Response(
       JSON.stringify({
         success: true,
