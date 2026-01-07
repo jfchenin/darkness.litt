@@ -158,16 +158,18 @@ export const POST: APIRoute = async ({ request }) => {
     })
 
     // Prepare data for Formspark (exclude _botpoison fields)
-    const formsparkData = {
-      fullName: body.fullName,
+    // IMPORTANT: email MUST be first field for Formspark to process correctly
+    const formsparkData: Record<string, string | boolean> = {
       email: body.email,
+      fullName: body.fullName,
       message: body.message || '',
       consent: body.consent,
       newsletterConsent: body.newsletterConsent || false,
-      // Add note if submitted without bot protection
-      ...(body._botpoison === 'SERVICE_UNAVAILABLE' && {
-        _note: 'Submitted without bot protection (service unavailable)',
-      }),
+    }
+
+    // Add note if submitted without bot protection (after email)
+    if (body._botpoison === 'SERVICE_UNAVAILABLE') {
+      formsparkData._note = 'Submitted without bot protection (service unavailable)'
     }
 
     // Submit to Formspark using form-encoded data
