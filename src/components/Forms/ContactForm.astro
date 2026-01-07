@@ -1,13 +1,11 @@
 ---
 import { themeConfig } from '@/config'
-const FORMSPARK_FORM_ID =
-	import.meta.env.PUBLIC_FORMSPARK_FORM_ID || "https://submit-form.com/echo";
 
 const { highlight } = themeConfig.color.light
 ---
 
 <div class="max-w-full mx-left rounded-lg p-6">
-  <form id="contact-form" action={FORMSPARK_FORM_ID} novalidate style={`--highlight-color: ${highlight}`}>
+  <form id="contact-form" action="/api/contact" novalidate style={`--highlight-color: ${highlight}`}>
     <div class="mb-4">
       <label for="full-name" class="block font-form mb-2">
         Nom <span class="text-warning">*</span>
@@ -91,6 +89,24 @@ const { highlight } = themeConfig.color.light
         Envoyer
       </button>
     </div>
+
+    <div
+      id="form-error"
+      class="hidden rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 mt-4"
+      role="alert"
+    >
+      <p class="font-semibold">⚠ Une erreur est survenue</p>
+      <p class="text-sm" id="error-message">Veuillez réessayer plus tard.</p>
+    </div>
+
+    <div
+      id="form-success"
+      class="hidden rounded-lg border border-green-200 bg-green-50 p-4 text-green-800 mt-4"
+      role="alert"
+    >
+      <p class="font-semibold">✓ Message envoyé avec succès</p>
+      <p class="text-sm">Nous vous répondrons dans les plus brefs délais.</p>
+    </div>
   </form>
 </div>
 
@@ -135,3 +151,172 @@ const { highlight } = themeConfig.color.light
     cursor: not-allowed;
   }
 </style>
+
+<script>
+import { getBotpoisonSolution } from "@/utils/botpoisonUtils";
+
+const form = document.getElementById('contact-form') as HTMLFormElement;
+const formError = document.getElementById('form-error') as HTMLDivElement;
+const errorMessage = document.getElementById('error-message') as HTMLParagraphElement;
+const formSuccess = document.getElementById('form-success') as HTMLDivElement;
+const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+// Validation helper functions
+function validateEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function showError(fieldId: string, message: string) {
+  const errorSpan = form.querySelector(`[data-error="${fieldId}"]`) as HTMLSpanElement;
+  if (errorSpan) {
+    errorSpan.textContent = message;
+    errorSpan.classList.remove('hidden');
+  }
+}
+
+function hideError(fieldId: string) {
+  const errorSpan = form.querySelector(`[data-error="${fieldId}"]`) as HTMLSpanElement;
+  if (errorSpan) {
+    errorSpan.classList.add('hidden');
+  }
+}
+
+function hideAllErrors() {
+  const errorSpans = form.querySelectorAll('[data-error]');
+  errorSpans.forEach(span => span.classList.add('hidden'));
+}
+
+function showFormError(message: string) {
+  errorMessage.textContent = message;
+  formError.classList.remove('hidden');
+  formSuccess.classList.add('hidden');
+}
+
+function showFormSuccess() {
+  formSuccess.classList.remove('hidden');
+  formError.classList.add('hidden');
+}
+
+function hideFormMessages() {
+  formError.classList.add('hidden');
+  formSuccess.classList.add('hidden');
+}
+
+function validateForm(): boolean {
+  hideAllErrors();
+  hideFormMessages();
+  let isValid = true;
+
+  // Validate full name
+  const fullName = (form.querySelector('#full-name') as HTMLInputElement).value.trim();
+  if (!fullName) {
+    showError('full-name', 'Le nom est requis');
+    isValid = false;
+  }
+
+  // Validate email
+  const email = (form.querySelector('#email') as HTMLInputElement).value.trim();
+  if (!email) {
+    showError('email', "L'email est requis");
+    isValid = false;
+  } else if (!validateEmail(email)) {
+    showError('email', "L'email n'est pas valide");
+    isValid = false;
+  }
+
+  // Validate consent
+  const consent = (form.querySelector('#consent') as HTMLInputElement).checked;
+  if (!consent) {
+    showError('consent', 'Vous devez accepter la conservation de vos données');
+    isValid = false;
+  }
+
+  return isValid;
+}
+
+// Handle form submission
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // Validate form
+  if (!validateForm()) {
+    return;
+  }
+
+  // Disable submit button and show loading state
+  submitButton.disabled = true;
+  const originalText = submitButton.textContent;
+  submitButton.textContent = 'Envoi en cours...';
+
+  try {
+    // Get Botpoison solution
+    const solution = await getBotpoisonSolution();
+
+    // Prepare form data
+    const formData = new FormData(form);
+    const data: Record<string, any> = {
+      _botpoison: solution,
+    };
+
+    formData.forEach((value, key) => {
+      if (key === 'consent' || key === 'newsletterConsent') {
+        data[key] = value === 'on';
+      } else {
+        data[key] = value;
+      }
+    });
+
+    // Submit form
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+
+      if (import.meta.env.DEV) {
+        console.error('API Error:', {
+          status: response.status,
+          error: errorData
+        });
+      }
+
+      throw new Error(
+        errorData.error || `HTTP error! status: ${response.status}`
+      );
+    }
+
+    // Show success message and reset form
+    showFormSuccess();
+    form.reset();
+
+  } catch (error) {
+    console.error('Form submission error:', error);
+    showFormError(
+      error instanceof Error && error.message.includes('Bot protection')
+        ? 'Erreur de vérification de sécurité. Veuillez réessayer.'
+        : 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.'
+    );
+  } finally {
+    // Re-enable submit button
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
+});
+
+// Add real-time validation for email
+form.querySelector('#email')?.addEventListener('blur', (e) => {
+  const email = (e.target as HTMLInputElement).value.trim();
+  if (email && !validateEmail(email)) {
+    showError('email', "L'email n'est pas valide");
+  } else {
+    hideError('email');
+  }
+});
+</script>

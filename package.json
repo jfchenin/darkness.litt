@@ -14,13 +14,16 @@
     "new-post": "tsx scripts/new-post.ts",
     "apply-lqip": "tsx scripts/apply-lqip.ts",
     "format-posts": "tsx scripts/format-posts.ts",
-    "update-theme": "tsx scripts/update-theme.ts"
+    "update-theme": "tsx scripts/update-theme.ts",
+    "check-env": "node scripts/check-env.cjs",
+    "test-botpoison": "node scripts/test-botpoison.cjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/partytown": "^2.1.4",
     "@astrojs/sitemap": "^3.6.0",
+    "@botpoison/browser": "^0.1.30",
     "@fontsource-variable/bricolage-grotesque": "^5.2.10",
     "@fontsource-variable/inter": "^5.2.8",
     "@waline/client": "^3.8.0",
