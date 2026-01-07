@@ -17,6 +17,7 @@ interface Translation {
   legalNotices: string
   privacyPolicy: string
   toc: string
+  footnotes: string
 }
 
 export const ui: Record<Language, Translation> = {
@@ -37,5 +38,6 @@ export const ui: Record<Language, Translation> = {
     legalNotices: 'Mentions légales',
     privacyPolicy: 'Politique de confidentialité',
     toc: 'Table des matières',
+    footnotes: 'Notes de bas de page',
   },
 }

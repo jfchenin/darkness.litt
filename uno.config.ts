@@ -38,12 +38,15 @@ export default defineConfig({
       important: 'oklch(49.6% 0.265 301.924 / 0.8)', // purple-700
       warning: 'oklch(55.5% 0.163 48.998 / 0.8)', // amber-700
       caution: 'oklch(50.5% 0.213 27.518 / 0.8)', // red-700
+      focus: 'oklch(0.90 0.14 103 / 0.6)',
     },
     fontFamily: {
       title: ['BricolageGrotesque', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
-      navbar: ['Inter-Italic', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+      navbar: ['Inter-Italic', 'ui-sans', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
       time: ['BricolageGrotesque', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
-      serif: ['Inter', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+      serif: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      form: ['Inter', 'ui-sans-serif', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      focus: 'oklch(0.90 0.14 103 / 0.6)',
     },
   },
   rules: [

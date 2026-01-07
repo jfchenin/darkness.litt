@@ -82,3 +82,7 @@ html.dark .code-copy-button.copied {
 .code-copy-button.copied .icon-check {
   --at-apply: 'op-100';
 }
+
+::placeholder {
+  --at-apply: 'italic font-light';
+}

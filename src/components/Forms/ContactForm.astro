@@ -1,0 +1,137 @@
+---
+import { themeConfig } from '@/config'
+const FORMSPARK_FORM_ID =
+	import.meta.env.PUBLIC_FORMSPARK_FORM_ID || "https://submit-form.com/echo";
+
+const { highlight } = themeConfig.color.light
+---
+
+<div class="max-w-full mx-left rounded-lg p-6">
+  <form id="contact-form" action={FORMSPARK_FORM_ID} novalidate style={`--highlight-color: ${highlight}`}>
+    <div class="mb-4">
+      <label for="full-name" class="block font-form mb-2">
+        Nom <span class="text-warning">*</span>
+      </label>
+      <input
+        class="w-full py-2 pr-3 border-0 border-b-1 bg-transparent focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed form-input"
+        id="full-name"
+        type="text"
+        name="fullName"
+        placeholder="Char René"
+        required
+      />
+      <span class="text-warning text-sm mt-1 hidden" data-error="full-name"></span>
+    </div>
+
+    <div class="mb-4">
+      <label for="email" class="block font-form mb-2">
+        E-mail <span class="text-warning">*</span>
+      </label>
+      <input
+        class="w-full py-2 pr-3 border-0 border-b-1 bg-transparent focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed form-input"
+        id="email"
+        type="email"
+        name="email"
+        placeholder="rchar@poesie.fr"
+        required
+      />
+      <span class="text-warning text-sm mt-1 hidden" data-error="email"></span>
+    </div>
+
+    <div class="mb-4">
+      <label for="message" class="block font-form mb-2">
+        Message
+      </label>
+      <textarea
+        class="w-full py-2 pr-3 border-0 border-b-1 bg-transparent focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed resize-none form-input"
+        id="message"
+        name="message"
+        rows="4"
+        placeholder="Écrivez-moi"
+      ></textarea>
+      <span class="text-warning text-sm mt-1 hidden" data-error="message"></span>
+    </div>
+
+    <div class="mb-4">
+      <label for="newsletter-consent" class="flex items-center gap-2 cursor-pointer border-0 pb-3">
+        <input
+          class="form-checkbox"
+          id="newsletter-consent"
+          type="checkbox"
+          name="newsletterConsent"
+        />
+        <span class="font-form text-xs align-text-bottom">
+          Je souhaite recevoir la newsletter
+        </span>
+      </label>
+      <span class="text-warning text-sm mt-1 hidden" data-error="newsletter-consent"></span>
+    </div>
+
+    <div class="mb-4">
+      <label for="consent" class="flex items-center gap-2 cursor-pointer border-0 pb-3">
+        <input
+          class="form-checkbox"
+          id="consent"
+          type="checkbox"
+          name="consent"
+          required
+        />
+        <span class="font-form text-xs align-text-bottom">
+          J'accepte que mes données soient conservées pour traiter ma demande <span class="text-warning">*</span>
+        </span>
+      </label>
+      <span class="text-warning text-sm mt-1 hidden" data-error="consent"></span>
+    </div>
+
+    <div class="mb-4">
+      <button
+        type="submit"
+        class="font-italic font-bold highlight-hover pt-2 pb-.2 px-1 after:bottom-0.35em border-0 bg-transparent text-left font-form focus:outline-none transition-colors"
+      >
+        Envoyer
+      </button>
+    </div>
+  </form>
+</div>
+
+<style>
+  /* Form inputs focus state */
+  .form-input:focus {
+    border-color: var(--highlight-color);
+  }
+
+  /* Checkbox styling */
+  .form-checkbox {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid currentColor;
+    border-radius: 0;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+  }
+
+  .form-checkbox:hover:not(:disabled) {
+    border-color: var(--highlight-color);
+  }
+
+  .form-checkbox:checked {
+    background-color: var(--highlight-color);
+    border-color: var(--highlight-color);
+    background-image: url("../../assets/icons/copy-check.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 76%;
+  }
+
+  .form-checkbox:focus-visible {
+    outline: 2px solid var(--highlight-color);
+    outline-offset: 2px;
+  }
+
+  .form-checkbox:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>

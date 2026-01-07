@@ -13,6 +13,7 @@ import remarkMath from 'remark-math'
 import UnoCSS from 'unocss/astro'
 import { base, defaultLocale, themeConfig } from './src/config'
 import { langMap } from './src/i18n/config'
+import { ui } from './src/i18n/ui'
 import { rehypeCodeCopyButton } from './src/plugins/rehype-code-copy-button.mjs'
 import { rehypeExternalLinks } from './src/plugins/rehype-external-links.mjs'
 import { rehypeHeadingAnchor } from './src/plugins/rehype-heading-anchor.mjs'
@@ -87,6 +88,10 @@ export default defineConfig({
       rehypeExternalLinks,
       rehypeCodeCopyButton,
     ],
+    remarkRehype: {
+      footnoteLabel: ui[defaultLocale].footnotes,
+      footnoteBackLabel: 'Retour au contenu',
+    },
     syntaxHighlight: {
       type: 'shiki',
       excludeLangs: ['mermaid'],
