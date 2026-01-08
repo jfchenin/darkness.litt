@@ -22,12 +22,27 @@ interface ContactFormData {
   newsletterConsent?: boolean
   _botpoison: string
   _botpoison_error?: string
+  _honeypot?: string
 }
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     // Parse request body
     const body = await request.json() as ContactFormData
+
+    // Check honeypot field (spam trap)
+    if (body._honeypot) {
+      console.warn('Honeypot triggered - likely spam bot')
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid submission',
+        }),
+        {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      )
+    }
 
     // Validate required fields
     if (!body.fullName || !body.email || !body.consent) {
@@ -165,6 +180,7 @@ export const POST: APIRoute = async ({ request }) => {
       message: body.message || '',
       consent: body.consent,
       newsletterConsent: body.newsletterConsent || false,
+      _gotcha: '', // Honeypot field for Formspark spam protection
     }
 
     // Add note if submitted without bot protection (after email)
@@ -217,8 +233,14 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const formsparkResult = await formsparkResponse.text()
-    console.warn('✓ Form submitted successfully to Formspark:', {
-      response: formsparkResult.substring(0, 100),
+    console.warn('✓ Form submitted successfully to Formspark')
+    console.warn('Formspark full response:', {
+      statusCode: formsparkResponse.status,
+      headers: {
+        'content-type': formsparkResponse.headers.get('content-type'),
+        'x-formspark-submission-id': formsparkResponse.headers.get('x-formspark-submission-id'),
+      },
+      body: formsparkResult.substring(0, 500),
     })
 
     // Success!
