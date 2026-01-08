@@ -1,8 +1,8 @@
 ---
+import ContactLayout from '@/components/Contact/Contact.astro'
 import { allLocales } from '@/config'
 import { getLangRouteParam } from '@/i18n/lang'
 import Layout from '@/layouts/Layout.astro'
-import ContactLayout from "@/components/Contact/Contact.astro";
 
 export async function getStaticPaths() {
   return allLocales.map(lang => ({
@@ -15,6 +15,6 @@ export async function getStaticPaths() {
   <div class="heti prose">
     <div class="uno-decorative-line"></div>
     <h1 class="mb-10\.5">Contact</h1>
-    <ContactLayout/>
+    <ContactLayout />
   </div>
 </Layout>

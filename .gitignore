@@ -3,6 +3,9 @@ dist/
 .output/
 .astro/
 
+# content submodule
+src/content/
+
 # dependencies
 node_modules/
 

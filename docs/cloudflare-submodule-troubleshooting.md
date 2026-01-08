@@ -469,6 +469,6 @@ git push
 
 ---
 
-**Last Updated:** 2025-01  
-**Cloudflare Pages Version:** v2  
+**Last Updated:** 2025-01
+**Cloudflare Pages Version:** v2
 **Git Version:** 2.x+

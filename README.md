@@ -1,4 +1,4 @@
-# darkness.litt 
+# darkness.litt
 
 **Tailored version of [Retypeset](https://github.com/radishzzz/astro-theme-retypeset) for the personal use of [JFrançois Chénin](https://www.thebookedition.com/fr/2506_jfrancois-chenin)**
 
@@ -7,7 +7,7 @@
 
 [README en français](assets/docs/README.fr.md)
 
-darkness.litt is a fork of Retypeset, a static blog theme based on the [Astro](https://astro.build/) framework. 
+darkness.litt is a fork of Retypeset, a static blog theme based on the [Astro](https://astro.build/) framework.
 The source code of this site, derived from the [Retypeset](https://github.com/radishzzz/astro-theme-retypeset) theme under MIT license, includes substantial modifications.
 
 ### Check out the blog
@@ -33,7 +33,6 @@ The source code of this site, derived from the [Retypeset](https://github.com/ra
 - Added a `TopButton.astro` component
 - Added the `@astrojs/cloudflare` adapter and created a Wrangler configuration file
 - Converted the `./src/content` directory into a Git submodule, [darkness.litt-content](https://github.com/jfchenin/darkness.litt-content)
-
 
 ### Performance
 
@@ -65,7 +64,7 @@ The source code of this site, derived from the [Retypeset](https://github.com/ra
    # Start the development server
    pnpm dev
    ```
- 
+
 ### Credits
 
 #### Astro blog theme

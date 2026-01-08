@@ -1015,6 +1015,6 @@ wrangler dev
 
 ---
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.0  
+**Last Updated:** 2025-01-XX
+**Version:** 1.0
 **Author:** DrknssCheninFR Team

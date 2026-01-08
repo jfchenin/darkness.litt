@@ -30,14 +30,15 @@ The implementation now follows a **graceful degradation** pattern:
 ```typescript
 // Try to get Botpoison solution with graceful fallback
 try {
-  const solution = await getBotpoisonSolution();
-  data._botpoison = solution;
-  console.log('✓ Botpoison verification successful');
-} catch (error) {
+  const solution = await getBotpoisonSolution()
+  data._botpoison = solution
+  console.log('✓ Botpoison verification successful')
+}
+catch (error) {
   // Graceful fallback - allow submission without Botpoison
-  console.warn('⚠️ Botpoison unavailable, submitting without bot protection:', error);
-  data._botpoison = 'SERVICE_UNAVAILABLE';
-  data._botpoison_error = error instanceof Error ? error.message : 'Unknown error';
+  console.warn('⚠️ Botpoison unavailable, submitting without bot protection:', error)
+  data._botpoison = 'SERVICE_UNAVAILABLE'
+  data._botpoison_error = error instanceof Error ? error.message : 'Unknown error'
   // Continue with submission - don't block users
 }
 ```
@@ -123,32 +124,33 @@ else {
 ```typescript
 async function solveChallenge(payload: any, signature: string): Promise<string> {
   const { nonce, difficulty } = payload
-  
+
   let solution = 0
   const encoder = new TextEncoder()
-  
+
   while (true) {
     const data = encoder.encode(`${nonce}${solution}`)
     const hashBuffer = await crypto.subtle.digest('SHA-256', data)
     const hashArray = new Uint8Array(hashBuffer)
-    
+
     // Check if hash meets difficulty requirement
     let leadingZeros = 0
     for (const byte of hashArray) {
       if (byte === 0) {
         leadingZeros += 8
-      } else {
+      }
+      else {
         leadingZeros += Math.clz32(byte) - 24
         break
       }
     }
-    
+
     if (leadingZeros >= difficulty) {
       return JSON.stringify({ payload: { ...payload, solution }, signature })
     }
-    
+
     solution++
-    
+
     // Safety limit to prevent infinite loops
     if (solution > 10000000) {
       throw new Error('Challenge solving timeout')
@@ -242,7 +244,7 @@ Submissions without bot protection include:
    ```typescript
    // In botpoisonUtils.ts
    export async function getBotpoisonSolution(): Promise<string> {
-     throw new Error('Simulated failure'); // Add this line
+     throw new Error('Simulated failure') // Add this line
    }
    ```
 
@@ -355,7 +357,7 @@ PUBLIC_FORMSPARK_FORM_ID=https://submit-form.com/your_id
 
 **Cause**: Botpoison API endpoint is consistently failing
 
-**Solution**: 
+**Solution**:
 1. Check Botpoison service status
 2. Verify PUBLIC_BOTPOISON_PUBLIC_KEY is correct
 3. Test API directly: `curl -X POST https://api.botpoison.com/challenge -H "Content-Type: application/json" -d '{"publicKey":"pk_your_key"}'`

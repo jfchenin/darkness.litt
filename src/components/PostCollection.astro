@@ -4,36 +4,36 @@ import { getLangFromPath } from '@/i18n/lang'
 import { getLocalizedPath } from '@/i18n/path'
 
 export interface Props {
-  collection: "darkness" | "emileMoselly";
+  collection: 'darkness' | 'emileMoselly'
 }
 
-const { collection } = Astro.props;
+const { collection } = Astro.props
 
 const collectionTitles = {
-  darkness: "Darkness",
-  emileMoselly: "Emile Moselly",
-} as const;
+  darkness: 'Darkness',
+  emileMoselly: 'Emile Moselly',
+} as const
 
 const collectionColors = {
   darkness: themeConfig.color.light.highlights.darkness,
   emileMoselly: themeConfig.color.light.highlights.emileMoselly,
-} as const;
+} as const
 
 const collectionUrls = {
-  darkness: "/darkness",
-  emileMoselly: "/emile-moselly",
-} as const;
+  darkness: '/darkness',
+  emileMoselly: '/emile-moselly',
+} as const
 
-const currentLang = getLangFromPath(Astro.url.pathname);
-const collectionTitle = collectionTitles[collection];
-const highlightColor = collectionColors[collection];
+const currentLang = getLangFromPath(Astro.url.pathname)
+const collectionTitle = collectionTitles[collection]
+const highlightColor = collectionColors[collection]
 const collectionUrl = getLocalizedPath(collectionUrls[collection], currentLang);
 ---
 {
   collectionTitle && (
     <a href={collectionUrl}>
       <span
-        class="after:bottom-0.2em font-semibold highlight-static post-collection lg:ml-1.75 mb-0 font-title"
+        class="highlight-static post-collection mb-0 font-semibold font-title after:bottom-0.2em lg:ml-1.75"
         style={`--highlight-color: ${highlightColor}`}
       >
         {collectionTitle}

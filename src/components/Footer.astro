@@ -5,7 +5,7 @@ import { getLocalizedPath } from '@/i18n/path'
 
 const { author } = themeConfig.site
 const { links, legals, startYear } = themeConfig.footer
-const  { highlight } = themeConfig.color.light
+const { highlight } = themeConfig.color.light
 
 const currentYear = new Date().getFullYear()
 const year = Number(startYear) === currentYear
@@ -93,7 +93,7 @@ const legalLinks = legals.map(({ name, url }) => {
   <p>
   {legalLinks.map((link, index) => (
     <>
-      <a class="text-2.5 highlight-hover py-0.8 transition-colors after:bottom-0.5em hover:c-primary" style={`--highlight-color: ${highlight}`} {...link}>{link.name}</a>
+      <a class="highlight-hover py-0.8 text-2.5 transition-colors after:bottom-0.5em hover:c-primary" style={`--highlight-color: ${highlight}`} {...link}>{link.name}</a>
       {index < legalLinks.length - 1 && '/'}
     </>
   ))}

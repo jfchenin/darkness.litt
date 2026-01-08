@@ -1,55 +1,55 @@
 ---
-import type { darknessPost, emileMoselyPost } from "@/types";
-import PostList from "@/components/PostList.astro";
-import { allLocales } from "@/config";
-import { getLangFromLocale, getLangRouteParam } from "@/i18n/lang";
-import Layout from "@/layouts/Layout.astro";
+import type { darknessPost, emileMoselyPost } from '@/types'
+import PostList from '@/components/PostList.astro'
+import { allLocales } from '@/config'
+import { getLangFromLocale, getLangRouteParam } from '@/i18n/lang'
+import Layout from '@/layouts/Layout.astro'
 import {
   getDarknessPostsByYear,
   getPinnedDarknessPosts,
-} from "@/utils/darkness";
+} from '@/utils/darkness'
 import {
   getEmileMosellyPostsByYear,
   getPinnedEmileMosellyPosts,
-} from "@/utils/emileMoselly";
+} from '@/utils/emileMoselly'
 
 export async function getStaticPaths() {
-  return allLocales.map((lang) => ({
+  return allLocales.map(lang => ({
     params: { lang: getLangRouteParam(lang) },
-  }));
+  }))
 }
 
-const currentLang = getLangFromLocale(Astro.currentLocale);
+const currentLang = getLangFromLocale(Astro.currentLocale)
 
-const pinnedDarknessPosts = await getPinnedDarknessPosts(currentLang);
-const pinnedEmileMosellyPosts = await getPinnedEmileMosellyPosts(currentLang);
-const pinnedPosts: (darknessPost | emileMoselyPost)[] = [...pinnedDarknessPosts, ...pinnedEmileMosellyPosts];
+const pinnedDarknessPosts = await getPinnedDarknessPosts(currentLang)
+const pinnedEmileMosellyPosts = await getPinnedEmileMosellyPosts(currentLang)
+const pinnedPosts: (darknessPost | emileMoselyPost)[] = [...pinnedDarknessPosts, ...pinnedEmileMosellyPosts]
 
-const darknessPostsByYear = await getDarknessPostsByYear(currentLang);
-const emileMosellyPostsByYear = await getEmileMosellyPostsByYear(currentLang);
+const darknessPostsByYear = await getDarknessPostsByYear(currentLang)
+const emileMosellyPostsByYear = await getEmileMosellyPostsByYear(currentLang)
 
 // Combine posts by year from both collections
-const postsByYear = new Map<number, (darknessPost | emileMoselyPost)[]>();
+const postsByYear = new Map<number, (darknessPost | emileMoselyPost)[]>()
 
 // Add darkness posts
 for (const [year, posts] of darknessPostsByYear.entries()) {
   if (!postsByYear.has(year)) {
-    postsByYear.set(year, []);
+    postsByYear.set(year, [])
   }
-  postsByYear.get(year)!.push(...posts);
+  postsByYear.get(year)!.push(...posts)
 }
 
 // Add Emile Moselly posts
 for (const [year, posts] of emileMosellyPostsByYear.entries()) {
   if (!postsByYear.has(year)) {
-    postsByYear.set(year, []);
+    postsByYear.set(year, [])
   }
-  postsByYear.get(year)!.push(...posts);
+  postsByYear.get(year)!.push(...posts)
 }
 
 // Sort posts within each year by date (most recent first)
 for (const [, posts] of postsByYear.entries()) {
-  posts.sort((a: darknessPost | emileMoselyPost, b: darknessPost | emileMoselyPost) => b.data.published.getTime() - a.data.published.getTime());
+  posts.sort((a: darknessPost | emileMoselyPost, b: darknessPost | emileMoselyPost) => b.data.published.getTime() - a.data.published.getTime())
 }
 
 // Sort years in descending order
@@ -69,7 +69,7 @@ const sortedYears = Array.from(postsByYear.keys()).sort((a: number, b: number) =
 
   <!-- Posts by Year -->
   {
-    sortedYears.map((year) => (
+    sortedYears.map(year => (
       <section class="mb-7.5">
         <div class="uno-decorative-line" />
         <PostList posts={postsByYear.get(year)!} lang={currentLang} />

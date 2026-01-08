@@ -23,7 +23,7 @@ const currentUI = ui[currentLang as keyof typeof ui] ?? {}
 const lang = currentLang === defaultLocale ? 'fr' : `${currentLang}/`
 
 // Site Configuration
-const { title, subtitle, description, i18nTitle, author, faviconSvg, faviconPng96, faviconPng, faviconIco, webManifest, appleTouchIcon  } = themeConfig.site
+const { title, subtitle, description, i18nTitle, author, faviconSvg, faviconPng96, faviconPng, faviconIco, webManifest, appleTouchIcon } = themeConfig.site
 const { mode: defaultMode, light: { background: lightMode }, dark: { background: darkMode } } = themeConfig.color
 const { katex: katexEnabled, reduceMotion } = themeConfig.global
 const { verification = {}, twitterID = '', googleAnalyticsID = '', umamiAnalyticsID = '', apiflashKey = '' } = themeConfig.seo ?? {}

@@ -15,38 +15,16 @@ import PoisonBrowser from '@botpoison/browser'
  * @throws {Error} If challenge generation fails
  */
 export async function getBotpoisonSolution(): Promise<string> {
-  try {
-    const publicKey = import.meta.env.PUBLIC_BOTPOISON_PUBLIC_KEY
+  const publicKey = import.meta.env.PUBLIC_BOTPOISON_PUBLIC_KEY
 
-    if (!publicKey) {
-      console.error('PUBLIC_BOTPOISON_PUBLIC_KEY not configured')
-      throw new Error('Bot protection not configured')
-    }
-
-    // Initialize Botpoison with public key
-    const botpoison = new PoisonBrowser({
-      publicKey,
-    })
-
-    // Generate and solve challenge using official library
-    // This handles everything: challenge generation, solving, and formatting
-    const { solution } = await botpoison.challenge()
-
-    return solution
+  if (!publicKey) {
+    throw new Error('Bot protection not configured')
   }
-  catch (error) {
-    console.error('Failed to generate Botpoison solution:', error)
 
-    // Log additional details for debugging
-    if (error instanceof Error) {
-      console.error('Error details:', {
-        message: error.message,
-        name: error.name,
-      })
-    }
+  const botpoison = new PoisonBrowser({ publicKey })
+  const { solution } = await botpoison.challenge()
 
-    throw new Error('Bot protection challenge failed')
-  }
+  return solution
 }
 
 /**

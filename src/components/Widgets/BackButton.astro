@@ -45,7 +45,8 @@ function handleBackButtonClick(e: MouseEvent) {
 // Fix button position after animation
 function fixButtonPosition() {
   const button = document.getElementById('back-button')
-  if (!button || window.innerWidth < 1024) return
+  if (!button || window.innerWidth < 1024)
+    return
 
   const rect = button.getBoundingClientRect()
   button.style.position = 'fixed'
@@ -61,7 +62,8 @@ function initBackButton() {
   // Add click listener
   document.addEventListener('click', handleBackButtonClick)
 
-  if (!button) return
+  if (!button)
+    return
 
   // Fix position immediately on first load (solves the reload issue)
   fixButtonPosition()
@@ -74,7 +76,8 @@ function initBackButton() {
 if (document.readyState === 'loading') {
   // DOM not ready yet, wait for it
   document.addEventListener('DOMContentLoaded', initBackButton)
-} else {
+}
+else {
   // DOM already ready
   initBackButton()
 }
@@ -85,7 +88,8 @@ document.addEventListener('astro:page-load', initBackButton)
 // Handle window resize
 window.addEventListener('resize', () => {
   const button = document.getElementById('back-button')
-  if (!button) return
+  if (!button)
+    return
 
   button.style.position = ''
   button.style.left = ''

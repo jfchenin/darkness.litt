@@ -92,7 +92,7 @@ const { highlight } = themeConfig.color.light
 
     <div
       id="form-error"
-      class="hidden rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 mt-4"
+      class="hidden border border-red-200 bg-red-50 p-4 text-warning mt-4"
       role="alert"
     >
       <p class="font-semibold">⚠ Une erreur est survenue</p>
@@ -101,7 +101,7 @@ const { highlight } = themeConfig.color.light
 
     <div
       id="form-success"
-      class="hidden rounded-lg border border-green-200 bg-green-50 p-4 text-green-800 mt-4"
+      class="hidden border border-green-200 bg-green-50 p-4 text-tip mt-4"
       role="alert"
     >
       <p class="font-semibold">✓ Message envoyé avec succès</p>
@@ -266,13 +266,10 @@ form.addEventListener('submit', async (e) => {
     try {
       const solution = await getBotpoisonSolution();
       data._botpoison = solution;
-      console.log('✓ Botpoison verification successful');
     } catch (error) {
       // Graceful fallback - allow submission without Botpoison
-      console.warn('⚠️ Botpoison unavailable, submitting without bot protection:', error);
       data._botpoison = 'SERVICE_UNAVAILABLE';
       data._botpoison_error = error instanceof Error ? error.message : 'Unknown error';
-      // Continue with submission - don't block users
     }
 
     // Submit form
@@ -287,14 +284,6 @@ form.addEventListener('submit', async (e) => {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-
-      if (import.meta.env.DEV) {
-        console.error('API Error:', {
-          status: response.status,
-          error: errorData
-        });
-      }
-
       throw new Error(
         errorData.error || `HTTP error! status: ${response.status}`
       );
@@ -304,8 +293,7 @@ form.addEventListener('submit', async (e) => {
     showFormSuccess();
     form.reset();
 
-  } catch (error) {
-    console.error('Form submission error:', error);
+  } catch {
     showFormError(
       'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.'
     );

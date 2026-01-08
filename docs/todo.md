@@ -1,4 +1,3 @@
-
 - make contact page
 - SEO
 
