@@ -2,9 +2,6 @@
 
 **Tailored version of [Retypeset](https://github.com/radishzzz/astro-theme-retypeset) for the personal use of [JFrançois Chénin](https://www.thebookedition.com/fr/2506_jfrancois-chenin)**
 
-![Cover Image](assets/images/v1/retypeset-en-desktop.webp)
-![Cover Image](assets/images/v1/retypeset-en-mobile.webp)
-
 [README en français](assets/docs/README.fr.md)
 
 darkness.litt is a fork of Retypeset, a static blog theme based on the [Astro](https://astro.build/) framework.
