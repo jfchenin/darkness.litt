@@ -50,10 +50,10 @@ export const themeConfig: ThemeConfig = {
         home: 'oklch(0.90 0.14 103 / 0.6)',
         darkness: 'oklch(0.68 0.06 105 / 0.45)',
         emileMoselly: 'oklch(0.76 0.04 169 / 0.5)',
-        tags: 'oklch(0.80 0.04 266 / 0.6)',
-        about: 'oklch(0.76 0.04 359 / 0.5)',
+        tags: 'oklch(0.56 0.10 120 / 0.6)',
+        about: 'oklch(0.80 0.04 256 / 0.6)',
         blogRoll: 'oklch(0.82 0.04 284 / 0.6)',
-        contact: 'oklch(0.80 0.04 256 / 0.6)',
+        contact: 'oklch(0.76 0.04 359 / 0.5)',
       },
     },
     dark: {
@@ -69,10 +69,10 @@ export const themeConfig: ThemeConfig = {
         home: 'oklch(0.90 0.14 103 / 0.6)',
         darkness: 'oklch(0.68 0.06 105 / 0.45)',
         emileMoselly: 'oklch(0.76 0.04 169 / 0.5)',
-        tags: 'oklch(0.80 0.04 266 / 0.6)',
-        about: 'oklch(0.76 0.04 359 / 0.5)',
+        tags: 'oklch(0.56 0.10 120 / 0.6)',
+        about: 'oklch(0.80 0.04 256 / 0.6)',
         blogRoll: 'oklch(0.82 0.04 284 / 0.6)',
-        contact: 'oklch(0.80 0.04 256 / 0.6)',
+        contact: 'oklch(0.76 0.04 359 / 0.5)',
       },
     },
   },
@@ -188,10 +188,10 @@ export const themeConfig: ThemeConfig = {
         name: 'Blog d\'images',
         url: 'https://darkness.coexpro.com/',
       },
-      {
-        name: 'Email',
-        url: 'mailto:jfrançois@chenin.fr',
-      },
+      // {
+      //   name: 'Email',
+      //   url: 'mailto:jfrançois@chenin.fr',
+      // },
       {
         name: 'RSS',
         url: '/atom.xml', // or /rss.xml

@@ -1,0 +1,3 @@
+- SEO
+- unsubscribe page
+- finir page newsletter

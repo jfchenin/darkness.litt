@@ -1,87 +1,92 @@
-# Retypeset
+# darkness.litt
 
-![Cover Image](../images/v1/retypeset-en-desktop.webp)
-![Cover Image](../images/v1/retypeset-en-mobile.webp)
+Version adaptée de Retypeset pour l'usage personnel de JFrançois Chénin
 
-Retypeset est un thème de blog statique basé sur le framework [Astro](https://astro.build/). Inspiré par [Typography](https://astro-theme-typography.vercel.app/), Retypeset établit une nouvelle norme visuelle et réimagine la mise en page de toutes les pages, créant une expérience de lecture rappelant les livres imprimés, faisant revivre la beauté de la typographie. Des détails à chaque regard, de l'élégance dans chaque espace.
+## README en français
 
-## Démo
+**darkness.litt** est une version modifiée de Retypeset, un thème de blog statique basé sur le framework Astro. Le code source de ce site, dérivé du thème Retypeset sous licence MIT, comprend des modifications substantielles.
 
-- [Retypeset](https://retypeset.radishzz.cc/en/)
-- [Retipografía](https://retypeset.radishzz.cc/es/)
-- [Переверстка](https://retypeset.radishzz.cc/ru/)
-- [重新编排](https://retypeset.radishzz.cc/)
-- [重新編排](https://retypeset.radishzz.cc/zh-tw/)
-- [再組版](https://retypeset.radishzz.cc/ja/)
+**Découvrez le blog :** [darkness.chenin.fr](https://darkness.chenin.fr)
+
+---
 
 ## Fonctionnalités
 
-- Construit avec Astro et UnoCSS
-- Support pour SEO, Sitemap, OpenGraph, RSS, MDX, LaTeX, Mermaid et TOC
-- i18n support
-- Mode clair / sombre
-- Transitions de vue élégantes
-- Personnalisation riche du thème
-- Typographie optimisée
-- Design responsive
-- Système de commentaires
+- Toutes les fonctionnalités de Retypeset
 
-## Performance
+---
 
-<br>
+## Modifications apportées
+
+- Renommage du site en **darkness.litt**
+- Suppression du support i18n
+- Suppression des polices inutilisées : EarlySummer-VF-Split, NotoSansSC (Bold et Regular), STIX (VF et Italic VF), Snell (Black et Bold)
+- Ajout de nouvelles polices : `@fontsource-variable/inter`, `@fontsource-variable/bricolage-grotesque`, NotoSans (Bold et Regular)
+- Création de deux sections d'articles distinctes : « Darkness » et « Émile Moselly »
+- Restructuration de la page d'accueil et du système de tags pour supporter les deux collections
+- Ajout de la propriété `author` au schéma partagé pour les deux collections
+- Ajout d'une page de contact, d'une blogroll, d'une page newsletter et des pages légales, incluant une politique de confidentialité et des mentions légales
+- Mise à jour des couleurs de survol CSS pour supporter des variantes supplémentaires
+- Mise à jour du comportement du composant `BackButton.astro`
+- Ajout du composant `TopButton.astro`
+- Ajout de l'adaptateur `@astrojs/cloudflare` et création d'un fichier de configuration Wrangler
+- Conversion du répertoire `./src/content` en sous-module Git, **darkness.litt-content**
+- Ajout d'un endpoint API de formulaire de contact sécurisé (compatible Cloudflare Workers) :
+  - Gestion des soumissions de formulaire avec Formspark et vérification Botpoison
+  - Automatisation des abonnements newsletter via webhook Formspark
+  - Gestion du consentement RGPD conforme
+
+---
+
+## Performances
+
 <p align="center">
-  <a href="https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fretypeset.radishzz.cc%2Fen%2F&form_factor=desktop">
-    <img width="710" alt="Retypeset Lighthouse Score" src="../images/retypeset-lighthouse-score.svg">
-  <a>
+  <a href="https://pagespeed.web.dev/analysis/https-darkness-chenin-fr/wame74hk2w?form_factor=desktop">
+    <img width="710" alt="Score Lighthouse Retypeset" src="assets/images/retypeset-lighthouse-score.svg">
+  </a>
 </p>
 
-## Démarrage
+---
 
-1. [Forkez](https://github.com/radishzzz/astro-theme-retypeset/fork) ce dépôt, ou utilisez ce modèle pour créer un nouveau dépôt.
+## Pour commencer
+
+1. Forkez ce dépôt, ou utilisez ce template pour créer un nouveau dépôt.
 2. Exécutez les commandes suivantes dans votre terminal :
+```bash
+# Cloner le dépôt
+git clone <repository-url>
 
-   ```bash
-   # Cloner le dépôt
-   git clone <url-du-dépôt>
+# Naviguer dans le répertoire du projet
+cd <repository-name>
 
-   # Naviguer vers le répertoire du projet
-   cd <nom-du-dépôt>
+# Installer pnpm globalement (si ce n'est pas déjà fait)
+npm install -g pnpm
 
-   # Installer pnpm globalement (si ce n'est pas déjà fait)
-   npm install -g pnpm
+# Installer les dépendances
+pnpm install
 
-   # Installer les dépendances
-   pnpm install
+# Démarrer le serveur de développement
+pnpm dev
+```
 
-   # Démarrer le serveur de développement
-   pnpm dev
-   ```
-
-3. Référez-vous au [Theme Guide](https://retypeset.radishzz.cc/en/posts/theme-guide/) pour personnaliser votre blog et créer de nouveaux articles.
-4. Référez-vous aux [Guides de déploiement Astro](https://docs.astro.build/fr/guides/deploy/) pour déployer votre blog sur Netlify, Vercel ou d'autres plateformes.
-
-&emsp;[![Deploy to Netlify](../images/deploy-netlify.svg)](https://app.netlify.com/start) [![Deploy to Vercel](../images/deploy-vercel.svg)](https://vercel.com/new)
-
-## Mises à jour
-
-Retypeset publie [de nouvelles fonctionnalités](https://github.com/radishzzz/astro-theme-retypeset/issues/18) de temps à autre. Exécutez simplement `pnpm update-theme` pour mettre à jour le thème. Si vous rencontrez des conflits de fusion, veuillez vous référer à [cette vidéo](https://youtu.be/lz5OuKzvadQ?si=sH_ALNgqxrYqNVQT) pour une résolution manuelle.
+---
 
 ## Crédits
 
-- [Typography](https://github.com/moeyua/astro-theme-typography)
-- [Fuwari](https://github.com/saicaca/fuwari)
-- [Redefine](https://github.com/EvanNotFound/hexo-theme-redefine)
-- [AstroPaper](https://github.com/satnaing/astro-paper)
-- [heti](https://github.com/sivan/heti)
-- [EarlySummerSerif](https://github.com/GuiWonder/EarlySummerSerif)
+### Thème Astro blog
 
-## Historique des étoiles
+- **Retypeset** — ©2025 Retypeset
 
-<p align="center">
-<a href="https://star-history.com/#radishzzz/astro-theme-retypeset&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=radishzzz/astro-theme-retypeset&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=radishzzz/astro-theme-retypeset&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=radishzzz/astro-theme-retypeset&type=Date" />
-  </picture>
-</p>
+### Polices
+
+- **Bricolage Grotesque** — ©2022 The Bricolage Grotesque Project Authors, sous SIL Open Font License
+- **Inter** — ©2016 The Inter Project Authors, sous SIL Open Font License 1.1
+
+### Services
+
+- **Formspark** — ©2018 Formspark
+- **Botpoison** — ©2021 Botpoison
+
+---
+
+**Dernière mise à jour :** 8 janvier 2026

@@ -24,12 +24,16 @@ The source code of this site, derived from the [Retypeset](https://github.com/ra
 - Created two distinct article sections: *“Darkness”* and *“Émile Moselly”*
 - Restructured the home page and tag system to support both collections
 - Added the `author` property to the shared schema for both collections
-- Added contact page, blogroll and legal pages, including a privacy policy, legal notice
+- Added contact page, blogroll, newsletter page and legal pages, including a privacy policy, legal notice
 - Updated CSS hover highlight colors to support additional variants
 - Updated the behavior of the `BackButton.astro` component
 - Added a `TopButton.astro` component
 - Added the `@astrojs/cloudflare` adapter and created a Wrangler configuration file
 - Converted the `./src/content` directory into a Git submodule, [darkness.litt-content](https://github.com/jfchenin/darkness.litt-content)
+- Added secure contact form API endpoint (Cloudflare Workers compatible) :
+  - Handles form submission with [Formspark](https://formspark.io/) and [Botpoison](https://botpoison.com/) verification
+  - Newsletter subscription automation via Formspark webhook
+  - RGPD-compliant consent management
 
 ### Performance
 
@@ -77,8 +81,6 @@ The source code of this site, derived from the [Retypeset](https://github.com/ra
 
 - **Formspark** — ©2018 [Formspark](https://github.com/formspark)
 - **Botpoison** — ©2021 [Botpoison](https://botpoison.com/)
-- **Newsletter** — [Service à préciser]
-
 ---
 
-***Last update : 28 December 2025***
+***Last update : 8th January 2026***
