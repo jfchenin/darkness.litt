@@ -4,69 +4,69 @@ import { themeConfig } from '@/config'
 const { highlight } = themeConfig.color.light
 ---
 
-<div class="max-w-full mx-left rounded-lg p-6">
+<div class="mx-left max-w-full rounded-lg p-6">
   <form id="contact-form" action="/api/contact/" novalidate style={`--highlight-color: ${highlight}`}>
     <div class="mb-4">
-      <label for="full-name" class="block font-form mb-2">
+      <label for="full-name" class="mb-2 block font-form">
         Nom <span class="text-warning">*</span>
       </label>
       <input
-        class="w-full py-2 pr-3 border-0 border-b-1 bg-transparent focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed form-input"
+        class="form-input w-full border-0 border-b-1 bg-transparent py-2 pr-3 transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
         id="full-name"
         type="text"
         name="fullName"
         placeholder="Char René"
         required
       />
-      <span class="text-warning text-sm mt-1 hidden" data-error="full-name"></span>
+      <span class="mt-1 hidden text-sm text-warning" data-error="full-name"></span>
     </div>
 
     <div class="mb-4">
-      <label for="email" class="block font-form mb-2">
+      <label for="email" class="mb-2 block font-form">
         E-mail <span class="text-warning">*</span>
       </label>
       <input
-        class="w-full py-2 pr-3 border-0 border-b-1 bg-transparent focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed form-input"
+        class="form-input w-full border-0 border-b-1 bg-transparent py-2 pr-3 transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
         id="email"
         type="email"
         name="email"
         placeholder="rchar@poesie.fr"
         required
       />
-      <span class="text-warning text-sm mt-1 hidden" data-error="email"></span>
+      <span class="mt-1 hidden text-sm text-warning" data-error="email"></span>
     </div>
 
     <div class="mb-4">
-      <label for="message" class="block font-form mb-2">
+      <label for="message" class="mb-2 block font-form">
         Message
       </label>
       <textarea
-        class="w-full py-2 pr-3 border-0 border-b-1 bg-transparent focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed resize-none form-input"
+        class="form-input w-full resize-none border-0 border-b-1 bg-transparent py-2 pr-3 transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
         id="message"
         name="message"
         rows="4"
         placeholder="Écrivez-moi"
       ></textarea>
-      <span class="text-warning text-sm mt-1 hidden" data-error="message"></span>
+      <span class="mt-1 hidden text-sm text-warning" data-error="message"></span>
     </div>
 
     <div class="mb-4">
-      <label for="newsletter-consent" class="flex items-center gap-2 cursor-pointer border-0 pb-3">
+      <label for="newsletter-consent" class="flex cursor-pointer items-center gap-2 border-0 pb-3">
         <input
           class="form-checkbox"
           id="newsletter-consent"
           type="checkbox"
           name="newsletterConsent"
         />
-        <span class="font-form text-xs align-text-bottom">
+        <span class="align-text-bottom text-xs font-form">
           Je souhaite recevoir la newsletter
         </span>
       </label>
-      <span class="text-warning text-sm mt-1 hidden" data-error="newsletter-consent"></span>
+      <span class="mt-1 hidden text-sm text-warning" data-error="newsletter-consent"></span>
     </div>
 
     <div class="mb-4">
-      <label for="consent" class="flex items-center gap-2 cursor-pointer border-0 pb-3">
+      <label for="consent" class="flex cursor-pointer items-center gap-2 border-0 pb-3">
         <input
           class="form-checkbox"
           id="consent"
@@ -74,17 +74,17 @@ const { highlight } = themeConfig.color.light
           name="consent"
           required
         />
-        <span class="font-form text-xs align-text-bottom">
+        <span class="align-text-bottom text-xs font-form">
           J'accepte que mes données soient conservées pour traiter ma demande <span class="text-warning">*</span>
         </span>
       </label>
-      <span class="text-warning text-sm mt-1 hidden" data-error="consent"></span>
+      <span class="mt-1 hidden text-sm text-warning" data-error="consent"></span>
     </div>
 
     <div class="mb-4">
       <button
         type="submit"
-        class="font-italic font-bold highlight-hover pt-2 pb-.2 px-1 after:bottom-0.35em border-0 bg-transparent text-left font-form focus:outline-none transition-colors"
+        class="highlight-hover border-0 bg-transparent px-1 pb-.2 pt-2 text-left font-bold font-form font-italic transition-colors after:bottom-0.35em focus:outline-none"
       >
         Envoyer
       </button>
@@ -92,7 +92,7 @@ const { highlight } = themeConfig.color.light
 
     <div
       id="form-error"
-      class="hidden border border-red-200 bg-red-50 p-4 text-warning mt-4"
+      class="mt-4 hidden border border-red-200 bg-red-50 p-4 text-warning"
       role="alert"
     >
       <p class="font-semibold">⚠ Une erreur est survenue</p>
@@ -101,7 +101,7 @@ const { highlight } = themeConfig.color.light
 
     <div
       id="form-success"
-      class="hidden border border-green-200 bg-green-50 p-4 text-tip mt-4"
+      class="mt-4 hidden border border-green-200 bg-green-50 p-4 text-tip"
       role="alert"
     >
       <p class="font-semibold">✓ Message envoyé avec succès</p>
@@ -153,123 +153,126 @@ const { highlight } = themeConfig.color.light
 </style>
 
 <script>
-import { getBotpoisonSolution } from "@/utils/botpoisonUtils";
+import { getBotpoisonSolution } from '@/utils/botpoisonUtils'
 
-const form = document.getElementById('contact-form') as HTMLFormElement;
-const formError = document.getElementById('form-error') as HTMLDivElement;
-const errorMessage = document.getElementById('error-message') as HTMLParagraphElement;
-const formSuccess = document.getElementById('form-success') as HTMLDivElement;
-const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+const form = document.getElementById('contact-form') as HTMLFormElement
+const formError = document.getElementById('form-error') as HTMLDivElement
+const errorMessage = document.getElementById('error-message') as HTMLParagraphElement
+const formSuccess = document.getElementById('form-success') as HTMLDivElement
+const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement
 
 // Validation helper functions
 function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  const emailRegex = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/
+  return emailRegex.test(email)
 }
 
 function showError(fieldId: string, message: string) {
-  const errorSpan = form.querySelector(`[data-error="${fieldId}"]`) as HTMLSpanElement;
+  const errorSpan = form.querySelector(`[data-error="${fieldId}"]`) as HTMLSpanElement
   if (errorSpan) {
-    errorSpan.textContent = message;
-    errorSpan.classList.remove('hidden');
+    errorSpan.textContent = message
+    errorSpan.classList.remove('hidden')
   }
 }
 
 function hideError(fieldId: string) {
-  const errorSpan = form.querySelector(`[data-error="${fieldId}"]`) as HTMLSpanElement;
+  const errorSpan = form.querySelector(`[data-error="${fieldId}"]`) as HTMLSpanElement
   if (errorSpan) {
-    errorSpan.classList.add('hidden');
+    errorSpan.classList.add('hidden')
   }
 }
 
 function hideAllErrors() {
-  const errorSpans = form.querySelectorAll('[data-error]');
-  errorSpans.forEach(span => span.classList.add('hidden'));
+  const errorSpans = form.querySelectorAll('[data-error]')
+  errorSpans.forEach(span => span.classList.add('hidden'))
 }
 
 function showFormError(message: string) {
-  errorMessage.textContent = message;
-  formError.classList.remove('hidden');
-  formSuccess.classList.add('hidden');
+  errorMessage.textContent = message
+  formError.classList.remove('hidden')
+  formSuccess.classList.add('hidden')
 }
 
 function showFormSuccess() {
-  formSuccess.classList.remove('hidden');
-  formError.classList.add('hidden');
+  formSuccess.classList.remove('hidden')
+  formError.classList.add('hidden')
 }
 
 function hideFormMessages() {
-  formError.classList.add('hidden');
-  formSuccess.classList.add('hidden');
+  formError.classList.add('hidden')
+  formSuccess.classList.add('hidden')
 }
 
 function validateForm(): boolean {
-  hideAllErrors();
-  hideFormMessages();
-  let isValid = true;
+  hideAllErrors()
+  hideFormMessages()
+  let isValid = true
 
   // Validate full name
-  const fullName = (form.querySelector('#full-name') as HTMLInputElement).value.trim();
+  const fullName = (form.querySelector('#full-name') as HTMLInputElement).value.trim()
   if (!fullName) {
-    showError('full-name', 'Le nom est requis');
-    isValid = false;
+    showError('full-name', 'Le nom est requis')
+    isValid = false
   }
 
   // Validate email
-  const email = (form.querySelector('#email') as HTMLInputElement).value.trim();
+  const email = (form.querySelector('#email') as HTMLInputElement).value.trim()
   if (!email) {
-    showError('email', "L'email est requis");
-    isValid = false;
-  } else if (!validateEmail(email)) {
-    showError('email', "L'email n'est pas valide");
-    isValid = false;
+    showError('email', 'L\'email est requis')
+    isValid = false
+  }
+  else if (!validateEmail(email)) {
+    showError('email', 'L\'email n\'est pas valide')
+    isValid = false
   }
 
   // Validate consent
-  const consent = (form.querySelector('#consent') as HTMLInputElement).checked;
+  const consent = (form.querySelector('#consent') as HTMLInputElement).checked
   if (!consent) {
-    showError('consent', 'Vous devez accepter la conservation de vos données');
-    isValid = false;
+    showError('consent', 'Vous devez accepter la conservation de vos données')
+    isValid = false
   }
 
-  return isValid;
+  return isValid
 }
 
 // Handle form submission
 form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+  e.preventDefault()
 
   // Validate form
   if (!validateForm()) {
-    return;
+    return
   }
 
   // Disable submit button and show loading state
-  submitButton.disabled = true;
-  const originalText = submitButton.textContent;
-  submitButton.textContent = 'Envoi en cours...';
+  submitButton.disabled = true
+  const originalText = submitButton.textContent
+  submitButton.textContent = 'Envoi en cours...'
 
   try {
     // Prepare form data
-    const formData = new FormData(form);
-    const data: Record<string, any> = {};
+    const formData = new FormData(form)
+    const data: Record<string, any> = {}
 
     formData.forEach((value, key) => {
       if (key === 'consent' || key === 'newsletterConsent') {
-        data[key] = value === 'on';
-      } else {
-        data[key] = value;
+        data[key] = value === 'on'
       }
-    });
+      else {
+        data[key] = value
+      }
+    })
 
     // Try to get Botpoison solution with graceful fallback
     try {
-      const solution = await getBotpoisonSolution();
-      data._botpoison = solution;
-    } catch (error) {
+      const solution = await getBotpoisonSolution()
+      data._botpoison = solution
+    }
+    catch (error) {
       // Graceful fallback - allow submission without Botpoison
-      data._botpoison = 'SERVICE_UNAVAILABLE';
-      data._botpoison_error = error instanceof Error ? error.message : 'Unknown error';
+      data._botpoison = 'SERVICE_UNAVAILABLE'
+      data._botpoison_error = error instanceof Error ? error.message : 'Unknown error'
     }
 
     // Submit form
@@ -280,37 +283,39 @@ form.addEventListener('submit', async (e) => {
         'Accept': 'application/json',
       },
       body: JSON.stringify(data),
-    });
+    })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      const errorData = await response.json().catch(() => ({}))
       throw new Error(
-        errorData.error || `HTTP error! status: ${response.status}`
-      );
+        errorData.error || `HTTP error! status: ${response.status}`,
+      )
     }
 
     // Show success message and reset form
-    showFormSuccess();
-    form.reset();
-
-  } catch {
-    showFormError(
-      'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.'
-    );
-  } finally {
-    // Re-enable submit button
-    submitButton.disabled = false;
-    submitButton.textContent = originalText;
+    showFormSuccess()
+    form.reset()
   }
-});
+  catch {
+    showFormError(
+      'Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.',
+    )
+  }
+  finally {
+    // Re-enable submit button
+    submitButton.disabled = false
+    submitButton.textContent = originalText
+  }
+})
 
 // Add real-time validation for email
 form.querySelector('#email')?.addEventListener('blur', (e) => {
-  const email = (e.target as HTMLInputElement).value.trim();
+  const email = (e.target as HTMLInputElement).value.trim()
   if (email && !validateEmail(email)) {
-    showError('email', "L'email n'est pas valide");
-  } else {
-    hideError('email');
+    showError('email', 'L\'email n\'est pas valide')
   }
-});
+  else {
+    hideError('email')
+  }
+})
 </script>
