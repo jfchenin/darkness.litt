@@ -154,7 +154,7 @@ Low effort, Medium or High severity.
 - [x] F002: remove `SERVICE_UNAVAILABLE` on the client and the server
 - [x] F003: return 503 when verify throws
 - [x] F004: move dispatch fields into `env:`
-- [ ] F005: delete the hardcoded apiflash URL
+- [x] F005: delete the hardcoded apiflash URL
 - [ ] F006: replace `description: '...'`
 - [x] F007: split `build` and `deploy`
 - [x] F008: delete `update-theme`

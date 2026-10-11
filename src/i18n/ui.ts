@@ -24,7 +24,7 @@ export const ui: Record<Language, Translation> = {
   fr: {
     title: 'Darkness',
     subtitle: 'La nuit au coin d\'une table',
-    description: '...',
+    description: 'Parler de la légèreté de l\'âme et des gravités du cœur.',
     home: 'Accueil',
     darkness: 'Darkness',
     emileMoselly: 'Emile Moselly',

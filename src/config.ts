@@ -173,10 +173,6 @@ export const themeConfig: ThemeConfig = {
       // user ID
       userID: '',
     },
-    // apiflash access key
-    // generate website screenshots for open graph images
-    // get your access key at: https://apiflash.com/
-    apiflashKey: '',
   },
   // SEO SETTINGS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END
 
