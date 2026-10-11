@@ -1,20 +1,30 @@
 /**
  * Formspark Webhook Endpoint
  * Receives form submissions from Formspark and adds contacts to Brevo
- * when newsletter consent is given
+ * when newsletter consent is given.
+ *
+ * Formspark cannot set custom headers on webhooks, so the shared secret
+ * is the `secret` query parameter on the webhook URL configured in Formspark.
  *
  * Flow:
  * 1. Contact form submits to /api/contact
  * 2. /api/contact verifies Botpoison and forwards to Formspark
- * 3. Formspark sends webhook to this endpoint
+ * 3. Formspark sends webhook to this endpoint with ?secret=
  * 4. If newsletterConsent = true, add contact to Brevo
  *
  * Compatible with Cloudflare Workers/Pages
  */
 
 import type { APIRoute } from 'astro'
+import { secretsMatch } from '@/utils/secretsMatch'
 
 export const prerender = false
+
+export interface WebhookEnv {
+  FORMSPARK_WEBHOOK_SECRET?: string
+  BREVO_API_KEY?: string
+  BREVO_LIST_ID?: string
+}
 
 interface FormsparkWebhookData {
   email: string
@@ -35,22 +45,51 @@ interface BrevoContactPayload {
   }
 }
 
-export const POST: APIRoute = async ({ request }) => {
-  try {
-    // Parse incoming Formspark webhook data
-    const formData = await request.json() as FormsparkWebhookData
+function json(body: Record<string, unknown>, status: number): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  })
+}
 
-    // Validate that we have at least an email
-    if (!formData.email) {
-      console.error('Webhook received without email')
-      return new Response(
-        JSON.stringify({ error: 'Invalid data: email required' }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+/** Handle a Formspark webhook POST after authenticating the query secret. */
+export async function handleFormsparkWebhook(
+  request: Request,
+  env: WebhookEnv,
+  fetchImpl: typeof fetch = fetch,
+): Promise<Response> {
+  const configuredSecret = env.FORMSPARK_WEBHOOK_SECRET
+  const providedSecret = new URL(request.url).searchParams.get('secret') ?? ''
+  if (!configuredSecret || !secretsMatch(providedSecret, configuredSecret)) {
+    if (!configuredSecret)
+      console.error('FORMSPARK_WEBHOOK_SECRET not configured')
+    else
+      console.error('Formspark webhook authentication failed')
+    return json({ error: 'Unauthorized' }, 401)
+  }
+
+  try {
+    let parsed: unknown
+    try {
+      parsed = await request.json()
     }
+    catch {
+      console.error('Formspark webhook payload invalid')
+      return json({ error: 'Invalid data' }, 400)
+    }
+
+    if (
+      typeof parsed !== 'object'
+      || parsed === null
+      || Array.isArray(parsed)
+      || typeof (parsed as FormsparkWebhookData).email !== 'string'
+      || !(parsed as FormsparkWebhookData).email
+    ) {
+      console.error('Formspark webhook payload invalid')
+      return json({ error: 'Invalid data' }, 400)
+    }
+
+    const formData = parsed as FormsparkWebhookData
 
     // Check if user consented to newsletter
     // Handle both boolean and string values from form submissions
@@ -60,41 +99,25 @@ export const POST: APIRoute = async ({ request }) => {
         || formData.newsletterConsent === 'on'
 
     if (!hasNewsletterConsent) {
-      // No newsletter consent, just acknowledge receipt
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: 'Webhook received, no newsletter subscription requested',
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+      return json({
+        success: true,
+        message: 'Webhook received, no newsletter subscription requested',
+      }, 200)
     }
 
-    // Newsletter consent given, add to Brevo
-    const brevoApiKey = import.meta.env.BREVO_API_KEY
+    const brevoApiKey = env.BREVO_API_KEY
     if (!brevoApiKey) {
       console.error('BREVO_API_KEY not configured')
-      return new Response(
-        JSON.stringify({
-          error: 'Brevo configuration missing',
-          received: true,
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+      return json({
+        error: 'Brevo configuration missing',
+        received: true,
+      }, 500)
     }
 
-    // Get Brevo list ID (default to 2, or configure via env var)
-    const brevoListId = import.meta.env.BREVO_LIST_ID
-      ? Number.parseInt(import.meta.env.BREVO_LIST_ID, 10)
+    const brevoListId = env.BREVO_LIST_ID
+      ? Number.parseInt(env.BREVO_LIST_ID, 10)
       : 6
 
-    // Prepare Brevo contact payload
     const brevoPayload: BrevoContactPayload = {
       email: formData.email,
       listIds: [brevoListId],
@@ -102,16 +125,13 @@ export const POST: APIRoute = async ({ request }) => {
       attributes: {},
     }
 
-    // Add first name if available
     if (formData.fullName) {
-      // Extract first name (before first space)
       const firstName = formData.fullName.split(' ')[0]
       brevoPayload.attributes.FIRSTNAME = firstName
     }
 
-    // Submit to Brevo
     try {
-      const brevoResponse = await fetch('https://api.brevo.com/v3/contacts', {
+      const brevoResponse = await fetchImpl('https://api.brevo.com/v3/contacts', {
         method: 'POST',
         headers: {
           'api-key': brevoApiKey,
@@ -122,74 +142,44 @@ export const POST: APIRoute = async ({ request }) => {
 
       if (!brevoResponse.ok) {
         const errorText = await brevoResponse.text()
-        console.error('Brevo API error:', brevoResponse.status, errorText)
+        console.error('Brevo API error')
 
-        // Check if contact already exists (204 or specific error)
         if (brevoResponse.status === 204 || errorText.includes('already exists')) {
-          console.warn('Contact already exists in Brevo:', formData.email)
-          return new Response(
-            JSON.stringify({
-              success: true,
-              message: 'Contact already subscribed to newsletter',
-            }),
-            {
-              status: 200,
-              headers: { 'Content-Type': 'application/json' },
-            },
-          )
+          console.warn('Contact already exists in Brevo')
+          return json({
+            success: true,
+            message: 'Contact already subscribed to newsletter',
+          }, 200)
         }
 
-        return new Response(
-          JSON.stringify({
-            error: 'Failed to add contact to newsletter',
-            details: errorText,
-          }),
-          {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-          },
-        )
+        return json({
+          error: 'Failed to add contact to newsletter',
+        }, 500)
       }
 
-      const brevoData = await brevoResponse.json()
+      const brevoData = await brevoResponse.json() as { id?: unknown }
 
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: 'Contact added to newsletter',
-          brevoId: brevoData.id,
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+      return json({
+        success: true,
+        message: 'Contact added to newsletter',
+        brevoId: brevoData.id,
+      }, 200)
     }
-    catch (brevoError) {
-      console.error('Brevo request failed:', brevoError)
-      return new Response(
-        JSON.stringify({
-          error: 'Failed to connect to newsletter service',
-          details: brevoError instanceof Error ? brevoError.message : 'Unknown error',
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+    catch {
+      console.error('Brevo request failed')
+      return json({
+        error: 'Failed to connect to newsletter service',
+      }, 500)
     }
   }
-  catch (error) {
-    console.error('Webhook processing error:', error)
-    return new Response(
-      JSON.stringify({
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      },
-    )
+  catch {
+    console.error('Webhook processing error')
+    return json({
+      error: 'Internal server error',
+    }, 500)
   }
+}
+
+export const POST: APIRoute = async ({ request }) => {
+  return handleFormsparkWebhook(request, import.meta.env)
 }

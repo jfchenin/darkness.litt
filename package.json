@@ -16,7 +16,8 @@
     "format-posts": "tsx scripts/format-posts.ts",
     "update-theme": "tsx scripts/update-theme.ts",
     "check-env": "node scripts/check-env.cjs",
-    "test-botpoison": "node scripts/test-botpoison.cjs"
+    "test-botpoison": "node scripts/test-botpoison.cjs",
+    "test": "tsx --test src/utils/secretsMatch.test.ts src/pages/api/formspark-webhook.test.ts src/pages/api/contact.test.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",

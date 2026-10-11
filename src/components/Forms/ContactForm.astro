@@ -264,16 +264,16 @@ form.addEventListener('submit', async (e) => {
       }
     })
 
-    // Try to get Botpoison solution with graceful fallback
+    let solution: string
     try {
-      const solution = await getBotpoisonSolution()
-      data._botpoison = solution
+      solution = await getBotpoisonSolution()
     }
-    catch (error) {
-      // Graceful fallback - allow submission without Botpoison
-      data._botpoison = 'SERVICE_UNAVAILABLE'
-      data._botpoison_error = error instanceof Error ? error.message : 'Unknown error'
+    catch {
+      console.error('Botpoison verification request failed')
+      showFormError('Une erreur est survenue lors de l\'envoi. Veuillez réessayer plus tard.')
+      return
     }
+    data._botpoison = solution
 
     // Submit form
     const response = await fetch(form.action, {

@@ -8,6 +8,11 @@ import type { APIRoute } from 'astro'
 
 export const prerender = false
 
+export interface ContactEnv {
+  BOTPOISON_SECRET_KEY?: string
+  PUBLIC_FORMSPARK_FORM_ID?: string
+}
+
 interface BotpoisonVerifyResponse {
   ok: boolean
   message?: string
@@ -20,106 +25,78 @@ interface ContactFormData {
   consent: boolean
   newsletterConsent?: boolean
   _botpoison: string
-  _botpoison_error?: string
   _honeypot?: string
 }
 
-export const POST: APIRoute = async ({ request }) => {
+function json(body: Record<string, unknown>, status: number): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  })
+}
+
+/** Handle a contact form POST after Botpoison verification. */
+export async function handleContactPost(
+  request: Request,
+  env: ContactEnv,
+  fetchImpl: typeof fetch = fetch,
+): Promise<Response> {
   try {
     const body = await request.json() as ContactFormData
 
     // Honeypot spam check
     if (body._honeypot) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid submission' }),
-        {
-          status: 403,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+      return json({ error: 'Invalid submission' }, 403)
     }
 
     // Validate required fields
     if (!body.fullName || !body.email || !body.consent) {
-      return new Response(
-        JSON.stringify({ error: 'Champs requis manquants' }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+      return json({ error: 'Champs requis manquants' }, 400)
     }
 
-    // Botpoison verification
-    if (body._botpoison === 'SERVICE_UNAVAILABLE') {
-      console.warn('Form submitted without Botpoison - service unavailable')
+    if (!body._botpoison) {
+      return json({ error: 'Vérification anti-bot manquante' }, 400)
     }
-    else if (!body._botpoison) {
-      return new Response(
-        JSON.stringify({ error: 'Vérification anti-bot manquante' }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+
+    const secretKey = env.BOTPOISON_SECRET_KEY
+
+    if (!secretKey) {
+      console.error('BOTPOISON_SECRET_KEY not configured')
+      return json({ error: 'Configuration serveur incorrecte' }, 500)
     }
-    else {
-      const secretKey = import.meta.env.BOTPOISON_SECRET_KEY
 
-      if (!secretKey) {
-        console.error('BOTPOISON_SECRET_KEY not configured')
-        return new Response(
-          JSON.stringify({ error: 'Configuration serveur incorrecte' }),
-          {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-          },
-        )
+    try {
+      const botpoisonResponse = await fetchImpl('https://api.botpoison.com/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          secretKey,
+          solution: body._botpoison,
+        }),
+      })
+
+      if (!botpoisonResponse.ok) {
+        console.error('Botpoison verification request failed')
+        return json({ error: 'Vérification anti-bot indisponible' }, 503)
       }
 
-      try {
-        const botpoisonResponse = await fetch('https://api.botpoison.com/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            secretKey,
-            solution: body._botpoison,
-          }),
-        })
+      const botpoisonData: BotpoisonVerifyResponse = await botpoisonResponse.json()
 
-        const botpoisonData: BotpoisonVerifyResponse = await botpoisonResponse.json()
-
-        if (!botpoisonData.ok) {
-          console.error('Botpoison verification failed:', botpoisonData.message)
-          return new Response(
-            JSON.stringify({
-              error: 'Vérification anti-bot échouée',
-              details: botpoisonData.message,
-            }),
-            {
-              status: 403,
-              headers: { 'Content-Type': 'application/json' },
-            },
-          )
-        }
+      if (!botpoisonData.ok) {
+        console.error('Botpoison verification failed')
+        return json({ error: 'Vérification anti-bot échouée' }, 403)
       }
-      catch (verifyError) {
-        console.error('Botpoison verification error:', verifyError)
-        console.warn('Allowing submission despite verification error')
-      }
+    }
+    catch {
+      console.error('Botpoison verification request failed')
+      return json({ error: 'Vérification anti-bot indisponible' }, 503)
     }
 
     // Submit to Formspark
-    const formsparkId = import.meta.env.PUBLIC_FORMSPARK_FORM_ID
+    const formsparkId = env.PUBLIC_FORMSPARK_FORM_ID
     if (!formsparkId) {
       console.error('PUBLIC_FORMSPARK_FORM_ID not configured')
-      return new Response(
-        JSON.stringify({ error: 'Configuration formulaire incorrecte' }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+      return json({ error: 'Configuration formulaire incorrecte' }, 500)
     }
 
     const formsparkData: Record<string, string | boolean> = {
@@ -131,16 +108,12 @@ export const POST: APIRoute = async ({ request }) => {
       _gotcha: '',
     }
 
-    if (body._botpoison === 'SERVICE_UNAVAILABLE') {
-      formsparkData._note = 'Submitted without bot protection (service unavailable)'
-    }
-
     const formParams = new URLSearchParams()
     for (const [key, value] of Object.entries(formsparkData)) {
       formParams.append(key, String(value))
     }
 
-    const formsparkResponse = await fetch(formsparkId, {
+    const formsparkResponse = await fetchImpl(formsparkId, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -151,42 +124,26 @@ export const POST: APIRoute = async ({ request }) => {
     })
 
     if (!formsparkResponse.ok) {
-      const errorText = await formsparkResponse.text()
-      console.error('Formspark submission failed:', formsparkResponse.status, errorText)
-      return new Response(
-        JSON.stringify({
-          error: 'Échec de l\'envoi du formulaire',
-          status: formsparkResponse.status,
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      )
+      console.error('Formspark submission failed')
+      return json({
+        error: 'Échec de l\'envoi du formulaire',
+        status: formsparkResponse.status,
+      }, 500)
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: 'Message envoyé avec succès',
-      }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      },
-    )
+    return json({
+      success: true,
+      message: 'Message envoyé avec succès',
+    }, 200)
   }
-  catch (error) {
-    console.error('Contact form API error:', error)
-    return new Response(
-      JSON.stringify({
-        error: 'Erreur serveur interne',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      },
-    )
+  catch {
+    console.error('Contact form request failed')
+    return json({
+      error: 'Erreur serveur interne',
+    }, 500)
   }
+}
+
+export const POST: APIRoute = async ({ request }) => {
+  return handleContactPost(request, import.meta.env)
 }
