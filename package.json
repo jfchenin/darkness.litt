@@ -6,7 +6,8 @@
   "repository": "https://github.com/radishzzz/astro-theme-retypeset",
   "scripts": {
     "dev": "astro check && astro dev",
-    "build": "git submodule update --init --recursive && astro check && astro build && pnpm apply-lqip && wrangler deploy",
+    "build": "git submodule update --init --recursive && astro check && astro build && pnpm apply-lqip",
+    "deploy": "pnpm build && wrangler deploy",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
@@ -14,7 +15,6 @@
     "new-post": "tsx scripts/new-post.ts",
     "apply-lqip": "tsx scripts/apply-lqip.ts",
     "format-posts": "tsx scripts/format-posts.ts",
-    "update-theme": "tsx scripts/update-theme.ts",
     "check-env": "node scripts/check-env.cjs",
     "test-botpoison": "node scripts/test-botpoison.cjs",
     "test": "tsx --test src/utils/secretsMatch.test.ts src/pages/api/formspark-webhook.test.ts src/pages/api/contact.test.ts"

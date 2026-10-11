@@ -156,8 +156,8 @@ Low effort, Medium or High severity.
 - [x] F004: move dispatch fields into `env:`
 - [ ] F005: delete the hardcoded apiflash URL
 - [ ] F006: replace `description: '...'`
-- [ ] F007: split `build` and `deploy`
-- [ ] F008: delete `update-theme`
+- [x] F007: split `build` and `deploy`
+- [x] F008: delete `update-theme`
 - [ ] F015: delete `_darkness-tags/` and `_emile-moselly-tags/`
 - [ ] F016: delete or retarget the legal page matchers
 - [ ] F017: delete `new-post` or point it at a real collection
