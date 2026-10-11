@@ -4,8 +4,7 @@ import TagList from '@/components/TagList.astro'
 import { allLocales } from '@/config'
 import { getLangFromLocale, getLangRouteParam } from '@/i18n/lang'
 import Layout from '@/layouts/Layout.astro'
-import { getPostsByTag as getDarknessPostsByTag } from '@/utils/darkness'
-import { getPostsByTag as getMosellyPostsByTag } from '@/utils/emileMoselly'
+import { getPostsByTag } from '@/utils/posts'
 import { getAllTags, getTagSupportedLangs } from '@/utils/tags'
 
 export async function getStaticPaths() {
@@ -25,8 +24,8 @@ interface Props {
 
 const { tag } = Astro.props
 const currentLang = getLangFromLocale(Astro.currentLocale)
-const darknessPosts = await getDarknessPostsByTag(tag, currentLang)
-const mosellyPosts = await getMosellyPostsByTag(tag, currentLang)
+const darknessPosts = await getPostsByTag('darkness', tag, currentLang)
+const mosellyPosts = await getPostsByTag('emileMoselly', tag, currentLang)
 const allTags = await getAllTags(currentLang)
 const supportedLangs = await getTagSupportedLangs(tag)
 ---

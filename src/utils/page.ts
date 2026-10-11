@@ -46,14 +46,6 @@ export function isEmileMosellyPage(path: string) {
   return matchPageType(path, 'emile-moselly')
 }
 
-export function isDarknessTagPage(path: string) {
-  return matchPageType(path, 'darkness-tags')
-}
-
-export function isEmileMosellyTagPage(path: string) {
-  return matchPageType(path, 'emile-moselly-tags')
-}
-
 export function isAboutPage(path: string) {
   return matchPageType(path, 'about')
 }
@@ -82,8 +74,6 @@ export function getPageInfo(path: string) {
   const isTag = isTagPage(path)
   const isDarkness = isDarknessPage(path)
   const isEmileMoselly = isEmileMosellyPage(path)
-  const isDarknessTag = isDarknessTagPage(path)
-  const isEmileMosellyTag = isEmileMosellyTagPage(path)
   const isAbout = isAboutPage(path)
   const isBlogRoll = isBlogRollPage(path)
   const isContact = isContactPage(path)
@@ -95,8 +85,6 @@ export function getPageInfo(path: string) {
     isHome,
     isDarkness,
     isEmileMoselly,
-    isDarknessTag,
-    isEmileMosellyTag,
     // isPost,
     isTag,
     isAbout,

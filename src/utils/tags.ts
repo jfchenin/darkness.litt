@@ -1,21 +1,18 @@
+// src/utils/tags.ts
 import type { Language } from '@/i18n/config'
 import { allLocales } from '@/config'
 import { memoize } from '@/utils/cache'
-import { getPostsByTag as getDarknessPostsByTag, getAllTags as getDarknessTags } from '@/utils/darkness'
-import { getPostsByTag as getMosellyPostsByTag, getAllTags as getMosellyTags } from '@/utils/emileMoselly'
+import { getAllTags as getCollectionTags, getPostsByTag } from '@/utils/posts'
 
 type Locale = typeof allLocales[number]
 
 /**
- * Get all tags from both darkness and emileMoselly collections
- *
- * @param lang The language code to filter by
- * @returns Array of unique tags from both collections
+ * Get all tags from both darkness and emileMoselly collections.
  */
 async function _getAllTags(lang: Language): Promise<string[]> {
   const [darknessTags, mosellyTags] = await Promise.all([
-    getDarknessTags(lang),
-    getMosellyTags(lang),
+    getCollectionTags('darkness', lang),
+    getCollectionTags('emileMoselly', lang),
   ])
   return [...new Set([...darknessTags, ...mosellyTags])]
 }
@@ -23,18 +20,15 @@ async function _getAllTags(lang: Language): Promise<string[]> {
 export const getAllTags = memoize(_getAllTags)
 
 /**
- * Get supported languages for a specific tag across both collections
- *
- * @param tag The tag name to check language support for
- * @returns Array of language codes that support the specified tag
+ * Get supported languages for a specific tag across both collections.
  */
 async function _getTagSupportedLangs(tag: string): Promise<Locale[]> {
   const langsSet = new Set<Locale>()
 
   await Promise.all(allLocales.map(async (lang) => {
     const [darknessPosts, mosellyPosts] = await Promise.all([
-      getDarknessPostsByTag(tag, lang),
-      getMosellyPostsByTag(tag, lang),
+      getPostsByTag('darkness', tag, lang),
+      getPostsByTag('emileMoselly', tag, lang),
     ])
     if (darknessPosts.length > 0 || mosellyPosts.length > 0) {
       langsSet.add(lang)

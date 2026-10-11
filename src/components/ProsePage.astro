@@ -1,0 +1,28 @@
+---
+// src/components/ProsePage.astro
+import { getCollection, render } from 'astro:content'
+import { getLangFromLocale } from '@/i18n/lang'
+import Layout from '@/layouts/Layout.astro'
+
+type ProseCollection = 'about' | 'blogroll' | 'legalNotices' | 'privacyPolicy'
+
+interface Props {
+  collection: ProseCollection
+}
+
+const { collection } = Astro.props
+const currentLang = getLangFromLocale(Astro.currentLocale)
+const entries = await getCollection(collection)
+const entry = entries.find(item => item.data.lang === currentLang)
+  ?? entries.find(item => item.data.lang === '')
+const { Content } = entry ? await render(entry) : { Content: null }
+---
+
+<Layout>
+  <!-- Decorative Line -->
+  <div class="uno-decorative-line" />
+  <!-- Prose Page Content -->
+  <div class="heti">
+    {Content && <Content />}
+  </div>
+</Layout>

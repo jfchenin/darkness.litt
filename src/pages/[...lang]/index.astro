@@ -1,17 +1,10 @@
 ---
-import type { darknessPost, emileMoselyPost } from '@/types'
+import type { darknessPost, emileMosellyPost } from '@/types'
 import PostList from '@/components/PostList.astro'
 import { allLocales } from '@/config'
 import { getLangFromLocale, getLangRouteParam } from '@/i18n/lang'
 import Layout from '@/layouts/Layout.astro'
-import {
-  getDarknessPostsByYear,
-  getPinnedDarknessPosts,
-} from '@/utils/darkness'
-import {
-  getEmileMosellyPostsByYear,
-  getPinnedEmileMosellyPosts,
-} from '@/utils/emileMoselly'
+import { getPinnedPosts, getPostsByYear } from '@/utils/posts'
 
 export async function getStaticPaths() {
   return allLocales.map(lang => ({
@@ -21,15 +14,15 @@ export async function getStaticPaths() {
 
 const currentLang = getLangFromLocale(Astro.currentLocale)
 
-const pinnedDarknessPosts = await getPinnedDarknessPosts(currentLang)
-const pinnedEmileMosellyPosts = await getPinnedEmileMosellyPosts(currentLang)
-const pinnedPosts: (darknessPost | emileMoselyPost)[] = [...pinnedDarknessPosts, ...pinnedEmileMosellyPosts]
+const pinnedDarknessPosts = await getPinnedPosts('darkness', currentLang)
+const pinnedEmileMosellyPosts = await getPinnedPosts('emileMoselly', currentLang)
+const pinnedPosts: (darknessPost | emileMosellyPost)[] = [...pinnedDarknessPosts, ...pinnedEmileMosellyPosts]
 
-const darknessPostsByYear = await getDarknessPostsByYear(currentLang)
-const emileMosellyPostsByYear = await getEmileMosellyPostsByYear(currentLang)
+const darknessPostsByYear = await getPostsByYear('darkness', currentLang)
+const emileMosellyPostsByYear = await getPostsByYear('emileMoselly', currentLang)
 
 // Combine posts by year from both collections
-const postsByYear = new Map<number, (darknessPost | emileMoselyPost)[]>()
+const postsByYear = new Map<number, (darknessPost | emileMosellyPost)[]>()
 
 // Add darkness posts
 for (const [year, posts] of darknessPostsByYear.entries()) {
@@ -49,7 +42,7 @@ for (const [year, posts] of emileMosellyPostsByYear.entries()) {
 
 // Sort posts within each year by date (most recent first)
 for (const [, posts] of postsByYear.entries()) {
-  posts.sort((a: darknessPost | emileMoselyPost, b: darknessPost | emileMoselyPost) => b.data.published.getTime() - a.data.published.getTime())
+  posts.sort((a: darknessPost | emileMosellyPost, b: darknessPost | emileMosellyPost) => b.data.published.getTime() - a.data.published.getTime())
 }
 
 // Sort years in descending order

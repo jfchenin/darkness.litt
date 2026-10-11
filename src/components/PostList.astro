@@ -1,6 +1,6 @@
 ---
 import type { Language } from '@/i18n/config'
-import type { darknessPost, emileMoselyPost } from '@/types'
+import type { darknessPost, emileMosellyPost } from '@/types'
 import PostCollection from '@/components/PostCollection.astro'
 // import PinIcon from '@/assets/icons/pin-icon.svg'
 import PostDate from '@/components/PostDate.astro'
@@ -9,7 +9,7 @@ import { getPostDescription } from '@/utils/description'
 import { isHomePage } from '@/utils/page'
 
 export interface Props {
-  posts: (darknessPost | emileMoselyPost)[]
+  posts: (darknessPost | emileMosellyPost)[]
   lang: Language
   // pinned?: boolean
 }

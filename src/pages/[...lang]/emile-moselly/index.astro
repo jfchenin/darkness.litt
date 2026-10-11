@@ -4,7 +4,7 @@ import PostList from '@/components/PostList.astro'
 import { allLocales } from '@/config'
 import { getLangFromLocale, getLangRouteParam } from '@/i18n/lang'
 import Layout from '@/layouts/Layout.astro'
-import { getEmileMosellyPostsByYear, getPinnedEmileMosellyPosts } from '@/utils/emileMoselly'
+import { getPinnedPosts, getPostsByYear } from '@/utils/posts'
 
 export async function getStaticPaths() {
   return allLocales.map(lang => ({
@@ -14,8 +14,8 @@ export async function getStaticPaths() {
 
 const currentLang = getLangFromLocale(Astro.currentLocale)
 
-const pinnedEmileMosellyPosts = await getPinnedEmileMosellyPosts(currentLang)
-const emileMosellyPostsByYear = await getEmileMosellyPostsByYear(currentLang)
+const pinnedEmileMosellyPosts = await getPinnedPosts('emileMoselly', currentLang)
+const emileMosellyPostsByYear = await getPostsByYear('emileMoselly', currentLang)
 ---
 
 <Layout>

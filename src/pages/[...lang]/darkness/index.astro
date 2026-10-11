@@ -3,7 +3,7 @@ import PostList from '@/components/PostList.astro'
 import { allLocales } from '@/config'
 import { getLangFromLocale, getLangRouteParam } from '@/i18n/lang'
 import Layout from '@/layouts/Layout.astro'
-import { getDarknessPostsByYear, getPinnedDarknessPosts } from '@/utils/darkness'
+import { getPinnedPosts, getPostsByYear } from '@/utils/posts'
 
 export async function getStaticPaths() {
   return allLocales.map(lang => ({
@@ -13,8 +13,8 @@ export async function getStaticPaths() {
 
 const currentLang = getLangFromLocale(Astro.currentLocale)
 
-const pinnedDarknessPosts = await getPinnedDarknessPosts(currentLang)
-const darknessPostsByYear = await getDarknessPostsByYear(currentLang)
+const pinnedDarknessPosts = await getPinnedPosts('darkness', currentLang)
+const darknessPostsByYear = await getPostsByYear('darkness', currentLang)
 ---
 
 <Layout>

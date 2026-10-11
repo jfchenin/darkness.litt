@@ -7,7 +7,7 @@ export type darknessPost = CollectionEntry<'darkness'> & {
   }
 }
 
-export type emileMoselyPost = CollectionEntry<'emileMoselly'> & {
+export type emileMosellyPost = CollectionEntry<'emileMoselly'> & {
   remarkPluginFrontmatter: {
     minutes: number
   }

@@ -167,7 +167,11 @@ Low effort, Medium or High severity.
 - [x] F007: split `build` and `deploy`
 - [x] F008: delete `update-theme`
 - [x] F010: sharp `^0.35.5` (+ pnpm override); Astro 7 deferred
-- [ ] F015: delete `_darkness-tags/` and `_emile-moselly-tags/`
+- [x] F011: one `src/utils/posts.ts` for darkness + emileMoselly
+- [x] F012: shared `CollectionPost` + `collectionSlugPaths`
+- [x] F014: shared `ProsePage` for about/blogroll/legal/privacy
+- [x] F015: delete `_darkness-tags/` and `_emile-moselly-tags/`
+- [x] F036: rename `emileMoselyPost` → `emileMosellyPost`
 - [ ] F016: delete or retarget the legal page matchers
 - [ ] F017: delete `new-post` or point it at a real collection
 - [ ] F018: remove `check-env` and `test-botpoison` until the files exist
