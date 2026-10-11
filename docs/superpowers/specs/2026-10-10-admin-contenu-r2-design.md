@@ -9,7 +9,7 @@
 
 ## 1. Objet
 
-Remplacer l’édition locale du markdown (éditeur sur machine + `git push` du dépôt de contenu) par une interface d’administration web. Les originaux d’images quittent le git et sont stockés sur Cloudflare R2. Le propriétaire publie un article en cliquant sur Publier, sans git ni terminal.
+Remplacer l’édition locale du markdown (éditeur sur machine + `git push` du dépôt de contenu) par une interface d’administration web. Les originaux d’images quittent le git et sont stockés sur Cloudflare R2. Le propriétaire met un article en ligne en cliquant sur **Enregistrer**, sans git ni terminal.
 
 ---
 
@@ -22,6 +22,7 @@ Remplacer l’édition locale du markdown (éditeur sur machine + `git push` du 
 | Contenu | Sous-module git `src/content` → dépôt `jfchenin/darkness.litt-content` |
 | Schémas | `src/content.config.ts` : collections Darkness, Émile Moselly, À propos, blogroll, mentions légales, politique de confidentialité |
 | Édition | Markdown local, puis push manuel du dépôt de contenu |
+| Publication | Push sur `main` de `darkness.litt-content` → `notify-main.yml` envoie `repository_dispatch` `content-updated` → `update-content.yml` (dépôt du site) aligne le sous-module et pousse `master` → déploiement |
 | Images | Fichiers `./_images/*.jpg` dans le dépôt de contenu, sans Git LFS |
 | Volume (copie locale au moment du cadrage) | 95 JPEG, ~15 Mo ; le dépôt de contenu était 45 commits derrière `origin/main` — à recompter au démarrage sur `origin/main` |
 | Build | Astro + Sharp optimisent les images locales ; LQIP via `scripts/apply-lqip.ts` ; RSS via `src/utils/feed.ts` |
@@ -34,8 +35,8 @@ Remplacer l’édition locale du markdown (éditeur sur machine + `git push` du 
 1. Ouvrir `admin.darkness.chenin.fr`, s’authentifier avec son adresse email (Cloudflare Access).
 2. Écrire ou modifier un texte dans l’interface.
 3. Uploader une image dans la médiathèque, l’insérer dans l’article via le composant image.
-4. Cliquer **Enregistrer** pour stocker le texte dans le git de contenu (sans mettre le site à jour).
-5. Cliquer **Publier** pour reconstruire et mettre en ligne le site, sans git ni terminal.
+4. Cliquer **Enregistrer** pour écrire le texte sur `main` du dépôt de contenu. Ce push publie le site par la chaîne déjà en place, sans git ni terminal.
+5. Marquer un texte **brouillon** avant l’enregistrement s’il ne doit pas apparaître sur le site.
 
 ---
 
@@ -60,11 +61,15 @@ admin.darkness.chenin.fr          ◄── Worker admin (isolé du site public)
     │                 lecture publique :
     │                 media.darkness.chenin.fr
     ▼
-Git de contenu (darkness.litt-content)
+Git de contenu (darkness.litt-content, branche main)
     │
-    │  Publier → action GitHub sur le dépôt du site
+    │  push → notify-main.yml
+    │         repository_dispatch content-updated
     ▼
-Build Astro (sous-module aligné, Sharp, LQIP)
+update-content.yml (dépôt du site)
+    │  aligne src/content, commit du pointeur, push master
+    ▼
+Build Astro (Sharp, LQIP) et déploiement
     │
     ▼
 darkness.chenin.fr                ◄── Worker public (inchangé dans son rôle)
@@ -75,7 +80,8 @@ darkness.chenin.fr                ◄── Worker public (inchangé dans son r�
 - L’admin n’est pas exposé sur le domaine public.
 - Le git de contenu reste la source des textes. R2 est la source des originaux d’images.
 - Le composant image et le rendu public vivent dans le même dépôt : même contrat.
-- **Enregistrer** n’est pas une mise en ligne. Seul **Publier** lance le build.
+- **Enregistrer** commit sur `main` du dépôt de contenu et lance la chaîne existante. C’est la mise en ligne.
+- Un texte pas prêt se marque brouillon avant l’enregistrement. Pas de bouton **Publier**. L’admin ne lance pas `workflow_dispatch`.
 
 ---
 
@@ -136,16 +142,17 @@ Le site rend la même figure qu’aujourd’hui (légende, orientation, zoom). L
 
 | Action | Effet |
 | --- | --- |
-| **Enregistrer** | Commit sur `main` du dépôt de contenu via l’API GitHub. Le site public n’est pas reconstruit. |
-| **Publier** | Envoie le SHA du contenu à une action GitHub du dépôt du site : alignement du sous-module, build Astro (téléchargement des originaux R2, Sharp, LQIP), déploiement du worker public, enregistrement du pointeur de sous-module. |
+| **Enregistrer** | Commit sur `main` du dépôt de contenu via l’API GitHub. Le push déclenche `notify-main.yml`, puis `update-content.yml` (alignement du sous-module, push de `master`), puis le build et le déploiement déjà branchés sur ce push. |
+
+`update-content.yml` ne lance pas le build Astro. Il avance le pointeur de sous-module. Le déploiement suit le push de `master`, comme aujourd’hui.
 
 ### Règles
 
 - Un seul éditeur. Pas de pull request.
-- Un brouillon (`draft: true`) est enregistré dans le git et, au prochain Publier, construit sans être affiché (comportement actuel du site).
-- Pas de barre de progression dans l’admin : confirmation que la publication est lancée ; le site bouge à la fin du build.
-- Si le build échoue, la version déjà en ligne reste.
-- Une **GitHub App** couvre les deux dépôts (contenu + site).
+- Un brouillon (`draft: true`) est enregistré dans le git et construit au même passage, sans être affiché (comportement actuel du site).
+- Pas de bouton **Publier**, pas de barre de progression. L’admin confirme que l’enregistrement a lancé la publication. Le site bouge à la fin du build.
+- Si le build échoue, la version déjà en ligne reste. Le commit de contenu est déjà sur `main` : une correction, puis un nouvel **Enregistrer**, relance la chaîne.
+- Une **GitHub App** écrit sur le dépôt de contenu (Keystatic). Les workflows de publication gardent leur jeton actuel (`MAIN_REPO_PAT`). L’admin n’appelle pas le dépôt du site.
 
 ---
 
@@ -192,9 +199,8 @@ Refus si :
 
 | Situation | Comportement |
 | --- | --- |
-| Échec d’enregistrement GitHub | Message dans l’admin ; pas de copie locale de secours |
-| Publier : l’action GitHub ne démarre pas | Échec affiché dans l’admin |
-| Build en échec | `darkness.chenin.fr` conserve la version précédente ; l’admin montre le résultat du dernier build |
+| Échec d’enregistrement GitHub | Message dans l’admin ; pas de copie locale de secours ; la chaîne de publication ne part pas |
+| Build en échec | `darkness.chenin.fr` conserve la version précédente. L’admin ne montre pas le résultat du build |
 | Image absente sur R2 | Le build échoue (pas de page publiée avec un trou) |
 | Admin inaccessible | Le site public n’est pas touché |
 
@@ -210,13 +216,13 @@ Prouver que Keystatic en mode GitHub tourne sur un Worker Cloudflare. Le site pu
 
 - Migration sur une copie : plus aucun `./_images/` dans les articles ; chaque JPEG présent sur R2.
 - Une page par cas de composant : légende affichée, légende masquée, paysage, portrait.
-- Un brouillon absent de la liste publique.
-- **Enregistrer** ne déploie pas ; **Publier** lance l’action GitHub.
+- Un brouillon enregistré reste absent de la liste publique après le déploiement lancé par cet enregistrement.
+- **Enregistrer** sur `main` du contenu lance `notify-main.yml`, puis `update-content.yml`.
 - Les URL fondées sur `abbrlink` répondent comme avant.
 - Le RSS contient l’URL d’image optimisée.
 - Une requête anonyme vers l’admin est refusée.
 
-Livrable complémentaire : un mode d’emploi court pour le propriétaire (ouvrir l’admin, écrire, uploader, enregistrer, publier).
+Livrable complémentaire : un mode d’emploi court pour le propriétaire (ouvrir l’admin, écrire, uploader, marquer brouillon si besoin, enregistrer).
 
 ---
 
@@ -230,9 +236,9 @@ Sans prix. Fourchette en jours, à affiner selon le corpus réel sur `origin/mai
 | 2 | Médiathèque R2, domaine `media`, liste, upload, insertion de la clé | 1,5 à 2 j |
 | 3 | Rendu public (Markdoc, composant image, Sharp, RSS, LQIP) | 2 à 2,5 j |
 | 4 | Migration des articles et des JPEG, relecture, retrait des `_images` du HEAD | 2 à 3 j |
-| 5 | Bouton Publier, action GitHub, sous-module, déploiement, statut du build dans l’admin | 1,5 à 2 j |
+| 5 | Vérifier que l’enregistrement Keystatic déclenche `notify-main.yml` puis `update-content.yml` ; confirmation dans l’admin | 0,5 à 1 j |
 | 6 | Essais listés et mode d’emploi court | 1 à 1,5 j |
-| | **Total** | **11 à 15 jours** |
+| | **Total** | **10 à 14 jours** |
 
 Si l’essai Keystatic sur Worker échoue, la charge des lots 2 à 6 n’est pas engagée tant qu’une nouvelle approche n’est pas validée.
 
@@ -243,7 +249,8 @@ Si l’essai Keystatic sur Worker échoue, la charge des lots 2 à 6 n’est pas
 - Prix / devis commercial chiffré en euros
 - Réécriture de l’historique git (purge des binaries dans le passé du dépôt de contenu)
 - Suppression de médias depuis l’admin
-- Barre de progression live du build
+- Barre de progression live du build, statut ou résultat du build dans l’admin
+- Bouton **Publier** distinct, enregistrement sans mise en ligne, `workflow_dispatch` lancé par l’admin
 - Plusieurs éditeurs / workflow de relecture
 - Environnement de prévisualisation séparé
 - SEO, newsletter, i18n (sujets déjà listés ailleurs, hors de cette intervention)
@@ -253,7 +260,7 @@ Si l’essai Keystatic sur Worker échoue, la charge des lots 2 à 6 n’est pas
 ## 12. À fournir par le propriétaire
 
 1. Accès au compte Cloudflare déjà utilisé pour `darkness.chenin.fr`.
-2. Droit de créer une GitHub App et de l’installer sur les deux dépôts (site + contenu).
+2. Droit de créer une GitHub App et de l’installer sur le dépôt de contenu. Le jeton déjà utilisé par `notify-main.yml` et `update-content.yml` reste en place.
 3. DNS :
    - `admin.darkness.chenin.fr` → worker admin
    - `media.darkness.chenin.fr` → lecture publique R2
@@ -265,7 +272,7 @@ Si l’essai Keystatic sur Worker échoue, la charge des lots 2 à 6 n’est pas
 
 Le chantier est réussi lorsque :
 
-1. Le propriétaire édite et publie un article depuis l’admin, sans git ni terminal.
+1. Le propriétaire édite un article depuis l’admin et le met en ligne par **Enregistrer**, sans git ni terminal.
 2. Aucune image d’article ne reste dans le HEAD du dépôt de contenu.
 3. Les pages publiques affichent des images optimisées, avec légendes et orientations correctes.
 4. Les URL existantes (`abbrlink`) restent valides.
