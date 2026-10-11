@@ -36,26 +36,25 @@ jobs:
           echo "Updated to commit: $NEW_COMMIT"
 
       - name: Commit and push changes
+        env:
+          DISPATCH_REPOSITORY: ${{ github.event.client_payload.repository }}
+          DISPATCH_SHA: ${{ github.event.client_payload.sha }}
+          DISPATCH_PUSHER: ${{ github.event.client_payload.pusher }}
+          DISPATCH_MESSAGE: ${{ github.event.client_payload.commit_message }}
         run: |
           git add src/content
-
-          # Check if there are changes to commit
           if git diff --staged --quiet; then
             echo "No changes to commit - submodule already up to date"
             exit 0
           fi
-
-          # Commit with detailed message
-          cat << EOF > commit_message.txt
-          chore: update content submodule
-
-          Triggered by: ${{ github.event.client_payload.repository }}
-          Content commit: ${{ github.event.client_payload.sha }}
-          Pushed by: ${{ github.event.client_payload.pusher }}
-          Original message: ${{ github.event.client_payload.commit_message }}
-          EOF
-
-          git commit -F commit_message.txt
+          {
+            printf '%s\n\n' 'chore: update content submodule'
+            printf 'Triggered by: %s\n' "$DISPATCH_REPOSITORY"
+            printf 'Content commit: %s\n' "$DISPATCH_SHA"
+            printf 'Pushed by: %s\n' "$DISPATCH_PUSHER"
+            printf 'Original message: %s\n' "$DISPATCH_MESSAGE"
+          } > /tmp/commit_message.txt
+          git commit -F /tmp/commit_message.txt
           git push origin master
 
       - name: Summary

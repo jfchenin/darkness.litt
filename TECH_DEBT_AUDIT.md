@@ -151,9 +151,9 @@ In `Head.astro`, delete both apiflash branches. For pages without a post, use on
 Low effort, Medium or High severity.
 
 - [ ] F001: webhook shared secret, generic errors
-- [ ] F002: remove `SERVICE_UNAVAILABLE` on the client and the server
-- [ ] F003: return 503 when verify throws
-- [ ] F004: move dispatch fields into `env:`
+- [x] F002: remove `SERVICE_UNAVAILABLE` on the client and the server
+- [x] F003: return 503 when verify throws
+- [x] F004: move dispatch fields into `env:`
 - [ ] F005: delete the hardcoded apiflash URL
 - [ ] F006: replace `description: '...'`
 - [ ] F007: split `build` and `deploy`
