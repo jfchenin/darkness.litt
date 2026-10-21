@@ -32,7 +32,6 @@ function getRoute() {
       )
 
       return OGImageRoute({
-        param: 'image',
         pages,
         getImageOptions: (_path, page) => ({
           title: page.title,

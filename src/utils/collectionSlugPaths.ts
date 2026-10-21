@@ -1,10 +1,11 @@
 // src/utils/collectionSlugPaths.ts
 import type { GetStaticPathsResult } from 'astro'
 import type { Language } from '@/i18n/config'
+import type { PostCollection } from '@/utils/posts'
 import { getCollection } from 'astro:content'
 import { allLocales } from '@/config'
 import { getLangRouteParam } from '@/i18n/lang'
-import { checkPostSlugDuplication, type PostCollection } from '@/utils/posts'
+import { checkPostSlugDuplication } from '@/utils/posts'
 
 /**
  * Build getStaticPaths entries for a post collection slug route.

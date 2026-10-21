@@ -81,7 +81,8 @@ export default defineConfig({
     ],
     rehypePlugins: [
       rehypeKatex,
-      [rehypeMermaid, { strategy: 'pre-mermaid' }],
+      // rehype-mermaid Plugin generics do not match Astro's RehypePlugins tuple
+      [rehypeMermaid as never, { strategy: 'pre-mermaid' }],
       rehypeSlug,
       rehypeHeadingAnchor,
       rehypeImageProcessor,
@@ -117,6 +118,8 @@ export default defineConfig({
     resolve: {
       alias: {
         'canvaskit-wasm/full': 'canvaskit-wasm/bin/full/canvaskit.js',
+        // Client build: core entry pulls langium/vscode-jsonrpc deep imports that Vite cannot resolve
+        'mermaid': 'mermaid/dist/mermaid.esm.min.mjs',
       },
     },
     ssr: {

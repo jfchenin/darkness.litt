@@ -20,8 +20,6 @@ Tooling actually run: `pnpm audit`, `npx knip`, `npx depcheck`, `npx madge --cir
 - `pnpm audit` reports 2 critical / 83 high. That is one Astro advisory counted on two paths, plus a pile of eslint, wrangler, and miniflare transitive issues. Do not treat the count as 83 site bugs. The advisory that touches this site's image pipeline is called out as F010.
 - The admin/R2 note in `docs/superpowers/specs/2026-10-10-admin-contenu-r2-design.md` will sit on this duplicated collection layer and on a remark pipeline the note wants to replace with Markdoc. Fix the twin modules before that work copies them a third time.
 
-
-
 ## Architectural mental model
 
 darkness.litt is a French, single-locale fork of the Retypeset Astro theme, deployed as a Cloudflare Worker (`wrangler.jsonc` route `darkness.chenin.fr/*`, adapter `@astrojs/cloudflare` with `imageService: 'compile'`). Pages are static. Two routes are not: `POST /api/contact/` verifies Botpoison and forwards to Formspark, and `POST /api/formspark-webhook/` is supposed to receive that submission and, on newsletter consent, create a Brevo contact.
@@ -35,7 +33,6 @@ Comments, KaTeX, Mermaid, Partytown, Giscus, Twikoo, and Waline are still wired.
 This matches the README's "fork of Retypeset on Cloudflare" claim and contradicts its "i18n removed" and "secure contact form" claims. Those contradictions are findings F026 and F002.
 
 ## Findings
-
 
 | ID   | Category                       | File:Line                                        | Severity | Effort | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Recommendation                                                                                                                                                                                                                                                                 |
 | ---- | ------------------------------ | ------------------------------------------------ | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -86,9 +83,6 @@ This matches the README's "fork of Retypeset on Cloudflare" claim and contradict
 | F045 | Consistency rot                | src/components/Footer.astro:22                   | Low      | S      | RSS links keep the trailing slash in dev and strip the last character in production. `trailingSlash: 'always'` is set globally (`astro.config.ts:36`). The two environments generate different feed URLs.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | One URL. If feed readers require no trailing slash, build that URL in both environments.                                                                                                                                                                                       |
 | F046 | Documentation drift            | src/plugins/remark-container-directives.mjs:21   | Low      | M      | Admonition titles are interpolated into an HTML string (`<span class="admonition-title">${title}</span>`). Today only the site owner writes markdown, so this is stored XSS for a trusted author. The admin spec moves editing to a browser. A title of `<img onerror=...>` would ship in the static HTML.                                                                                                                                                                                                                                                                                                                                                                                       | Escape the title, or drop raw HTML injection when Markdoc lands.                                                                                                                                                                                                               |
 
-
-
-
 Nothing material under a separate "dead commented-out code" hunt beyond the copies already cited: `page.ts:33` and `PostList.astro:51` still carry the old `posts` / pin-icon comments. They go away with F011 and F042.
 
 ## Top 5
@@ -137,13 +131,13 @@ In `contact.ts`, delete the `SERVICE_UNAVAILABLE` branch. In the verify `catch`,
     git push origin master
 ```
 
-
-
 ### 4. F007 and F008 — A build must not publish, and update-theme must not exist
 
 ```json
-"build": "git submodule update --init --recursive && astro check && astro build && pnpm apply-lqip",
-"deploy": "pnpm build && wrangler deploy"
+{
+  "build": "git submodule update --init --recursive && astro check && astro build && pnpm apply-lqip",
+  "deploy": "pnpm build && wrangler deploy"
+}
 ```
 
 Delete `scripts/update-theme.ts` and the `update-theme` script. If Cloudflare's Git integration builds the repo, its build command is `pnpm build`, not `pnpm deploy`.
@@ -184,8 +178,6 @@ Low effort, Medium or High severity.
 - [ ] F029: clear the upstream Waline URL
 - [ ] F044: PR workflow for lint and `astro check` only
 
-
-
 ## Things that look bad but are actually fine
 
 - The `[...lang]` route and `src/i18n/` look like a failed deletion. They are how Retypeset keeps the default locale unprefixed (`getLangRouteParam` returns `undefined` for `fr`). `moreLocales` is empty and `Button.astro:21` already hides the switcher. Ripping i18n out is a routing rewrite, not a cleanup. Delete unused helpers (F042). Leave the optional catch-all.
@@ -202,8 +194,6 @@ Low effort, Medium or High severity.
 - `git reset --hard origin/main` inside the content submodule (`update-content.yml:30`) is the right way to move a pointer. The injection is the heredoc above it, not the reset.
 - Drafts visible in `import.meta.env.DEV` and hidden in production (`darkness.ts:85`) is what you want for a static literary site.
 
-
-
 ## Open questions
 
 - The Botpoison fallback was an explicit commit (`b3ad557`, "Add Botpoison fallback and backend challenge"), followed by `debug` / `gfdfgd` commits. Was fail-open meant to be temporary while the service was misconfigured? The magic string is a bypass even when Botpoison is healthy, so F002 stands either way. The question is whether you still want submissions to succeed during an outage.
@@ -216,4 +206,3 @@ Low effort, Medium or High severity.
 - The admin note says post bodies become Markdoc because MDX treats punctuation as code, and images move to R2. Current rendering is remark directives plus `rehype-image-processor.mjs` on local `./_images/`. That is a migration hazard, not a bug. Which directives (`:::note`, `::github`, media embeds) must keep working on day one of the admin?
 - `format-posts.ts` runs autocorrect over `src/content/**/*.md`. For a French literary site, automatic CJK punctuation rewriting can touch prose you do not want rewritten. Is this script still used?
 - `src/content` is gitignored. Is that so the parent repo only stores the gitlink, or has it also hidden content changes you meant to commit in the parent?
-

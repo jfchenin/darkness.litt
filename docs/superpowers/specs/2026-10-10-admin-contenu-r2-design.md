@@ -1,9 +1,13 @@
 # Note de cadrage — admin contenu et images R2
 
-**Projet :** darkness.litt (`darkness.chenin.fr`)  
-**Date :** 10 octobre 2026  
-**Mise à jour :** 11 octobre 2026 — constat realigné sur `origin/main` du dépôt de contenu, sur le découpage `build` / `deploy`, et sur la couche de lecture unique des collections.  
-**Destinataire :** propriétaire du site  
+**Projet :** darkness.litt (`darkness.chenin.fr`)
+
+**Date :** 10 octobre 2026
+
+**Mise à jour :** 11 octobre 2026 — constat realigné sur `origin/main` du dépôt de contenu, sur le découpage `build` / `deploy`, et sur la couche de lecture unique des collections.
+
+**Destinataire :** propriétaire du site
+
 **Nature du document :** note de cadrage (périmètre et charge). Sans prix.
 
 ---

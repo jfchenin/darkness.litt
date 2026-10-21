@@ -2,6 +2,7 @@
 // src/components/CollectionPost.astro
 import type { CollectionEntry } from 'astro:content'
 import type { Language } from '@/i18n/config'
+import type { PostCollection } from '@/utils/posts'
 import { render } from 'astro:content'
 import Comment from '@/components/Comment/Index.astro'
 import PostAuthor from '@/components/PostAuthor.astro'
@@ -12,7 +13,6 @@ import TOC from '@/components/Widgets/TOC.astro'
 import { getLangFromLocale } from '@/i18n/lang'
 import Layout from '@/layouts/Layout.astro'
 import { getPostDescription } from '@/utils/description'
-import type { PostCollection } from '@/utils/posts'
 
 interface Props {
   post: CollectionEntry<PostCollection>
