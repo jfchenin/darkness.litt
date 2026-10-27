@@ -1,0 +1,21 @@
+// admin/wrangler.jsonc
+{
+  "main": "dist/_worker.js/index.js",
+  "name": "darkness-litt-admin",
+  "compatibility_date": "2026-10-21",
+  "route": {
+    "pattern": "admin.darkness.chenin.fr/*",
+    "zone_name": "chenin.fr"
+  },
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true
+    }
+  }
+}
