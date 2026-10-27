@@ -8,7 +8,7 @@ Separate Astro 5 + Keystatic app deployed as the Worker `darkness-litt-admin` on
 
 | Name | When | Where |
 | --- | --- | --- |
-| `KEYSTATIC_STORAGE` | build time | Set to `github` by `pnpm run deploy`. Unset or anything else = local mode. |
+| `KEYSTATIC_STORAGE` | build time | Set to `github` by `pnpm --dir admin run deploy`. Unset or anything else = local mode. |
 | `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | build time | `admin/.env` or shell env when deploying (slug of the GitHub App). |
 | `KEYSTATIC_GITHUB_CLIENT_ID` | runtime | Wrangler secret |
 | `KEYSTATIC_GITHUB_CLIENT_SECRET` | runtime | Wrangler secret |
@@ -35,15 +35,27 @@ Then:
 - Generate a **Client secret**.
 - **Install the App on `darkness.litt-content` only** (not "All repositories").
 
-### 2. Set Wrangler secrets
+### 2. Cloudflare Access (before the first deploy)
 
-Wrangler creates the Worker on the first `secret put` if it does not exist yet:
+Configure this **before** deploying so the hostname is never reachable without Access in front of it.
+
+Zero Trust → Access → Applications → Add an application → Self-hosted.
+
+- Application domain: `admin.darkness.chenin.fr`
+- Policy: **Allow**, include **Emails** = the owner email
+- Session duration: browser session (expires when the browser closes)
+
+Without Access, the Keystatic UI is only protected by GitHub OAuth. Do not skip this step, and do not deploy until it is in place.
+
+### 3. Set Wrangler secrets
+
+All commands below run from the **repo root**. Wrangler creates the Worker on the first `secret put` if it does not exist yet:
 
 ```bash
-cd admin
-pnpm exec wrangler secret put KEYSTATIC_GITHUB_CLIENT_ID
-pnpm exec wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET
-pnpm exec wrangler secret put KEYSTATIC_SECRET
+pnpm --dir admin install
+pnpm --dir admin exec wrangler secret put KEYSTATIC_GITHUB_CLIENT_ID
+pnpm --dir admin exec wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET
+pnpm --dir admin exec wrangler secret put KEYSTATIC_SECRET
 ```
 
 Each command prompts for the value. `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` is **not** a secret: it is inlined at build time, so put it in `admin/.env` (or export it) before deploying:
@@ -52,7 +64,7 @@ Each command prompts for the value. `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` is **not*
 echo 'PUBLIC_KEYSTATIC_GITHUB_APP_SLUG=<app-slug>' >> admin/.env
 ```
 
-### 3. Deploy
+### 4. Deploy
 
 ```bash
 pnpm --dir admin run deploy
@@ -60,15 +72,7 @@ pnpm --dir admin run deploy
 
 This runs `KEYSTATIC_STORAGE=github pnpm build && wrangler deploy` and publishes to `admin.darkness.chenin.fr/*` (zone `chenin.fr`).
 
-### 4. Cloudflare Access
-
-Zero Trust → Access → Applications → Add an application → Self-hosted.
-
-- Application domain: `admin.darkness.chenin.fr`
-- Policy: **Allow**, include **Emails** = the owner email
-- Session duration: browser session (expires when the browser closes)
-
-Without Access, the Keystatic UI is only protected by GitHub OAuth. Do not skip this step.
+Do **not** run `wrangler deploy` directly (e.g. from a stale `dist/`): the build would not have `KEYSTATIC_STORAGE=github` set. Always use `pnpm --dir admin run deploy`.
 
 ## OAuth gate (verify after deploy)
 
@@ -88,9 +92,8 @@ If it still fails, **stop**. Do not upgrade Astro (the app is pinned to Astro 5 
 ## Local development
 
 ```bash
-cd admin
-pnpm install
-pnpm dev
+pnpm --dir admin install
+pnpm --dir admin dev
 ```
 
 With `KEYSTATIC_STORAGE` unset (or not `github`), Keystatic runs in local mode: no GitHub App, no secrets. The process cwd is `admin/`, so future collection paths should live under `fixtures/` to avoid touching the content submodule.

@@ -13,7 +13,7 @@ const keystaticStorage = process.env.KEYSTATIC_STORAGE ?? KEYSTATIC_STORAGE ?? '
 export default defineConfig({
   integrations: [react(), keystatic()],
 
-  adapter: cloudflare(),
+  adapter: cloudflare({ imageService: 'passthrough' }),
 
   vite: {
     define: {
