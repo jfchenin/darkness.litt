@@ -30,3 +30,4 @@ pnpm-debug.log*
 
 # Brainstorm / companion local sessions
 .superpowers/
+.worktrees/
