@@ -1,0 +1,60 @@
+---
+// admin/src/pages/index.astro
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Administration — darkness.litt</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+        padding: 1.5rem;
+        background: Canvas;
+        color: CanvasText;
+      }
+      main {
+        max-width: 36rem;
+      }
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 1rem;
+      }
+      p {
+        margin: 0 0 0.75rem;
+      }
+      a {
+        color: LinkText;
+      }
+      code {
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Administration darkness.litt</h1>
+      <p>
+        Pour éditer le contenu, ouvrez
+        <a href="/keystatic">Keystatic</a>.
+      </p>
+      <p>
+        Dans l’interface, restez sur la branche <code>main</code>.
+      </p>
+      <p>
+        Le bouton <strong>Enregistrer</strong> écrit dans le dépôt de contenu
+        (<code>jfchenin/darkness.litt-content</code>).
+      </p>
+    </main>
+  </body>
+</html>
