@@ -1,11 +1,11 @@
 import { glob } from 'astro/loaders'
 import { defineCollection, z } from 'astro:content'
 import { allLocales, themeConfig } from '@/config'
+import { abbrlinkPattern, defaultAuthor } from '../shared/literary-fields'
 
-// Shared schema for both collections
 const contentSchema = z.object({
   title: z.string(),
-  author: z.string().optional().default('JFChenin'),
+  author: z.string().optional().default(defaultAuthor),
   published: z.date(),
   description: z.string().optional().default(''),
   updated: z.preprocess(val => val === '' ? undefined : val, z.date().optional()),
@@ -15,7 +15,7 @@ const contentSchema = z.object({
   toc: z.boolean().optional().default(themeConfig.global.toc),
   lang: z.enum(['', ...allLocales]).optional().default(''),
   abbrlink: z.string().optional().default('').refine(
-    abbrlink => !abbrlink || /^[a-z0-9\-]*$/.test(abbrlink),
+    abbrlink => !abbrlink || abbrlinkPattern.test(abbrlink),
     { message: 'Abbrlink ne peut contenir que des lettres minuscules, des chiffres et des traits d\'union.' },
   ),
 })
