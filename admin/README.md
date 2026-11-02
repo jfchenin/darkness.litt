@@ -91,6 +91,16 @@ Retry **once**:
 
 If it still fails, **stop**. Do not upgrade Astro (the app is pinned to Astro 5 / `@astrojs/cloudflare` 12).
 
+## Content editing
+
+Keystatic provides the `Darkness` and `Émile Moselly` literary collections, plus the `À propos`, `Blogroll`, `Mentions légales` and `Politique de confidentialité` prose pages.
+
+- Saving in GitHub mode commits directly to `main` on `jfchenin/darkness.litt-content`. The content repository then dispatches the public-site update, which advances the content submodule and publishes the site.
+- `Brouillon` defaults to disabled and remains visible in the editor. When enabled, the entry is excluded from the public site and `/og/` in production.
+- `Abbrlink` is the optional public slug. When it is empty, the filename is used.
+- The Cloudflare Git build command for the public site must remain `pnpm build`.
+- Local mode reads and writes only under `admin/fixtures/`; fixture content is never published.
+
 ## Local development
 
 ```bash
@@ -98,4 +108,4 @@ pnpm --dir admin install
 pnpm --dir admin dev
 ```
 
-With `KEYSTATIC_STORAGE` unset (or not `github`), Keystatic runs in local mode: no GitHub App, no secrets. The process cwd is `admin/`, so future collection paths should live under `fixtures/` to avoid touching the content submodule.
+With `KEYSTATIC_STORAGE` unset (or not `github`), Keystatic runs in local mode: no GitHub App, no secrets. The process cwd is `admin/`, and all collection paths live under `fixtures/` to avoid touching the content submodule.
