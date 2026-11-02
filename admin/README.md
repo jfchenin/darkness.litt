@@ -135,6 +135,7 @@ Keystatic provides the `Darkness` and `Émile Moselly` literary collections, plu
 - New literary filenames and `abbrlink` values must match `^[a-z0-9-]+$` (Keystatic slug field). Legacy files with spaces or accents are renamed to `<abbrlink>.md` with `pnpm exec tsx scripts/normalize-content-filenames.ts --collection darkness|emileMoselly --apply` (dry-run by default), then committed on content `main`. Do not rename those files by hand inside Keystatic during the transition.
 - The Cloudflare Git build command for the public site must remain `pnpm build`.
 - Local mode reads and writes only under `admin/fixtures/`; fixture content is never published.
+- The `Darkness (Markdoc)` and `Émile Moselly (Markdoc)` collections share the same paths as the `.md` collections (`darkness/*`, `emileMoselly/*`) but read and write `.mdoc` files with an `image` block (`src` = R2 key). Local fixtures under `admin/fixtures/darkness/` and `admin/fixtures/emileMoselly/` can hold `.mdoc` entries.
 
 ## Local development
 

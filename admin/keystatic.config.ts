@@ -1,5 +1,6 @@
 // admin/keystatic.config.ts
 import { collection, config, fields, singleton } from '@keystatic/core'
+import { block } from '@keystatic/core/content-components'
 import { abbrlinkPattern, defaultAuthor, proseEntries } from '../shared/literary-fields'
 
 const isGithubStorage = import.meta.env.KEYSTATIC_STORAGE === 'github'
@@ -86,6 +87,40 @@ const createLiterarySchema = () => ({
   }),
 })
 
+// Markdoc block rendering a bucket image (src is an R2 key, not a file path).
+const imageBlock = block({
+  label: 'Image',
+  schema: {
+    src: fields.text({
+      label: 'Clé R2',
+      description: 'darkness/fichier.jpg ou emileMoselly/fichier.jpg',
+      validation: { isRequired: true },
+    }),
+    alt: fields.text({ label: 'Légende / alt', validation: { isRequired: true } }),
+    orientation: fields.select({
+      label: 'Orientation',
+      options: [
+        { label: 'none', value: 'none' },
+        { label: 'landscape', value: 'landscape' },
+        { label: 'portrait', value: 'portrait' },
+      ],
+      defaultValue: 'none',
+    }),
+    hideCaption: fields.checkbox({ label: 'Masquer la légende', defaultValue: false }),
+  },
+})
+
+// Creates the literary schema with a `.mdoc` body supporting the image block.
+const createMarkdocLiterarySchema = () => ({
+  ...createLiterarySchema(),
+  content: fields.markdoc({
+    label: 'Corps',
+    extension: 'mdoc',
+    options: { image: false },
+    components: { image: imageBlock },
+  }),
+})
+
 const proseSingletons = Object.fromEntries(
   proseEntries.map(entry => [
     entry.collection,
@@ -122,6 +157,20 @@ export default config({
       slugField: 'title',
       format: { contentField: 'content' },
       schema: createLiterarySchema(),
+    }),
+    darknessMarkdoc: collection({
+      label: 'Darkness (Markdoc)',
+      path: `${pathPrefix}darkness/*`,
+      slugField: 'title',
+      format: { contentField: 'content' },
+      schema: createMarkdocLiterarySchema(),
+    }),
+    emileMosellyMarkdoc: collection({
+      label: 'Émile Moselly (Markdoc)',
+      path: `${pathPrefix}emileMoselly/*`,
+      slugField: 'title',
+      format: { contentField: 'content' },
+      schema: createMarkdocLiterarySchema(),
     }),
   },
   singletons: proseSingletons,
