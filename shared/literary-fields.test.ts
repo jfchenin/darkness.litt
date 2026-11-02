@@ -1,5 +1,6 @@
 // shared/literary-fields.test.ts
 import assert from 'node:assert/strict'
+// eslint-disable-next-line test/no-import-node-test -- plan uses node:test via tsx
 import { describe, it } from 'node:test'
 import {
   abbrlinkPattern,
