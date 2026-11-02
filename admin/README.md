@@ -76,6 +76,39 @@ The Worker binds Cloudflare KV as `SESSION` (Astro Cloudflare sessions). The nam
 
 Do **not** run `wrangler deploy` directly (e.g. from a stale `dist/`): the build would not have `KEYSTATIC_STORAGE=github` set. Always use `pnpm --dir admin run deploy`.
 
+## JPEG media (R2)
+
+Article images are JPEG files stored in the R2 bucket `darkness-litt-media` and served publicly at `https://media.darkness.chenin.fr`. They are uploaded from the admin app, never through Keystatic.
+
+Owner setup (once, before the first deploy that uses it):
+
+1. Create the bucket: `pnpm --dir admin exec wrangler r2 bucket create darkness-litt-media`.
+2. Attach the custom domain `media.darkness.chenin.fr` to the bucket (Cloudflare dashboard → R2 → `darkness-litt-media` → Settings → Custom Domains). Cloudflare creates the DNS record in the `chenin.fr` zone. Do not enable the `r2.dev` public URL. The media host does not list keys.
+3. The Worker binding is already declared in `admin/wrangler.jsonc`:
+
+   ```jsonc
+   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "darkness-litt-media" }]
+   ```
+
+Upload flow:
+
+1. Open `https://admin.chenin.fr/media` (behind Cloudflare Access).
+2. Pick the collection (`darkness` or `emileMoselly`), a filename (`[a-z0-9-]+`, stored as `<collection>/<filename>.jpg`) and a JPEG file (max 20 MiB, checked by magic bytes).
+3. On success the page shows a Markdoc block; fill the alt text, orientation and caption option, then copy it and paste it into the article body in Keystatic:
+
+   ```markdoc
+   {% image
+      src="darkness/couverture-1.jpg"
+      alt="…"
+      orientation="none"
+      hideCaption=false
+   /%}
+   ```
+
+`/api/media` is admin-only: `GET` lists keys, `POST` stores a new key (`409` if it already exists, so existing images are never overwritten). There is no delete endpoint; remove objects from the Cloudflare dashboard or with `wrangler r2 object delete`.
+
+Tests for the upload validation helpers: `pnpm --dir admin test`.
+
 ## OAuth gate (verify after deploy)
 
 1. In a **private window**, `GET https://admin.chenin.fr/keystatic` → Cloudflare Access login page.

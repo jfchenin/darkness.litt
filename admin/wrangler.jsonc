@@ -19,6 +19,13 @@
       "id": "03b285063b5e4233a7d2057b0838b40c"
     }
   ],
+  // JPEG article images, served publicly at media.darkness.chenin.fr.
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "darkness-litt-media"
+    }
+  ],
   "observability": {
     "enabled": true,
     "traces": {
