@@ -95,6 +95,7 @@ If it still fails, **stop**. Do not upgrade Astro (the app is pinned to Astro 5 
 
 Keystatic provides the `Darkness` and `Émile Moselly` literary collections, plus the `À propos`, `Blogroll`, `Mentions légales` and `Politique de confidentialité` prose pages.
 
+- Literary and prose bodies use Keystatic's Markdoc editor and remain stored as `.md` files. After editing existing content, verify that images using `./_images/` paths still render; the serialized Markdown does not need to remain byte-identical.
 - Saving in GitHub mode commits directly to `main` on `jfchenin/darkness.litt-content`. The content repository then dispatches the public-site update, which advances the content submodule and publishes the site.
 - `Brouillon` defaults to disabled and remains visible in the editor. When enabled, the entry is excluded from the public site and `/og/` in production.
 - `Abbrlink` is the optional public slug. When it is empty, the filename is used.

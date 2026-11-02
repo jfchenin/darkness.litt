@@ -8,7 +8,10 @@ const contentSchema = z.object({
   author: z.string().optional().default(defaultAuthor),
   published: z.date(),
   description: z.string().optional().default(''),
-  updated: z.preprocess(val => val === '' ? undefined : val, z.date().optional()),
+  updated: z.preprocess(
+    val => (val === '' || val === null ? undefined : val),
+    z.date().optional(),
+  ),
   tags: z.array(z.string()).optional().default([]),
   draft: z.boolean().optional().default(false),
   pin: z.number().int().min(0).max(99).optional().default(0),

@@ -80,9 +80,9 @@ const createLiterarySchema = () => ({
       },
     },
   }),
-  content: fields.text({
+  content: fields.markdoc({
     label: 'Corps',
-    multiline: true,
+    extension: 'md',
   }),
 })
 
@@ -95,9 +95,9 @@ const proseSingletons = Object.fromEntries(
       format: { contentField: 'content' },
       schema: {
         lang: createLanguageField(),
-        content: fields.text({
+        content: fields.markdoc({
           label: 'Corps',
-          multiline: true,
+          extension: 'md',
         }),
       },
     }),

@@ -16,6 +16,11 @@ export default defineConfig({
   adapter: cloudflare({ imageService: 'passthrough' }),
 
   vite: {
+    server: {
+      fs: {
+        allow: ['..'],
+      },
+    },
     define: {
       'import.meta.env.KEYSTATIC_STORAGE': JSON.stringify(keystaticStorage),
     },
