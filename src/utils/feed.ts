@@ -6,32 +6,14 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container'
 import { loadRenderers } from 'astro:container'
 import { getCollection, render } from 'astro:content'
 import { Feed } from 'feed'
-import sanitizeHtml from 'sanitize-html'
 import { base, defaultLocale, themeConfig } from '@/config'
 import { getPostPath } from '@/i18n/path'
 import { ui } from '@/i18n/ui'
 import { getPostDescription } from '@/utils/description'
+import { sanitizeFeedHtml } from '@/utils/feedSanitize'
 
 const { title, description, i18nTitle, url, author } = themeConfig.site
 const { follow } = themeConfig.seo ?? {}
-
-const sanitizeOptions: sanitizeHtml.IOptions = {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'figure', 'figcaption']),
-  allowedAttributes: {
-    ...sanitizeHtml.defaults.allowedAttributes,
-    img: ['src', 'srcset', 'alt', 'title', 'width', 'height'],
-    figure: ['class'],
-  },
-  // Feed readers need absolute image URLs (Astro emits root-relative /_astro/... paths)
-  transformTags: {
-    img: (tagName, attribs) => ({
-      tagName,
-      attribs: attribs.src?.startsWith('/') && !attribs.src.startsWith('//')
-        ? { ...attribs, src: new URL(attribs.src, url).toString() }
-        : attribs,
-    }),
-  },
-}
 
 /**
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -102,7 +84,8 @@ export async function generateFeed({ lang }: { lang?: Language } = {}) {
     .sort((a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime())
     .slice(0, 25)
 
-  // Markdoc has no container renderer in @astrojs/markdoc; all feed posts are .md
+  // Only the MDX renderer is registered: @astrojs/markdoc exposes no getContainerRenderer.
+  // .mdoc entries still render through render(post) (Astro components), but the container may lack a Markdoc renderer.
   const renderers = await loadRenderers([getMDXRenderer()])
   const container = await AstroContainer.create({ renderers })
 
@@ -112,8 +95,7 @@ export async function generateFeed({ lang }: { lang?: Language } = {}) {
     const path = getPostPath(slug, (post.data.lang || defaultLocale) as Language, post.collection)
     const link = new URL(path, `${url}${base}/`).toString()
 
-    const { Content } = await render(post)
-    const postContent = sanitizeHtml(await container.renderToString(Content), sanitizeOptions)
+    const postContent = await renderPostContent(post, container, link)
 
     // publishDate -> Atom:<published>, RSS:<pubDate>
     const publishDate = new Date(post.data.published)
@@ -188,4 +170,20 @@ export async function generateAtom(context: APIContext) {
       'Content-Type': 'application/atom+xml; charset=utf-8',
     },
   })
+}
+
+// Render one post to sanitized HTML; a failure yields empty content instead of aborting the feed
+async function renderPostContent(
+  post: Parameters<typeof render>[0],
+  container: AstroContainer,
+  link: string,
+) {
+  try {
+    const { Content } = await render(post)
+    return sanitizeFeedHtml(await container.renderToString(Content), url)
+  }
+  catch (error) {
+    console.warn(`[feed] Failed to render ${link}; using empty content.`, error)
+    return ''
+  }
 }
