@@ -19,6 +19,9 @@ importers:
       '@astrojs/cloudflare':
         specifier: ^12.6.13
         version: 12.6.13(@types/node@25.9.9)(astro@5.18.2(@types/node@25.9.9)(jiti@2.6.1)(lightningcss@1.33.0)(rollup@4.57.1)(terser@5.49.2)(tsx@4.23.15)(typescript@5.9.3)(yaml@2.9.1))(jiti@2.6.1)(lightningcss@1.33.0)(terser@5.49.2)(tsx@4.23.15)(yaml@2.9.1)
+      '@astrojs/markdoc':
+        specifier: ^0.15.11
+        version: 0.15.11(astro@5.18.2(@types/node@25.9.9)(jiti@2.6.1)(lightningcss@1.33.0)(rollup@4.57.1)(terser@5.49.2)(tsx@4.23.15)(typescript@5.9.3)(yaml@2.9.1))
       '@astrojs/mdx':
         specifier: ^4.3.14
         version: 4.3.14(astro@5.18.2(@types/node@25.9.9)(jiti@2.6.1)(lightningcss@1.33.0)(rollup@4.57.1)(terser@5.49.2)(tsx@4.23.15)(typescript@5.9.3)(yaml@2.9.1))
@@ -269,6 +272,12 @@ packages:
         optional: true
       prettier-plugin-astro:
         optional: true
+
+  '@astrojs/markdoc@0.15.11':
+    resolution: {integrity: sha512-VK6jnlMOHJJONNXyyrLAacwpZOAhm5CSccRRYVqcQDbcImkx6nh4UsPboVeoJQ+gd3hjts/CAGHPAxMRafSdZw==}
+    engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0}
+    peerDependencies:
+      astro: ^5.0.0
 
   '@astrojs/markdown-remark@6.3.11':
     resolution: {integrity: sha512-hcaxX/5aC6lQgHeGh1i+aauvSwIT6cfyFjKWvExYSxUhZZBBdvCliOtu06gbQyhbe0pGJNoNmqNlQZ5zYUuIyQ==}
@@ -1410,6 +1419,18 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
+
+  '@markdoc/markdoc@0.5.11':
+    resolution: {integrity: sha512-Jyoyv7Ieq2/L9fzz9lTN+ojoufpqiiWOZT3xPgssReZwGze84XFEU/xDNbM4iIua5sJ6JjhDDlBuwZoQLrqAgw==}
+    engines: {node: '>=14.7.0'}
+    peerDependencies:
+      '@types/react': '*'
+      react: '*'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
 
   '@mdx-js/mdx@3.1.1':
     resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
@@ -3507,6 +3528,9 @@ packages:
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
 
+  htmlparser2@10.1.0:
+    resolution: {integrity: sha512-VTZkM9GWRAtEpveh7MSF6SjjrpNVNNVJfFup7xTY3UpFtm67foy9HDVXneLtFVt4pMz5kZtgNcvCniNFb1hlEQ==}
+
   htmlparser2@12.0.0:
     resolution: {integrity: sha512-Tz7u1i95/g2x2jz81+x0FBVhBhY5aRTvD3tXXdFaljuNdzDLJ8UGNRrTcj2cgQvAg3iW/h77Fz15nLW0L0CrZw==}
     engines: {node: '>=20.19.0'}
@@ -5526,6 +5550,21 @@ snapshots:
       - '@emnapi/runtime'
       - typescript
 
+  '@astrojs/markdoc@0.15.11(astro@5.18.2(@types/node@25.9.9)(jiti@2.6.1)(lightningcss@1.33.0)(rollup@4.57.1)(terser@5.49.2)(tsx@4.23.15)(typescript@5.9.3)(yaml@2.9.1))':
+    dependencies:
+      '@astrojs/internal-helpers': 0.7.6
+      '@astrojs/markdown-remark': 6.3.11
+      '@astrojs/prism': 3.3.0
+      '@markdoc/markdoc': 0.5.11
+      astro: 5.18.2(@types/node@25.9.9)(jiti@2.6.1)(lightningcss@1.33.0)(rollup@4.57.1)(terser@5.49.2)(tsx@4.23.15)(typescript@5.9.3)(yaml@2.9.1)
+      esbuild: 0.25.12
+      github-slugger: 2.0.0
+      htmlparser2: 10.1.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react
+      - supports-color
+
   '@astrojs/markdown-remark@6.3.11':
     dependencies:
       '@astrojs/internal-helpers': 0.7.6
@@ -6344,6 +6383,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
+
+  '@markdoc/markdoc@0.5.11': {}
 
   '@mdx-js/mdx@3.1.1':
     dependencies:
@@ -8960,6 +9001,13 @@ snapshots:
       terser: 5.49.2
 
   html-void-elements@3.0.0: {}
+
+  htmlparser2@10.1.0:
+    dependencies:
+      domelementtype: 2.3.0
+      domhandler: 5.0.3
+      domutils: 3.2.2
+      entities: 7.0.1
 
   htmlparser2@12.0.0:
     dependencies:

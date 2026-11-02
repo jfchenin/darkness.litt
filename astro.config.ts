@@ -1,4 +1,5 @@
 import cloudflare from '@astrojs/cloudflare'
+import markdoc from '@astrojs/markdoc'
 import mdx from '@astrojs/mdx'
 import partytown from '@astrojs/partytown'
 import sitemap from '@astrojs/sitemap'
@@ -24,9 +25,12 @@ import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs'
 
 const { url: site } = themeConfig.site
 const { imageHostURL } = themeConfig.preload ?? {}
-const imageConfig = imageHostURL
-  ? { image: { domains: [imageHostURL], remotePatterns: [{ protocol: 'https' }] } }
-  : {}
+const mediaRemotePattern = { protocol: 'https', hostname: 'media.darkness.chenin.fr' }
+const imageConfig = {
+  image: imageHostURL
+    ? { domains: [imageHostURL], remotePatterns: [{ protocol: 'https' }, mediaRemotePattern] }
+    : { remotePatterns: [mediaRemotePattern] },
+}
 
 export default defineConfig({
   site,
@@ -55,6 +59,7 @@ export default defineConfig({
       injectReset: true,
     }),
     mdx(),
+    markdoc(),
     partytown({
       config: {
         forward: ['dataLayer.push', 'gtag'],
