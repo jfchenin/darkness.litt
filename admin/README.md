@@ -1,6 +1,6 @@
 # Darkness.litt admin (Keystatic)
 
-Separate Astro 5 + Keystatic app deployed as the Worker `darkness-litt-admin` on `https://admin.darkness.chenin.fr`. It edits the content repo `jfchenin/darkness.litt-content` through a GitHub App. It is not part of the public Worker.
+Separate Astro 5 + Keystatic app deployed as the Worker `darkness-litt-admin` on `https://admin.chenin.fr`. It edits the content repo `jfchenin/darkness.litt-content` through a GitHub App. It is not part of the public Worker.
 
 > Live deploy, GitHub App creation and the Cloudflare Access policy (Tasks 4–5 of the plan) are **owner actions outside the repo**. This README only documents them.
 
@@ -22,7 +22,7 @@ See `.env.example`. Never commit real values (`admin/.env` is git-ignored).
 
 GitHub → Settings → Developer settings → GitHub Apps → New GitHub App.
 
-- Callback URL: `https://admin.darkness.chenin.fr/api/keystatic/github/oauth/callback`
+- Callback URL: `https://admin.chenin.fr/api/keystatic/github/oauth/callback` (Keystatic sends this origin; if the App already lists another callback, replace it)
 - Request user authorization (OAuth) during installation: enabled
 - Expire user authorization tokens: enabled is fine
 - Webhook: disabled
@@ -41,7 +41,7 @@ Configure this **before** deploying so the hostname is never reachable without A
 
 Zero Trust → Access → Applications → Add an application → Self-hosted.
 
-- Application domain: `admin.darkness.chenin.fr`
+- Application domain: `admin.chenin.fr`
 - Policy: **Allow**, include **Emails** = the owner email
 - Session duration: browser session (expires when the browser closes)
 
@@ -70,13 +70,15 @@ echo 'PUBLIC_KEYSTATIC_GITHUB_APP_SLUG=<app-slug>' >> admin/.env
 pnpm --dir admin run deploy
 ```
 
-This runs `KEYSTATIC_STORAGE=github pnpm build && wrangler deploy` and publishes to `admin.darkness.chenin.fr/*` (zone `chenin.fr`).
+This runs `KEYSTATIC_STORAGE=github pnpm build && wrangler deploy` and publishes to `admin.chenin.fr/*` (zone `chenin.fr`).
+
+The Worker binds Cloudflare KV as `SESSION` (Astro Cloudflare sessions). The namespace id is in `admin/wrangler.jsonc`. `KEYSTATIC_STORAGE` in that file is a runtime copy; the bundle reads the value inlined by this deploy command.
 
 Do **not** run `wrangler deploy` directly (e.g. from a stale `dist/`): the build would not have `KEYSTATIC_STORAGE=github` set. Always use `pnpm --dir admin run deploy`.
 
 ## OAuth gate (verify after deploy)
 
-1. In a **private window**, `GET https://admin.darkness.chenin.fr/keystatic` → Cloudflare Access login page.
+1. In a **private window**, `GET https://admin.chenin.fr/keystatic` → Cloudflare Access login page.
 2. Log in with the owner email, then complete the GitHub authorization.
 3. `/keystatic` renders and requests to `/api/keystatic/*` are **not 401**.
 
