@@ -1,0 +1,33 @@
+// admin/wrangler.jsonc
+{
+  "main": "dist/_worker.js/index.js",
+  "name": "darkness-litt-admin",
+  "compatibility_date": "2026-10-21",
+  "route": {
+    "pattern": "admin.chenin.fr/*",
+    "zone_name": "chenin.fr"
+  },
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  // Astro Cloudflare sessions (default binding name SESSION).
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "03b285063b5e4233a7d2057b0838b40c"
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true
+    }
+  },
+  // Runtime copy only. keystatic.config.ts reads the value inlined at build
+  // time by `pnpm --dir admin run deploy` (KEYSTATIC_STORAGE=github).
+  "vars": {
+    "KEYSTATIC_STORAGE": "github"
+  }
+}

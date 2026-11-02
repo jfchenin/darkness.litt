@@ -60,4 +60,4 @@ jobs:
       - name: Summary
         run: |
           echo "✅ Content submodule updated successfully"
-          echo "🚀 Cloudflare Pages will deploy automatically"
+          echo "🚀 Cloudflare Git integration publishes the Worker with pnpm build"

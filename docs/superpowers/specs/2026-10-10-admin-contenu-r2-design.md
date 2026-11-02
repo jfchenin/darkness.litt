@@ -44,7 +44,7 @@ Le résumé de `update-content.yml` dit encore que Cloudflare Pages déploiera. 
 
 ## 3. Objectif pour le propriétaire
 
-1. Ouvrir `admin.darkness.chenin.fr`, s’authentifier avec son adresse email (Cloudflare Access).
+1. Ouvrir `admin.chenin.fr`, s’authentifier avec son adresse email (Cloudflare Access).
 2. Écrire ou modifier un texte dans l’interface.
 3. Uploader une image dans la médiathèque, l’insérer dans l’article via le composant image.
 4. Cliquer **Enregistrer** pour écrire le texte sur `main` du dépôt de contenu. Ce push publie le site par la chaîne déjà en place, sans git ni terminal.
@@ -63,7 +63,7 @@ Propriétaire
 Cloudflare Access (email)
     │
     ▼
-admin.darkness.chenin.fr          ◄── Worker admin (isolé du site public)
+admin.chenin.fr                    ◄── Worker admin (isolé du site public)
  ├── /keystatic                   ◄── édition des textes (Keystatic, mode GitHub)
  └── /media                       ◄── upload / liste, clé R2 pour le composant
     │                    │
@@ -300,7 +300,7 @@ Si l’essai Keystatic sur Worker échoue, la charge des lots 2 à 6 n’est pas
 1. Accès au compte Cloudflare déjà utilisé pour `darkness.chenin.fr`, y compris la commande de build de l’intégration Git.
 2. Droit de créer une GitHub App et de l’installer sur le dépôt de contenu. Le jeton déjà utilisé par `notify-main.yml` et `update-content.yml` reste en place.
 3. DNS :
-   - `admin.darkness.chenin.fr` → worker admin
+   - `admin.chenin.fr` → worker admin
    - `media.darkness.chenin.fr` → lecture publique R2
 4. Adresse email à autoriser dans Cloudflare Access.
 
