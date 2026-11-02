@@ -19,7 +19,9 @@ function getRoute() {
         getCollection('emileMoselly'),
       ])
 
-      const posts = [...darknessPosts, ...emileMosellyPosts]
+      const posts = [...darknessPosts, ...emileMosellyPosts].filter(
+        ({ data }) => import.meta.env.DEV || !data.draft,
+      )
 
       const pages = Object.fromEntries(
         posts.map((post: CollectionEntry<'darkness' | 'emileMoselly'>) => [
