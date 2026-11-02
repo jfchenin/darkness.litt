@@ -98,8 +98,8 @@ Keystatic provides the `Darkness` and `Émile Moselly` literary collections, plu
 - Literary and prose bodies use Keystatic's Markdoc editor and remain stored as `.md` files. After editing existing content, verify that images using `./_images/` paths still render; the serialized Markdown does not need to remain byte-identical.
 - Saving in GitHub mode commits directly to `main` on `jfchenin/darkness.litt-content`. The content repository then dispatches the public-site update, which advances the content submodule and publishes the site.
 - `Brouillon` defaults to disabled and remains visible in the editor. When enabled, the entry is excluded from the public site and `/og/` in production.
-- `Abbrlink` is the optional public slug. When it is empty, the filename is used.
-- New literary filenames and `abbrlink` values must match `^[a-z0-9-]+$` (Keystatic slug field). Legacy files with spaces or accents are renamed to `<abbrlink>.md` with `pnpm exec tsx scripts/normalize-content-filenames.ts --collection darkness|emileMoselly --apply` (dry-run by default), then committed on content `main`. Do not rename those files by hand inside Keystatic during the transition.
+- `Titre` is plain text and does not rename the file. `Nom de fichier` is a separate Keystatic slug field; leave it alone on existing entries. `Abbrlink` is the optional public slug — when empty, the filename is used.
+- New literary filenames and `abbrlink` values must match `^[a-z0-9-]+$`. Legacy files with spaces or accents are renamed to `<abbrlink>.md` with `pnpm exec tsx scripts/normalize-content-filenames.ts --collection darkness|emileMoselly --apply` (dry-run by default), then committed on content `main`. Do not rename files by hand inside Keystatic during the transition.
 - The Cloudflare Git build command for the public site must remain `pnpm build`.
 - Local mode reads and writes only under `admin/fixtures/`; fixture content is never published.
 

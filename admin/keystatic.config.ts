@@ -24,16 +24,23 @@ const createLanguageField = () =>
   })
 
 // Creates the schema shared by the two literary collections.
+// Title is plain text so edits never rename the Git file; filename is a separate slugField.
 const createLiterarySchema = () => ({
-  title: fields.slug({
+  title: fields.text({
+    label: 'Titre',
+    validation: { isRequired: true },
+  }),
+  filename: fields.slug({
     name: {
-      label: 'Titre',
+      label: 'Nom interne',
+      description:
+        'Propose le nom de fichier à la création. Sans effet sur le titre affiché ni sur l’URL publique.',
       validation: { isRequired: true },
     },
     slug: {
       label: 'Nom de fichier',
       description:
-        'URL publique = abbrlink si renseigné, sinon ce nom. Nouveaux fichiers: a-z 0-9 tirets uniquement.',
+        'Fichier .md dans le repo contenu. Ne pas renommer un article existant sauf besoin. URL publique = abbrlink si renseigné, sinon ce nom (a-z 0-9 tirets).',
     },
   }),
   author: fields.text({
@@ -112,14 +119,14 @@ export default config({
     darkness: collection({
       label: 'Darkness',
       path: `${pathPrefix}darkness/*`,
-      slugField: 'title',
+      slugField: 'filename',
       format: { contentField: 'content' },
       schema: createLiterarySchema(),
     }),
     emileMoselly: collection({
       label: 'Émile Moselly',
       path: `${pathPrefix}emileMoselly/*`,
-      slugField: 'title',
+      slugField: 'filename',
       format: { contentField: 'content' },
       schema: createLiterarySchema(),
     }),
