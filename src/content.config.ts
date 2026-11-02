@@ -21,6 +21,8 @@ const contentSchema = z.object({
     abbrlink => !abbrlink || abbrlinkPattern.test(abbrlink),
     { message: 'Abbrlink ne peut contenir que des lettres minuscules, des chiffres et des traits d\'union.' },
   ),
+  // Keystatic slugField `filename` may write this on save; ignored by the site (URL = abbrlink || id).
+  filename: z.string().optional(),
 })
 
 const darkness = defineCollection({

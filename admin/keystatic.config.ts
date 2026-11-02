@@ -28,19 +28,18 @@ const createLanguageField = () =>
 const createLiterarySchema = () => ({
   title: fields.text({
     label: 'Titre',
+    description: 'Affiché sur le site.',
     validation: { isRequired: true },
   }),
   filename: fields.slug({
     name: {
-      label: 'Nom interne',
-      description:
-        'Propose le nom de fichier à la création. Sans effet sur le titre affiché ni sur l’URL publique.',
+      label: 'Aide fichier',
+      description: 'Sert seulement à proposer le nom de fichier à la création.',
       validation: { isRequired: true },
     },
     slug: {
       label: 'Nom de fichier',
-      description:
-        'Fichier .md dans le repo contenu. Ne pas renommer un article existant sauf besoin. URL publique = abbrlink si renseigné, sinon ce nom (a-z 0-9 tirets).',
+      description: 'Ne pas changer sur un article déjà publié.',
     },
   }),
   author: fields.text({
@@ -79,7 +78,7 @@ const createLiterarySchema = () => ({
   lang: createLanguageField(),
   abbrlink: fields.text({
     label: 'Abbrlink',
-    description: 'Slug public optionnel',
+    description: 'Adresse publique (a-z, chiffres, tirets). Si vide : nom de fichier.',
     validation: {
       pattern: {
         regex: abbrlinkPattern,
