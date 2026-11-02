@@ -3,7 +3,7 @@ import { component, defineMarkdocConfig } from '@astrojs/markdoc/config'
 
 export default defineMarkdocConfig({
   tags: {
-    image: {
+    articleImage: {
       render: component('./src/components/ArticleImage.astro'),
       attributes: {
         src: { type: String, required: true },

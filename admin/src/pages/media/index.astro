@@ -112,7 +112,7 @@ export const prerender = false
         const data = new FormData(tagForm)
         const alt = String(data.get('alt') ?? '').replaceAll('"', '\\"')
         tagOutput.value = [
-          '{% image',
+          '{% articleImage',
           `   src="${uploadedKey}"`,
           `   alt="${alt}"`,
           `   orientation="${data.get('orientation')}"`,

@@ -88,7 +88,7 @@ const createLiterarySchema = () => ({
 })
 
 // Markdoc block rendering a bucket image (src is an R2 key, not a file path).
-const imageBlock = block({
+const articleImageBlock = block({
   label: 'Image',
   schema: {
     src: fields.text({
@@ -117,7 +117,7 @@ const createMarkdocLiterarySchema = () => ({
     label: 'Corps',
     extension: 'mdoc',
     options: { image: false },
-    components: { image: imageBlock },
+    components: { articleImage: articleImageBlock },
   }),
 })
 

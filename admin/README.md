@@ -97,7 +97,7 @@ Upload flow:
 3. On success the page shows a Markdoc block; fill the alt text, orientation and caption option, then copy it and paste it into the article body in Keystatic:
 
    ```markdoc
-   {% image
+   {% articleImage
       src="darkness/couverture-1.jpg"
       alt="…"
       orientation="none"
