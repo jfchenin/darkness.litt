@@ -9,7 +9,6 @@ export interface ArticleImageProps {
 }
 
 export const MEDIA_HOST = 'https://cdn.chenin.fr'
-export const MAX_JPEG_BYTES = 20 * 1024 * 1024
 
 const KEY_RE = /^(darkness|emileMoselly)\/([a-z0-9-]+)\.jpg$/
 

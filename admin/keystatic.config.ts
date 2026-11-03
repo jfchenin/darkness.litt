@@ -14,8 +14,8 @@ const proseLabels = {
 } as const
 
 // Creates the language selector shared by literary entries and prose pages.
-const createLanguageField = () =>
-  fields.select({
+function createLanguageField() {
+  return fields.select({
     label: 'Langue',
     options: [
       { label: 'Universel', value: '' },
@@ -23,69 +23,72 @@ const createLanguageField = () =>
     ],
     defaultValue: '',
   })
+}
 
 // Creates the schema shared by the two literary collections.
-const createLiterarySchema = () => ({
-  title: fields.slug({
-    name: {
-      label: 'Titre',
-      validation: { isRequired: true },
-    },
-    slug: {
-      label: 'Nom de fichier',
-      description:
-        'URL publique = abbrlink si renseigné, sinon ce nom. Nouveaux fichiers: a-z 0-9 tirets uniquement.',
-    },
-  }),
-  author: fields.text({
-    label: 'Auteur',
-    defaultValue: defaultAuthor,
-  }),
-  published: fields.date({
-    label: 'Publié',
-    validation: { isRequired: true },
-  }),
-  description: fields.text({
-    label: 'Description',
-    multiline: true,
-  }),
-  updated: fields.date({
-    label: 'Mis à jour',
-  }),
-  tags: fields.array(fields.text({ label: 'Tag' }), {
-    label: 'Tags',
-    itemLabel: props => props.value,
-  }),
-  draft: fields.checkbox({
-    label: 'Brouillon',
-    defaultValue: false,
-    description: 'Invisible sur le site public et /og/ en production',
-  }),
-  pin: fields.integer({
-    label: 'Pin',
-    defaultValue: 0,
-    validation: { min: 0, max: 99 },
-  }),
-  toc: fields.checkbox({
-    label: 'Table des matières',
-    defaultValue: true,
-  }),
-  lang: createLanguageField(),
-  abbrlink: fields.text({
-    label: 'Abbrlink',
-    description: 'Slug public optionnel',
-    validation: {
-      pattern: {
-        regex: abbrlinkPattern,
-        message: 'a-z, 0-9 et tirets uniquement',
+function createLiterarySchema() {
+  return {
+    title: fields.slug({
+      name: {
+        label: 'Titre',
+        validation: { isRequired: true },
       },
-    },
-  }),
-  content: fields.markdoc({
-    label: 'Corps',
-    extension: 'md',
-  }),
-})
+      slug: {
+        label: 'Nom de fichier',
+        description:
+        'URL publique = abbrlink si renseigné, sinon ce nom. Nouveaux fichiers: a-z 0-9 tirets uniquement.',
+      },
+    }),
+    author: fields.text({
+      label: 'Auteur',
+      defaultValue: defaultAuthor,
+    }),
+    published: fields.date({
+      label: 'Publié',
+      validation: { isRequired: true },
+    }),
+    description: fields.text({
+      label: 'Description',
+      multiline: true,
+    }),
+    updated: fields.date({
+      label: 'Mis à jour',
+    }),
+    tags: fields.array(fields.text({ label: 'Tag' }), {
+      label: 'Tags',
+      itemLabel: props => props.value,
+    }),
+    draft: fields.checkbox({
+      label: 'Brouillon',
+      defaultValue: false,
+      description: 'Invisible sur le site public et /og/ en production',
+    }),
+    pin: fields.integer({
+      label: 'Pin',
+      defaultValue: 0,
+      validation: { min: 0, max: 99 },
+    }),
+    toc: fields.checkbox({
+      label: 'Table des matières',
+      defaultValue: true,
+    }),
+    lang: createLanguageField(),
+    abbrlink: fields.text({
+      label: 'Abbrlink',
+      description: 'Slug public optionnel',
+      validation: {
+        pattern: {
+          regex: abbrlinkPattern,
+          message: 'a-z, 0-9 et tirets uniquement',
+        },
+      },
+    }),
+    content: fields.markdoc({
+      label: 'Corps',
+      extension: 'md',
+    }),
+  }
+}
 
 // Markdoc block rendering a bucket image (src is an R2 key, not a file path).
 const articleImageBlock = block({
@@ -112,15 +115,17 @@ const articleImageBlock = block({
 })
 
 // Creates the literary schema with a `.mdoc` body supporting the image block.
-const createMarkdocLiterarySchema = () => ({
-  ...createLiterarySchema(),
-  content: fields.markdoc({
-    label: 'Corps',
-    extension: 'mdoc',
-    options: { image: false },
-    components: { articleImage: articleImageBlock },
-  }),
-})
+function createMarkdocLiterarySchema() {
+  return {
+    ...createLiterarySchema(),
+    content: fields.markdoc({
+      label: 'Corps',
+      extension: 'mdoc',
+      options: { image: false },
+      components: { articleImage: articleImageBlock },
+    }),
+  }
+}
 
 const proseSingletons = Object.fromEntries(
   proseEntries.map(entry => [

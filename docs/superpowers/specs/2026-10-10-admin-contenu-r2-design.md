@@ -46,7 +46,7 @@ Le résumé de `update-content.yml` dit encore que Cloudflare Pages déploiera. 
 
 1. Ouvrir `admin.chenin.fr`, s’authentifier avec son adresse email (Cloudflare Access).
 2. Écrire ou modifier un texte dans l’interface.
-3. Uploader une image dans la médiathèque, l’insérer dans l’article via le composant image.
+3. Uploader une image via le R2 Manager (`media.chenin.fr`), l’insérer dans l’article via le composant image.
 4. Cliquer **Enregistrer** pour écrire le texte sur `main` du dépôt de contenu. Ce push publie le site par la chaîne déjà en place, sans git ni terminal.
 5. Marquer un texte **brouillon** avant l’enregistrement s’il ne doit pas apparaître sur le site.
 
@@ -54,7 +54,7 @@ Le résumé de `update-content.yml` dit encore que Cloudflare Pages déploiera. 
 
 ## 4. Architecture retenue
 
-Worker admin séparé, code dans le dépôt du site, écriture GitHub sur le dépôt de contenu, originaux sur R2, composant image partagé avec le rendu public.
+Worker admin séparé, code dans le dépôt du site, écriture GitHub sur le dépôt de contenu, originaux sur R2 (upload par un R2 Manager externe sur `media.chenin.fr`), composant image partagé avec le rendu public.
 
 ```text
 Propriétaire
@@ -64,14 +64,16 @@ Cloudflare Access (email)
     │
     ▼
 admin.chenin.fr                    ◄── Worker admin (isolé du site public)
- ├── /keystatic                   ◄── édition des textes (Keystatic, mode GitHub)
- └── /media                       ◄── upload / liste, clé R2 pour le composant
-    │                    │
-    │                    ▼
-    │                 Cloudflare R2
-    │                 (originaux)
-    │                 lecture publique :
-    │                 cdn.chenin.fr (CDN public)
+ └── /keystatic                   ◄── édition des textes (Keystatic, mode GitHub)
+                                       (aucune route /media, aucun binding R2)
+    │
+    │         media.chenin.fr          ◄── R2 Manager externe (Access), upload JPEG
+    │                 │
+    │                 ▼
+    │              Cloudflare R2
+    │              (originaux)
+    │              lecture publique :
+    │              cdn.chenin.fr (CDN public)
     ▼
 Git de contenu (darkness.litt-content, branche main)
     │
@@ -142,7 +144,7 @@ Les plugins du thème (encadrés `:::note`, carte `::github`, KaTeX, Mermaid, em
 Remplace la syntaxe markdown `![légende](./_images/fichier.jpg)`.
 
 ```markdoc
-{% image
+{% articleImage
    src="darkness/couvrecomposition.jpg"
    alt="Couverture de (re)composition"
    orientation="portrait"
@@ -197,21 +199,21 @@ Le site rend la même figure qu’aujourd’hui (légende, orientation, zoom). L
 
 ### Règles d’upload
 
-Refus si :
+À respecter (R2 Manager externe, sans contrôle côté admin) :
 
-- le fichier n’est pas un JPEG ;
-- la taille dépasse 20 Mo ;
-- la clé existe déjà.
+- JPEG uniquement ;
+- 15 Mio au plus ;
+- ne pas écraser une clé déjà utilisée.
 
 JPEG seulement : le corpus l’est, et le build optimise les fichiers avec Astro 5.17 (`imageService: 'compile'`). Cette version est dans le périmètre de l’avis GHSA-26w7 (AVIF / libheif, corrigé à partir d’Astro 7.2.8). Sharp est en `^0.35.5`, ce qui ferme le côté libvips, pas l’avis Astro. Un AVIF déposé par l’admin serait compilé au build. L’AVIF, le WebP et le PNG restent hors admin tant que cet avis n’est pas traité. Ce n’est pas une migration Astro 7.
 
-Le seuil est 20 Mo, pas 15 : `everglades_7.jpg` fait ~17 Mo et doit pouvoir être redéposé.
+Le plafond éditorial est 15 Mio (convention, documentée dans `admin/README.md` ; l’admin n’a ni route d’upload ni binding R2, l’upload passe par le R2 Manager externe). `everglades_7.jpg` (~17 Mo) dépasse ce plafond : il est migré tel quel vers R2, mais un redépôt demande d’abord une recompression.
 
 ### Migration (inclus dans le chantier)
 
 1. Partir de `origin/main` (déjà le cas au 11 octobre : 234 JPEG, ~557 Mo, 229 balises, 20 + 9 textes).
 2. Envoyer chaque JPEG vers R2 sous la clé `collection/fichier.jpg`. Ignorer `.DS_Store` et tout fichier qui n’est pas un JPEG.
-3. Réécrire chaque `![alt](./_images/...)` en balise `{% image ... /%}`, en traduisant `landscape`, `portrait` et le préfixe `_`.
+3. Réécrire chaque `![alt](./_images/...)` en balise `{% articleImage ... /%}`, en traduisant `landscape`, `portrait` et le préfixe `_`.
 4. Retirer les dossiers `_images` du **HEAD** du dépôt de contenu.
 5. **Ne pas** réécrire l’historique git.
 
@@ -232,7 +234,7 @@ Le seuil est 20 Mo, pas 15 : `everglades_7.jpg` fait ~17 Mo et doit pouvoir êtr
 | Échec d’enregistrement GitHub | Message dans l’admin ; pas de copie locale de secours ; la chaîne de publication ne part pas |
 | Build en échec | `darkness.chenin.fr` conserve la version précédente. L’admin ne montre pas le résultat du build |
 | Image absente sur R2 | Le build échoue (pas de page publiée avec un trou) |
-| Fichier non JPEG, ou au-dessus de 20 Mo, ou clé déjà prise | Refus dans l’admin ; rien n’est écrit sur R2 |
+| Fichier non JPEG, ou au-dessus de 15 Mio, ou clé déjà prise | Consigne éditoriale (R2 Manager externe, pas de contrôle côté admin) ; clé jamais réécrite à la main |
 | Admin inaccessible | Le site public n’est pas touché |
 | Commande Cloudflare encore couplée à l’ancien `pnpm build` (avec `wrangler`) | Le push de `master` ne publie plus. À trancher avant le reste du lot 5 |
 
@@ -255,7 +257,7 @@ Le même premier jour constate la commande de build Cloudflare (lot 5). Un éche
 - **Enregistrer** sur `main` du contenu lance `notify-main.yml`, puis `update-content.yml`, puis un build Worker (pas Pages). La commande de plateforme est `pnpm build`.
 - Les URL fondées sur `abbrlink` répondent comme avant, y compris `/og/<slug>.png`.
 - Le RSS contient l’URL d’image optimisée et ne référence plus `./_images/`.
-- Un JPEG de 17 Mo est accepté ; un AVIF et un fichier de plus de 20 Mo sont refusés.
+- Un JPEG de 15 Mio ou moins est la règle éditoriale ; AVIF, WebP et PNG restent hors admin (clé `.jpg` exigée par le composant `articleImage`).
 - Une requête anonyme vers l’admin est refusée.
 
 Livrable complémentaire : un mode d’emploi court pour le propriétaire (ouvrir l’admin, écrire, uploader, marquer brouillon si besoin, enregistrer).
@@ -269,7 +271,7 @@ Sans prix. Fourchette en jours, recalée sur le corpus `origin/main` du 11 octob
 | # | Lot | Charge |
 | --- | ---: | --- |
 | 1 | Worker admin, Keystatic, GitHub App, Cloudflare Access, schémas des collections et pages sur la couche unique, essai Worker | 3 à 4 j |
-| 2 | Médiathèque R2, domaine `media`, liste, upload JPEG ≤ 20 Mo, insertion de la clé | 1,5 à 2 j |
+| 2 | Médiathèque R2 : R2 Manager externe (`media.chenin.fr`), upload JPEG ≤ 15 Mio, insertion de la clé | 1,5 à 2 j |
 | 3 | Rendu public (Markdoc, composant image, Sharp, RSS aligné sur la page, LQIP qui conserve la figure) | 2 à 2,5 j |
 | 4 | Migration des 229 balises et des 234 JPEG (~557 Mo), relecture, retrait des `_images` du HEAD | 3 à 4 j |
 | 5 | Vérifier la commande Cloudflare (`pnpm build`, Worker) ; corriger le résumé « Pages » du workflow ; confirmer dans l’admin que l’enregistrement lance la chaîne | 0,5 à 1 j |
@@ -301,6 +303,7 @@ Si l’essai Keystatic sur Worker échoue, la charge des lots 2 à 6 n’est pas
 2. Droit de créer une GitHub App et de l’installer sur le dépôt de contenu. Le jeton déjà utilisé par `notify-main.yml` et `update-content.yml` reste en place.
 3. DNS :
    - `admin.chenin.fr` → worker admin
+   - `media.chenin.fr` → R2 Manager externe (derrière Access)
    - `cdn.chenin.fr` → lecture publique R2
 4. Adresse email à autoriser dans Cloudflare Access.
 
@@ -314,6 +317,6 @@ Le chantier est réussi lorsque :
 2. Aucune image d’article ne reste dans le HEAD du dépôt de contenu.
 3. Les pages publiques affichent des images optimisées, avec légendes et orientations correctes, y compris après le passage LQIP.
 4. Les URL existantes (`abbrlink`) restent valides, ainsi que l’image sociale du même slug.
-5. L’admin n’est accessible qu’à l’email autorisé, et n’accepte que des JPEG d’au plus 20 Mo.
+5. L’admin n’est accessible qu’à l’email autorisé, et ne référence que des clés JPEG (plafond éditorial 15 Mio).
 6. Un échec de build laisse le site public intact.
 7. Le push de `master` publie le Worker via `pnpm build`, sans `wrangler` dans cette commande.

@@ -2,6 +2,7 @@ import type { CollectionEntry } from 'astro:content'
 import type { Language } from '@/i18n/config'
 import MarkdownIt from 'markdown-it'
 import { defaultLocale } from '@/config'
+import { stripMarkdocTags } from './markdoc'
 
 type ExcerptScene = 'list' | 'meta' | 'og' | 'feed'
 
@@ -80,7 +81,7 @@ export function getPostDescription(
   }
 
   const rawContent = post.body || ''
-  const cleanContent = rawContent
+  const cleanContent = stripMarkdocTags(rawContent) // Remove Markdoc tags
     .replace(/<!--[\s\S]*?-->/g, '') // Remove HTML comments
     .replace(/```[\s\S]*?```/g, '') // Remove code blocks
     .replace(/^\s*#{1,6}\s+\S.*$/gm, '') // Remove Markdown headings

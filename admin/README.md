@@ -103,6 +103,11 @@ Editorial flow:
    /%}
    ```
 
+Warnings:
+
+- Never reuse an existing `.md` filename when creating a Markdoc (`.mdoc`) entry on the same path: the `.md` and `.mdoc` collections share the same folder, so the two files would collide.
+- A public build failure after saving often means a bad R2 key or an incomplete `{% articleImage %}` tag (the build fetches `cdn.chenin.fr` at compile time).
+
 ## OAuth gate (verify after deploy)
 
 1. In a **private window**, `GET https://admin.chenin.fr/keystatic` → Cloudflare Access login page.
