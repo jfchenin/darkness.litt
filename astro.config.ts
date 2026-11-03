@@ -25,7 +25,7 @@ import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs'
 
 const { url: site } = themeConfig.site
 const { imageHostURL } = themeConfig.preload ?? {}
-const mediaRemotePattern = { protocol: 'https', hostname: 'media.darkness.chenin.fr' }
+const mediaRemotePattern = { protocol: 'https', hostname: 'cdn.chenin.fr' }
 const imageConfig = {
   image: imageHostURL
     ? { domains: [imageHostURL], remotePatterns: [{ protocol: 'https' }, mediaRemotePattern] }

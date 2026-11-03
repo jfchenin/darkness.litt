@@ -93,7 +93,8 @@ const articleImageBlock = block({
   schema: {
     src: fields.text({
       label: 'Clé R2',
-      description: 'darkness/fichier.jpg ou emileMoselly/fichier.jpg',
+      description:
+        'darkness/fichier.jpg ou emileMoselly/fichier.jpg. Téléversez d’abord le JPEG sur media.chenin.fr.',
       validation: { isRequired: true },
     }),
     alt: fields.text({ label: 'Légende / alt', validation: { isRequired: true } }),

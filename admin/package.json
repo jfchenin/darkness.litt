@@ -8,8 +8,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "deploy": "KEYSTATIC_STORAGE=github pnpm build && wrangler deploy",
-    "astro": "astro",
-    "test": "tsx --test src/lib/jpeg-upload.test.ts"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",
@@ -24,7 +23,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.11",
-    "@cloudflare/workers-types": "5.20261027.1",
     "@types/node": "^25.9.9",
     "typescript": "~5.9.3",
     "vite": "^6.4.5",

@@ -76,25 +76,23 @@ The Worker binds Cloudflare KV as `SESSION` (Astro Cloudflare sessions). The nam
 
 Do **not** run `wrangler deploy` directly (e.g. from a stale `dist/`): the build would not have `KEYSTATIC_STORAGE=github` set. Always use `pnpm --dir admin run deploy`.
 
-## JPEG media (R2)
+## JPEG media (R2 Manager)
 
-Article images are JPEG files stored in the R2 bucket `darkness-litt-media` and served publicly at `https://media.darkness.chenin.fr`. They are uploaded from the admin app, never through Keystatic.
+Article images are JPEG files stored in the R2 bucket `darkness-litt-media`. They are uploaded with the external R2 Manager at `https://media.chenin.fr` (behind Cloudflare Access), never through Keystatic or this Worker. The admin Worker has **no R2 binding**.
 
-Owner setup (once, before the first deploy that uses it):
+Originals are served publicly on the CDN hostname `https://cdn.chenin.fr` (custom domain on the bucket; do not enable the `r2.dev` URL). `media.chenin.fr` (manager UI) and `cdn.chenin.fr` (public originals) are two different hostnames.
 
-1. Create the bucket: `pnpm --dir admin exec wrangler r2 bucket create darkness-litt-media`.
-2. Attach the custom domain `media.darkness.chenin.fr` to the bucket (Cloudflare dashboard → R2 → `darkness-litt-media` → Settings → Custom Domains). Cloudflare creates the DNS record in the `chenin.fr` zone. Do not enable the `r2.dev` public URL. The media host does not list keys.
-3. The Worker binding is already declared in `admin/wrangler.jsonc`:
+Owner setup (outside this repo, once):
 
-   ```jsonc
-   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "darkness-litt-media" }]
-   ```
+1. Deploy the R2 Manager Worker on `media.chenin.fr`, bound to the bucket `darkness-litt-media`, with a Cloudflare Access policy for the owner email.
+2. Attach the custom domain `cdn.chenin.fr` to the bucket (Cloudflare dashboard → R2 → `darkness-litt-media` → Settings → Custom Domains).
 
-Upload flow:
+Key convention: `<collection>/<filename>.jpg` with `<collection>` = `darkness` or `emileMoselly` and `<filename>` matching `[a-z0-9-]+` (e.g. `darkness/couverture-1.jpg`). Max 15 MiB per file. Do not delete or overwrite keys that live articles already use.
 
-1. Open `https://admin.chenin.fr/media` (behind Cloudflare Access).
-2. Pick the collection (`darkness` or `emileMoselly`), a filename (`[a-z0-9-]+`, stored as `<collection>/<filename>.jpg`) and a JPEG file (max 20 MiB, checked by magic bytes).
-3. On success the page shows a Markdoc block; fill the alt text, orientation and caption option, then copy it and paste it into the article body in Keystatic:
+Editorial flow:
+
+1. From the admin home page, open the médiathèque (`https://media.chenin.fr`) and upload the JPEG under the key above.
+2. In Keystatic, edit a `Darkness (Markdoc)` or `Émile Moselly (Markdoc)` entry and insert the `Image` block (fill the R2 key, alt text, orientation, caption option). Or paste the tag directly into the `.mdoc` body:
 
    ```markdoc
    {% articleImage
@@ -104,10 +102,6 @@ Upload flow:
       hideCaption=false
    /%}
    ```
-
-`/api/media` is admin-only: `GET` lists keys, `POST` stores a new key (`409` if it already exists, so existing images are never overwritten). There is no delete endpoint; remove objects from the Cloudflare dashboard or with `wrangler r2 object delete`.
-
-Tests for the upload validation helpers: `pnpm --dir admin test`.
 
 ## OAuth gate (verify after deploy)
 
@@ -135,7 +129,7 @@ Keystatic provides the `Darkness` and `Émile Moselly` literary collections, plu
 - New literary filenames and `abbrlink` values must match `^[a-z0-9-]+$` (Keystatic slug field). Legacy files with spaces or accents are renamed to `<abbrlink>.md` with `pnpm exec tsx scripts/normalize-content-filenames.ts --collection darkness|emileMoselly --apply` (dry-run by default), then committed on content `main`. Do not rename those files by hand inside Keystatic during the transition.
 - The Cloudflare Git build command for the public site must remain `pnpm build`.
 - Local mode reads and writes only under `admin/fixtures/`; fixture content is never published.
-- The `Darkness (Markdoc)` and `Émile Moselly (Markdoc)` collections share the same paths as the `.md` collections (`darkness/*`, `emileMoselly/*`) but read and write `.mdoc` files with an `image` block (`src` = R2 key). Local fixtures under `admin/fixtures/darkness/` and `admin/fixtures/emileMoselly/` can hold `.mdoc` entries.
+- The `Darkness (Markdoc)` and `Émile Moselly (Markdoc)` collections share the same paths as the `.md` collections (`darkness/*`, `emileMoselly/*`) but read and write `.mdoc` files with an `articleImage` block (`src` = R2 key). Local fixtures under `admin/fixtures/darkness/` and `admin/fixtures/emileMoselly/` can hold `.mdoc` entries.
 
 ## Local development
 

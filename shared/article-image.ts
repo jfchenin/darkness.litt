@@ -8,7 +8,7 @@ export interface ArticleImageProps {
   hideCaption: boolean
 }
 
-export const MEDIA_HOST = 'https://media.darkness.chenin.fr'
+export const MEDIA_HOST = 'https://cdn.chenin.fr'
 export const MAX_JPEG_BYTES = 20 * 1024 * 1024
 
 const KEY_RE = /^(darkness|emileMoselly)\/([a-z0-9-]+)\.jpg$/

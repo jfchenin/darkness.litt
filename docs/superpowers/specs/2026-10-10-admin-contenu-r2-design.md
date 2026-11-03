@@ -71,7 +71,7 @@ admin.chenin.fr                    ◄── Worker admin (isolé du site public
     │                 Cloudflare R2
     │                 (originaux)
     │                 lecture publique :
-    │                 media.darkness.chenin.fr
+    │                 cdn.chenin.fr (CDN public)
     ▼
 Git de contenu (darkness.litt-content, branche main)
     │
@@ -190,8 +190,8 @@ Le site rend la même figure qu’aujourd’hui (légende, orientation, zoom). L
 | --- | --- |
 | Bucket | Compte Cloudflare déjà utilisé (zone `chenin.fr`) |
 | Clé d’objet | `collection/fichier.jpg` (ex. `darkness/couvrecomposition.jpg`) |
-| Lecture publique | `media.darkness.chenin.fr`, sans liste de dossier |
-| Upload | Uniquement via l’admin authentifié |
+| Lecture publique | `cdn.chenin.fr`, sans liste de dossier |
+| Upload | Via R2 Manager externe (`media.chenin.fr`, derrière Access) |
 | Contenu stocké dans les articles | La clé R2, pas l’URL |
 | Suppression de fichiers | Hors de cette intervention |
 
@@ -301,7 +301,7 @@ Si l’essai Keystatic sur Worker échoue, la charge des lots 2 à 6 n’est pas
 2. Droit de créer une GitHub App et de l’installer sur le dépôt de contenu. Le jeton déjà utilisé par `notify-main.yml` et `update-content.yml` reste en place.
 3. DNS :
    - `admin.chenin.fr` → worker admin
-   - `media.darkness.chenin.fr` → lecture publique R2
+   - `cdn.chenin.fr` → lecture publique R2
 4. Adresse email à autoriser dans Cloudflare Access.
 
 ---
