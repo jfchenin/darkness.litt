@@ -5,6 +5,7 @@ import type { darknessPost, emileMosellyPost } from '@/types'
 import { getCollection, render } from 'astro:content'
 import { defaultLocale } from '@/config'
 import { memoize } from '@/utils/cache'
+import { estimateReadingMinutes } from '@/utils/markdoc'
 
 export type PostCollection = 'darkness' | 'emileMoselly'
 export type EnhancedPost = darknessPost | emileMosellyPost
@@ -27,7 +28,10 @@ async function addMetaToPost(
   }
 
   const { remarkPluginFrontmatter } = await render(post)
-  const meta = remarkPluginFrontmatter as { minutes: number }
+  // `.mdoc` entries skip remarkReadingTime, so estimate from the body.
+  const minutes = (remarkPluginFrontmatter as { minutes?: number }).minutes
+    ?? estimateReadingMinutes(post.body || '')
+  const meta = { minutes }
   metaCache.set(cacheKey, meta)
 
   return {

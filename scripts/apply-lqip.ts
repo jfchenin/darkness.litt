@@ -8,6 +8,7 @@ import type { HTMLElement } from 'node-html-parser'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import { pathToFileURL } from 'node:url'
 import glob from 'fast-glob'
 import { parse } from 'node-html-parser'
 import sharp from 'sharp'
@@ -194,6 +195,15 @@ function processImage(img: HTMLElement, lqipMap: LqipMap): boolean {
   return true
 }
 
+/**
+ * Pure HTML rewrite: sets --lqip on each mapped img, leaving other markup untouched.
+ */
+export function applyLqipStyleToHtml(html: string, lqipMap: LqipMap): { html: string, applied: number } {
+  const root = parse(html)
+  const applied = root.querySelectorAll('img').filter(img => processImage(img, lqipMap)).length
+  return { html: applied > 0 ? root.toString() : html, applied }
+}
+
 async function applyLqipToHtml(lqipMap: LqipMap): Promise<number> {
   const htmlFiles = await glob('**/*.html', { cwd: distDir })
   let totalApplied = 0
@@ -201,24 +211,11 @@ async function applyLqipToHtml(lqipMap: LqipMap): Promise<number> {
   for (const htmlFile of htmlFiles) {
     try {
       const filePath = `${distDir}/${htmlFile}`
-      const root = parse(await fs.readFile(filePath, 'utf-8'))
-      const images = root.querySelectorAll('img')
+      const { html, applied } = applyLqipStyleToHtml(await fs.readFile(filePath, 'utf-8'), lqipMap)
 
-      if (images.length === 0) {
-        continue
-      }
-
-      let hasChanges = false
-      for (const img of images) {
-        const wasUpdated = processImage(img, lqipMap)
-        if (wasUpdated) {
-          totalApplied++
-          hasChanges = true
-        }
-      }
-
-      if (hasChanges) {
-        await fs.writeFile(filePath, root.toString())
+      if (applied > 0) {
+        totalApplied += applied
+        await fs.writeFile(filePath, html)
       }
     }
     catch (error) {
@@ -270,7 +267,11 @@ async function main() {
   console.log(`✨ Successfully applied LQIP styles to ${appliedCount} images`)
 }
 
-main().catch((error) => {
-  console.error('❌ LQIP processing failed:', error)
-  process.exit(1)
-})
+const isCli = process.argv[1] !== undefined && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href
+
+if (isCli) {
+  main().catch((error) => {
+    console.error('❌ LQIP processing failed:', error)
+    process.exit(1)
+  })
+}

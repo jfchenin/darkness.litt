@@ -1,106 +1,19 @@
-import type { APIContext, ImageMetadata } from 'astro'
+import type { APIContext } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 import type { Language } from '@/i18n/config'
-import { getImage } from 'astro:assets'
-import { getCollection } from 'astro:content'
+import { getContainerRenderer as getMDXRenderer } from '@astrojs/mdx'
+import { experimental_AstroContainer as AstroContainer } from 'astro/container'
+import { loadRenderers } from 'astro:container'
+import { getCollection, render } from 'astro:content'
 import { Feed } from 'feed'
-import MarkdownIt from 'markdown-it'
-import { parse } from 'node-html-parser'
-import sanitizeHtml from 'sanitize-html'
 import { base, defaultLocale, themeConfig } from '@/config'
+import { getPostPath } from '@/i18n/path'
 import { ui } from '@/i18n/ui'
-import { memoize } from '@/utils/cache'
 import { getPostDescription } from '@/utils/description'
+import { sanitizeFeedHtml } from '@/utils/feedSanitize'
 
-const markdownParser = new MarkdownIt()
 const { title, description, i18nTitle, url, author } = themeConfig.site
 const { follow } = themeConfig.seo ?? {}
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-// Dynamically import all images from /src/content/{darkness,emileMoselly}/_images
-const imagesGlob = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/content/{darkness,emileMoselly}/_images/**/*.{jpeg,jpg,png,gif,webp}',
-)
-
-/**
- * Converts relative image paths to absolute URLs
- *
- * @param srcPath - Relative image path from markdown content
- * @param baseUrl - Site base URL
- * @returns Optimized image URL or null if processing fails
- */
-async function _getAbsoluteImageUrl(srcPath: string, baseUrl: string, collection: 'darkness' | 'emileMoselly') {
-  // Remove relative path prefixes (../ and ./) from image source path
-  const prefixRemoved = srcPath.replace(/^(?:\.\.\/)+|^\.\//, '')
-  const absolutePath = `/src/content/${collection}/${prefixRemoved}`
-  const imageImporter = imagesGlob[absolutePath]
-
-  if (!imageImporter) {
-    return null
-  }
-
-  // Import image module and extract its metadata
-  const imageMetadata = await imageImporter()
-    .then(importedModule => importedModule.default)
-    .catch((error) => {
-      console.warn(`Failed to import image: ${absolutePath}`, error)
-      return null
-    })
-
-  if (!imageMetadata) {
-    return null
-  }
-
-  // Create optimized image from metadata
-  const optimizedImage = await getImage({ src: imageMetadata })
-  return new URL(optimizedImage.src, baseUrl).toString()
-}
-
-// Export memoized version
-const getAbsoluteImageUrl = memoize(_getAbsoluteImageUrl)
-
-/**
- * Fix relative image paths in HTML content
- *
- * @param htmlContent HTML content string
- * @param baseUrl Base URL of the site
- * @param collection Collection name ('darkness' or 'emileMoselly')
- * @returns Processed HTML string with all image paths converted to absolute URLs
- */
-async function fixRelativeImagePaths(htmlContent: string, baseUrl: string, collection: 'darkness' | 'emileMoselly'): Promise<string> {
-  const htmlDoc = parse(htmlContent)
-  const images = htmlDoc.getElementsByTagName('img')
-  const imagePromises = []
-
-  for (const img of images) {
-    const src = img.getAttribute('src')
-    if (!src) {
-      continue
-    }
-
-    imagePromises.push((async () => {
-      try {
-        // Skip if not a relative path to src/content/posts/_images directory
-        if (!src.startsWith('./') && !src.startsWith('../') && !src.startsWith('_images/')) {
-          return
-        }
-
-        // Process images from src/content/posts/_images directory
-        const absoluteImageUrl = await getAbsoluteImageUrl(src, baseUrl, collection)
-        if (absoluteImageUrl) {
-          img.setAttribute('src', absoluteImageUrl)
-        }
-      }
-      catch (error) {
-        console.warn(`Failed to convert relative image path to absolute URL: ${src}`, error)
-      }
-    })())
-  }
-
-  await Promise.all(imagePromises)
-
-  return htmlDoc.toString()
-}
 
 /**
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -171,26 +84,18 @@ export async function generateFeed({ lang }: { lang?: Language } = {}) {
     .sort((a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime())
     .slice(0, 25)
 
+  // Only the MDX renderer is registered: @astrojs/markdoc exposes no getContainerRenderer.
+  // .mdoc entries still render through render(post) (Astro components), but the container may lack a Markdoc renderer.
+  const renderers = await loadRenderers([getMDXRenderer()])
+  const container = await AstroContainer.create({ renderers })
+
   // Add posts to feed
   for (const post of recentPosts) {
     const slug = post.data.abbrlink || post.id
-    const link = new URL(`${post.collection}/${slug}/`, siteURL).toString()
+    const path = getPostPath(slug, (post.data.lang || defaultLocale) as Language, post.collection)
+    const link = new URL(path, `${url}${base}/`).toString()
 
-    // Optimize content processing
-    const postContent = post.body
-      ? sanitizeHtml(
-          await fixRelativeImagePaths(
-            // Remove HTML comments before rendering markdown
-            markdownParser.render(post.body.replace(/<!--[\s\S]*?-->/g, '')),
-            `${url}${base}/`,
-            post.collection,
-          ),
-          {
-            // Allow <img> tags in feed content
-            allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
-          },
-        )
-      : ''
+    const postContent = await renderPostContent(post, container, link)
 
     // publishDate -> Atom:<published>, RSS:<pubDate>
     const publishDate = new Date(post.data.published)
@@ -265,4 +170,20 @@ export async function generateAtom(context: APIContext) {
       'Content-Type': 'application/atom+xml; charset=utf-8',
     },
   })
+}
+
+// Render one post to sanitized HTML; a failure yields empty content instead of aborting the feed
+async function renderPostContent(
+  post: Parameters<typeof render>[0],
+  container: AstroContainer,
+  link: string,
+) {
+  try {
+    const { Content } = await render(post)
+    return sanitizeFeedHtml(await container.renderToString(Content), url)
+  }
+  catch (error) {
+    console.warn(`[feed] Failed to render ${link}; using empty content.`, error)
+    return ''
+  }
 }

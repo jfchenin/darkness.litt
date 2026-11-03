@@ -76,6 +76,38 @@ The Worker binds Cloudflare KV as `SESSION` (Astro Cloudflare sessions). The nam
 
 Do **not** run `wrangler deploy` directly (e.g. from a stale `dist/`): the build would not have `KEYSTATIC_STORAGE=github` set. Always use `pnpm --dir admin run deploy`.
 
+## JPEG media (R2 Manager)
+
+Article images are JPEG files stored in the R2 bucket `darkness-litt-media`. They are uploaded with the external R2 Manager at `https://media.chenin.fr` (behind Cloudflare Access), never through Keystatic or this Worker. The admin Worker has **no R2 binding**.
+
+Originals are served publicly on the CDN hostname `https://cdn.chenin.fr` (custom domain on the bucket; do not enable the `r2.dev` URL). `media.chenin.fr` (manager UI) and `cdn.chenin.fr` (public originals) are two different hostnames.
+
+Owner setup (outside this repo, once):
+
+1. Deploy the R2 Manager Worker on `media.chenin.fr`, bound to the bucket `darkness-litt-media`, with a Cloudflare Access policy for the owner email.
+2. Attach the custom domain `cdn.chenin.fr` to the bucket (Cloudflare dashboard → R2 → `darkness-litt-media` → Settings → Custom Domains).
+
+Key convention: `<collection>/<filename>.jpg` with `<collection>` = `darkness` or `emileMoselly` and `<filename>` matching `[a-z0-9-]+` (e.g. `darkness/couverture-1.jpg`). Max 15 MiB per file. Do not delete or overwrite keys that live articles already use.
+
+Editorial flow:
+
+1. From the admin home page, open the médiathèque (`https://media.chenin.fr`) and upload the JPEG under the key above.
+2. In Keystatic, edit a `Darkness (Markdoc)` or `Émile Moselly (Markdoc)` entry and insert the `Image` block (fill the R2 key, alt text, orientation, caption option). Or paste the tag directly into the `.mdoc` body:
+
+   ```markdoc
+   {% articleImage
+      src="darkness/couverture-1.jpg"
+      alt="…"
+      orientation="none"
+      hideCaption=false
+   /%}
+   ```
+
+Warnings:
+
+- Never reuse an existing `.md` filename when creating a Markdoc (`.mdoc`) entry on the same path: the `.md` and `.mdoc` collections share the same folder, so the two files would collide.
+- A public build failure after saving often means a bad R2 key or an incomplete `{% articleImage %}` tag (the build fetches `cdn.chenin.fr` at compile time).
+
 ## OAuth gate (verify after deploy)
 
 1. In a **private window**, `GET https://admin.chenin.fr/keystatic` → Cloudflare Access login page.
@@ -102,6 +134,7 @@ Keystatic provides the `Darkness` and `Émile Moselly` literary collections, plu
 - New literary filenames and `abbrlink` values must match `^[a-z0-9-]+$`. Legacy files with spaces or accents are renamed to `<abbrlink>.md` with `pnpm exec tsx scripts/normalize-content-filenames.ts --collection darkness|emileMoselly --apply` (dry-run by default), then committed on content `main`. Do not rename files by hand inside Keystatic during the transition.
 - The Cloudflare Git build command for the public site must remain `pnpm build`.
 - Local mode reads and writes only under `admin/fixtures/`; fixture content is never published.
+- The `Darkness (Markdoc)` and `Émile Moselly (Markdoc)` collections share the same paths as the `.md` collections (`darkness/*`, `emileMoselly/*`) but read and write `.mdoc` files with an `articleImage` block (`src` = R2 key). Local fixtures under `admin/fixtures/darkness/` and `admin/fixtures/emileMoselly/` can hold `.mdoc` entries.
 
 ## Local development
 

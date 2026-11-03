@@ -1,0 +1,21 @@
+---
+// src/components/ArticleImage.astro
+import type { ArticleImageProps } from '../../shared/article-image'
+import { Image } from 'astro:assets'
+import { MEDIA_HOST, parseArticleImageKey } from '../../shared/article-image'
+
+interface Props extends ArticleImageProps {}
+
+const { src, alt, orientation, hideCaption } = Astro.props
+if (!parseArticleImageKey(src)) {
+  throw new Error(`Invalid article image key: ${src}`)
+}
+const remoteSrc = `${MEDIA_HOST}/${src}`
+const showCaption = !hideCaption && alt.trim().length > 0
+const orientationAttr
+  = orientation === 'landscape' || orientation === 'portrait' ? orientation : undefined
+---
+<figure data-orientation={orientationAttr}>
+  <Image src={remoteSrc} alt={alt} inferSize widths={[720, 1200]} sizes="(max-width: 768px) 100vw, 720px" />
+  {showCaption && <figcaption>{alt}</figcaption>}
+</figure>

@@ -26,12 +26,12 @@ const contentSchema = z.object({
 })
 
 const darkness = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/darkness' }),
+  loader: glob({ pattern: '**/*.{md,mdx,mdoc}', base: './src/content/darkness' }),
   schema: contentSchema,
 })
 
 const emileMoselly = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/emileMoselly' }),
+  loader: glob({ pattern: '**/*.{md,mdx,mdoc}', base: './src/content/emileMoselly' }),
   schema: contentSchema,
 })
 
