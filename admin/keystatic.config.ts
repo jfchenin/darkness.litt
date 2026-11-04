@@ -103,7 +103,7 @@ const articleImageBlock = block({
     src: fields.text({
       label: 'Clé R2',
       description:
-        'darkness/fichier.jpg, darkness/dossier/fichier.jpg, ou emileMoselly/…. Téléversez d’abord le JPEG sur media.chenin.fr.',
+        'darkness/fichier.jpg, darkness/dossier/fichier.jpg, ou emile-moselly/…. Téléversez d’abord le JPEG sur media.chenin.fr.',
       validation: { isRequired: true },
     }),
     alt: fields.text({ label: 'Légende / alt', validation: { isRequired: true } }),

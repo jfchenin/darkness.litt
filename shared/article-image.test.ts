@@ -22,6 +22,14 @@ describe('parseArticleImageKey', () => {
       collection: 'emileMoselly',
       file: 'a/b/c.jpg',
     })
+    assert.deepEqual(parseArticleImageKey('emile-moselly/plaque-em.jpg'), {
+      collection: 'emileMoselly',
+      file: 'plaque-em.jpg',
+    })
+    assert.deepEqual(parseArticleImageKey('emile-moselly/moselly-critique/claude-lorrain.jpg'), {
+      collection: 'emileMoselly',
+      file: 'moselly-critique/claude-lorrain.jpg',
+    })
   })
 
   it('rejects bad keys', () => {

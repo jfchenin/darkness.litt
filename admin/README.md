@@ -87,7 +87,7 @@ Owner setup (outside this repo, once):
 1. Deploy the R2 Manager Worker on `media.chenin.fr`, bound to the bucket `darkness-litt-media`, with a Cloudflare Access policy for the owner email.
 2. Attach the custom domain `cdn.chenin.fr` to the bucket (Cloudflare dashboard → R2 → `darkness-litt-media` → Settings → Custom Domains).
 
-Key convention: `<collection>/<path>.jpg` with `<collection>` = `darkness` or `emileMoselly`. Each path segment matches `[a-z0-9-]+`; subfolders are allowed (e.g. `darkness/couverture-1.jpg`, `darkness/everglade/everglades-7.jpg`). Max 15 MiB per file. Do not delete or overwrite keys that live articles already use.
+Key convention: `<collection>/<path>.jpg` with `<collection>` = `darkness` or `emile-moselly` (`emileMoselly` is still accepted). Each path segment matches `[a-z0-9-]+`; subfolders are allowed (e.g. `darkness/couverture-1.jpg`, `darkness/everglade/everglades-7.jpg`). Max 15 MiB per file. Do not delete or overwrite keys that live articles already use.
 
 Editorial flow:
 
