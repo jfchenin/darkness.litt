@@ -14,14 +14,24 @@ describe('parseArticleImageKey', () => {
       collection: 'emileMoselly',
       file: 'portrait-1.jpg',
     })
+    assert.deepEqual(parseArticleImageKey('darkness/everglade/everglades-7.jpg'), {
+      collection: 'darkness',
+      file: 'everglade/everglades-7.jpg',
+    })
+    assert.deepEqual(parseArticleImageKey('emileMoselly/a/b/c.jpg'), {
+      collection: 'emileMoselly',
+      file: 'a/b/c.jpg',
+    })
   })
 
   it('rejects bad keys', () => {
     assert.equal(parseArticleImageKey('darkness/../x.jpg'), null)
-    assert.equal(parseArticleImageKey('darkness/a/b.jpg'), null)
+    assert.equal(parseArticleImageKey('darkness/a/../b.jpg'), null)
+    assert.equal(parseArticleImageKey('darkness//x.jpg'), null)
     assert.equal(parseArticleImageKey('posts/a.jpg'), null)
     assert.equal(parseArticleImageKey('darkness/a.png'), null)
     assert.equal(parseArticleImageKey('darkness/A.jpg'), null)
+    assert.equal(parseArticleImageKey('darkness/Everglade/a.jpg'), null)
     assert.equal(parseArticleImageKey(''), null)
   })
 })

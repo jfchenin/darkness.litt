@@ -16,6 +16,6 @@ const orientationAttr
   = orientation === 'landscape' || orientation === 'portrait' ? orientation : undefined
 ---
 <figure data-orientation={orientationAttr}>
-  <Image src={remoteSrc} alt={alt} inferSize widths={[720, 1200]} sizes="(max-width: 768px) 100vw, 720px" />
+  <Image src={remoteSrc} alt={alt} inferSize widths={[720, 1000, 1200]} sizes="(max-width: 768px) 100vw, 720px" />
   {showCaption && <figcaption>{alt}</figcaption>}
 </figure>

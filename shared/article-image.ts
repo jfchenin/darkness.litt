@@ -10,7 +10,8 @@ export interface ArticleImageProps {
 
 export const MEDIA_HOST = 'https://cdn.chenin.fr'
 
-const KEY_RE = /^(darkness|emileMoselly)\/([a-z0-9-]+)\.jpg$/
+// Collection, then one or more [a-z0-9-]+ segments. Subfolders are allowed; "..", empty segments, and capitals are not.
+const KEY_RE = /^(darkness|emileMoselly)\/((?:[a-z0-9-]+\/)*[a-z0-9-]+)\.jpg$/
 
 export function parseArticleImageKey(
   src: string,
