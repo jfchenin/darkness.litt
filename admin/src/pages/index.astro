@@ -1,40 +1,95 @@
 ---
 // admin/src/pages/index.astro
+import '@fontsource-variable/bricolage-grotesque'
+import '@fontsource-variable/inter'
 ---
 <!doctype html>
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Administration — darkness.litt</title>
+    <title>Administration — Darkness</title>
     <style>
       :root {
         color-scheme: light dark;
+        --bg: oklch(96% 0.005 298);
+        --fg: oklch(25% 0.005 298);
+        --muted: oklch(40% 0.005 298);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: oklch(22% 0.005 298);
+          --fg: oklch(92% 0.005 298);
+          --muted: oklch(77% 0.005 298);
+        }
+      }
+      * {
+        box-sizing: border-box;
       }
       body {
         margin: 0;
         min-height: 100vh;
         display: grid;
         place-items: center;
-        font-family: system-ui, sans-serif;
-        line-height: 1.5;
         padding: 1.5rem;
-        background: Canvas;
-        color: CanvasText;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: 'Inter Variable', Inter, system-ui, sans-serif;
+        line-height: 1.5;
       }
       main {
-        max-width: 36rem;
+        width: min(100%, 36rem);
       }
-      h1 {
-        font-size: 1.25rem;
+      .brand {
+        margin: 0 0 0.35rem;
+        font-family: 'Bricolage Grotesque Variable', BricolageGrotesque, system-ui, sans-serif;
+        font-size: clamp(2.5rem, 8vw, 3.5rem);
         font-weight: 600;
-        margin: 0 0 1rem;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
       }
-      p {
-        margin: 0 0 0.75rem;
+      .lede {
+        margin: 0 0 2rem;
+        color: var(--muted);
+        font-size: 1.05rem;
       }
-      a {
-        color: LinkText;
+      .actions {
+        display: grid;
+        gap: 1rem;
+        margin: 0 0 2rem;
+        padding: 0;
+        list-style: none;
+      }
+      .actions a {
+        color: var(--fg);
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-decoration: underline;
+        text-decoration-thickness: 0.08em;
+        text-underline-offset: 0.18em;
+        text-decoration-color: color-mix(in oklch, var(--fg) 25%, transparent);
+        transition: text-decoration-color 0.2s ease, color 0.2s ease;
+      }
+      .actions a:hover,
+      .actions a:focus-visible {
+        text-decoration-color: var(--fg);
+      }
+      .actions span {
+        display: block;
+        margin-top: 0.25rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+        font-weight: 400;
+      }
+      .notes {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .notes li + li {
+        margin-top: 0.5rem;
       }
       code {
         font-size: 0.9em;
@@ -43,22 +98,25 @@
   </head>
   <body>
     <main>
-      <h1>Administration darkness.litt</h1>
-      <p>
-        Pour éditer le contenu, ouvrez
-        <a href="/keystatic">Keystatic</a>.
-      </p>
-      <p>
-        Pour téléverser une image JPEG d’article, ouvrez
-        <a href="https://media.chenin.fr" target="_blank" rel="noopener">la médiathèque</a>.
-      </p>
-      <p>
-        Dans l’interface, restez sur la branche <code>main</code>.
-      </p>
-      <p>
-        Le bouton <strong>Enregistrer</strong> écrit dans le dépôt de contenu
-        (<code>jfchenin/darkness.litt-content</code>).
-      </p>
+      <h1 class="brand">Darkness</h1>
+      <p class="lede">Administration du site</p>
+      <ul class="actions">
+        <li>
+          <a href="/keystatic">Keystatic</a>
+          <span>Éditer le contenu</span>
+        </li>
+        <li>
+          <a href="https://media.chenin.fr" target="_blank" rel="noopener">Médiathèque</a>
+          <span>Téléverser les JPEG</span>
+        </li>
+      </ul>
+      <ul class="notes">
+        <li>Restez sur la branche <code>main</code>.</li>
+        <li>
+          Le bouton <strong>Enregistrer</strong> écrit dans
+          <code>jfchenin/darkness.litt-content</code>.
+        </li>
+      </ul>
     </main>
   </body>
 </html>
