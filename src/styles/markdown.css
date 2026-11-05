@@ -47,6 +47,9 @@
 .heti :where(p:not(.no-heti):not(.no-heti *)) {
   --at-apply: "mb-4 text-pretty cjk:text-justify";
 }
+.heti p.ornament {
+  --at-apply: "my-6 text-center";
+}
 
 /* Links */
 .heti :where(a:not(.no-heti):not(.no-heti *)) {

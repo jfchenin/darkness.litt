@@ -12,5 +12,12 @@ export default defineMarkdocConfig({
         hideCaption: { type: Boolean, required: true },
       },
     },
+    ornament: {
+      render: component('./src/components/Ornament.astro'),
+      selfClosing: true,
+      attributes: {
+        text: { type: String },
+      },
+    },
   },
 })

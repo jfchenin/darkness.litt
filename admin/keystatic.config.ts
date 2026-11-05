@@ -120,7 +120,18 @@ const articleImageBlock = block({
   },
 })
 
-// Creates the literary schema with a `.mdoc` body supporting the image block.
+// Centered marker. An empty text field renders ⁂.
+const ornamentBlock = block({
+  label: 'Ornement',
+  schema: {
+    text: fields.text({
+      label: 'Texte',
+      description: 'Laisser vide pour ⁂. Sinon un chiffre ou un signe centré.',
+    }),
+  },
+})
+
+// Creates the literary schema with a `.mdoc` body supporting the image and ornament blocks.
 function createMarkdocLiterarySchema() {
   return {
     ...createLiterarySchema(),
@@ -128,7 +139,10 @@ function createMarkdocLiterarySchema() {
       label: 'Corps',
       extension: 'mdoc',
       options: { image: false },
-      components: { articleImage: articleImageBlock },
+      components: {
+        articleImage: articleImageBlock,
+        ornament: ornamentBlock,
+      },
     }),
   }
 }

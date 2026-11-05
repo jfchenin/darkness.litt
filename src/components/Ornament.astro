@@ -1,0 +1,11 @@
+---
+// src/components/Ornament.astro
+interface Props {
+  text?: string
+}
+
+// An empty value keeps the original section mark.
+const label = Astro.props.text?.trim() || '⁂'
+const decorative = label === '⁂' || label === '*'
+---
+<p class="ornament" aria-hidden={decorative ? 'true' : undefined}>{label}</p>
