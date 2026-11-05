@@ -1,5 +1,6 @@
 // src/pages/api/formspark-webhook.test.ts
 import assert from 'node:assert/strict'
+import { createHmac } from 'node:crypto'
 // eslint-disable-next-line test/no-import-node-test -- plan uses node:test via tsx
 import { describe, it } from 'node:test'
 import { handleFormsparkWebhook } from './formspark-webhook.ts'
@@ -7,19 +8,53 @@ import { handleFormsparkWebhook } from './formspark-webhook.ts'
 const SECRET = 'test-webhook-secret-value'
 const BASE_URL = 'https://darkness.chenin.fr/api/formspark-webhook/'
 
-function makeRequest(secret: string | null, body: unknown): Request {
-  const url = secret === null
+/** Build the Formspark-Signature header for a raw body. */
+function sign(secret: string, timestamp: string, rawBody: string): string {
+  const digest = createHmac('sha256', secret).update(`${timestamp}.${rawBody}`).digest('hex')
+  return `v1=${digest}`
+}
+
+function rawBodyOf(body: unknown): string {
+  return typeof body === 'string' ? body : JSON.stringify(body)
+}
+
+function makeRequest(
+  body: unknown,
+  options: {
+    secret?: string
+    timestamp?: string | null
+    signature?: string | null
+    querySecret?: string
+  } = {},
+): Request {
+  const rawBody = rawBodyOf(body)
+  const timestamp = options.timestamp === undefined
+    ? String(Math.floor(Date.now() / 1000))
+    : options.timestamp
+  const secret = options.secret ?? SECRET
+  const signature = options.signature === undefined && timestamp
+    ? sign(secret, timestamp, rawBody)
+    : options.signature
+
+  const url = options.querySecret === undefined
     ? BASE_URL
-    : `${BASE_URL}?secret=${encodeURIComponent(secret)}`
+    : `${BASE_URL}?secret=${encodeURIComponent(options.querySecret)}`
+
+  const headers = new Headers({ 'Content-Type': 'application/json' })
+  if (timestamp)
+    headers.set('Formspark-Timestamp', timestamp)
+  if (signature)
+    headers.set('Formspark-Signature', signature)
+
   return new Request(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: typeof body === 'string' ? body : JSON.stringify(body),
+    headers,
+    body: rawBody,
   })
 }
 
 describe('handleFormsparkWebhook', () => {
-  it('rejects a missing secret query with 401', async () => {
+  it('rejects a missing Formspark-Signature with 401', async () => {
     const calls: string[] = []
     const fetchImpl = async (input: RequestInfo | URL) => {
       calls.push(String(input))
@@ -27,7 +62,7 @@ describe('handleFormsparkWebhook', () => {
     }
 
     const response = await handleFormsparkWebhook(
-      makeRequest(null, { email: 'a@b.co', newsletterConsent: true }),
+      makeRequest({ email: 'a@b.co', newsletterConsent: true }, { signature: null }),
       { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
       fetchImpl as typeof fetch,
     )
@@ -37,7 +72,7 @@ describe('handleFormsparkWebhook', () => {
     assert.equal(calls.length, 0)
   })
 
-  it('rejects a wrong secret with 401', async () => {
+  it('rejects a wrong signature with 401', async () => {
     const calls: string[] = []
     const fetchImpl = async (input: RequestInfo | URL) => {
       calls.push(String(input))
@@ -45,13 +80,94 @@ describe('handleFormsparkWebhook', () => {
     }
 
     const response = await handleFormsparkWebhook(
-      makeRequest('wrong-secret', { email: 'a@b.co', newsletterConsent: true }),
+      makeRequest({ email: 'a@b.co', newsletterConsent: true }, { signature: 'v1=deadbeef' }),
       { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
       fetchImpl as typeof fetch,
     )
 
     assert.equal(response.status, 401)
     assert.deepEqual(await response.json(), { error: 'Unauthorized' })
+    assert.equal(calls.length, 0)
+  })
+
+  it('rejects a query secret even when it matches', async () => {
+    const calls: string[] = []
+    const fetchImpl = async (input: RequestInfo | URL) => {
+      calls.push(String(input))
+      return new Response('ok', { status: 200 })
+    }
+
+    const response = await handleFormsparkWebhook(
+      makeRequest(
+        { email: 'a@b.co', newsletterConsent: true },
+        { signature: null, querySecret: SECRET },
+      ),
+      { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
+      fetchImpl as typeof fetch,
+    )
+
+    assert.equal(response.status, 401)
+    assert.deepEqual(await response.json(), { error: 'Unauthorized' })
+    assert.equal(calls.length, 0)
+  })
+
+  it('rejects a query secret even when the signature is valid', async () => {
+    const calls: string[] = []
+    const fetchImpl = async (input: RequestInfo | URL) => {
+      calls.push(String(input))
+      return new Response('ok', { status: 200 })
+    }
+
+    const response = await handleFormsparkWebhook(
+      makeRequest(
+        { email: 'a@b.co', newsletterConsent: true },
+        { querySecret: SECRET },
+      ),
+      { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
+      fetchImpl as typeof fetch,
+    )
+
+    assert.equal(response.status, 401)
+    assert.deepEqual(await response.json(), { error: 'Unauthorized' })
+    assert.equal(calls.length, 0)
+  })
+
+  it('rejects a signature that does not match the raw body', async () => {
+    const calls: string[] = []
+    const fetchImpl = async (input: RequestInfo | URL) => {
+      calls.push(String(input))
+      return new Response('ok', { status: 200 })
+    }
+
+    const timestamp = String(Math.floor(Date.now() / 1000))
+    const response = await handleFormsparkWebhook(
+      makeRequest(
+        { email: 'a@b.co', newsletterConsent: true },
+        { timestamp, signature: sign(SECRET, timestamp, '{"email":"other@b.co"}') },
+      ),
+      { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
+      fetchImpl as typeof fetch,
+    )
+
+    assert.equal(response.status, 401)
+    assert.equal(calls.length, 0)
+  })
+
+  it('rejects a timestamp older than a few minutes', async () => {
+    const calls: string[] = []
+    const fetchImpl = async (input: RequestInfo | URL) => {
+      calls.push(String(input))
+      return new Response('ok', { status: 200 })
+    }
+
+    const timestamp = String(Math.floor(Date.now() / 1000) - 10 * 60)
+    const response = await handleFormsparkWebhook(
+      makeRequest({ email: 'a@b.co', newsletterConsent: true }, { timestamp }),
+      { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
+      fetchImpl as typeof fetch,
+    )
+
+    assert.equal(response.status, 401)
     assert.equal(calls.length, 0)
   })
 
@@ -63,7 +179,7 @@ describe('handleFormsparkWebhook', () => {
     }
 
     const response = await handleFormsparkWebhook(
-      makeRequest('anything', { email: 'a@b.co', newsletterConsent: true }),
+      makeRequest({ email: 'a@b.co', newsletterConsent: true }),
       { BREVO_API_KEY: 'brevo-key' },
       fetchImpl as typeof fetch,
     )
@@ -81,7 +197,7 @@ describe('handleFormsparkWebhook', () => {
     }
 
     const response = await handleFormsparkWebhook(
-      makeRequest('anything', { email: 'a@b.co', newsletterConsent: true }),
+      makeRequest({ email: 'a@b.co', newsletterConsent: true }),
       { FORMSPARK_WEBHOOK_SECRET: '', BREVO_API_KEY: 'brevo-key' },
       fetchImpl as typeof fetch,
     )
@@ -99,7 +215,7 @@ describe('handleFormsparkWebhook', () => {
     }
 
     const response = await handleFormsparkWebhook(
-      makeRequest(SECRET, { email: 'a@b.co' }),
+      makeRequest({ email: 'a@b.co' }),
       { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
       fetchImpl as typeof fetch,
     )
@@ -107,6 +223,24 @@ describe('handleFormsparkWebhook', () => {
     assert.equal(response.status, 200)
     const body = await response.json() as { success: boolean }
     assert.equal(body.success, true)
+    assert.equal(calls.length, 0)
+  })
+
+  it('accepts a signature a few minutes old', async () => {
+    const calls: string[] = []
+    const fetchImpl = async (input: RequestInfo | URL) => {
+      calls.push(String(input))
+      return new Response('ok', { status: 200 })
+    }
+
+    const timestamp = String(Math.floor(Date.now() / 1000) - 4 * 60)
+    const response = await handleFormsparkWebhook(
+      makeRequest({ email: 'a@b.co' }, { timestamp }),
+      { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
+      fetchImpl as typeof fetch,
+    )
+
+    assert.equal(response.status, 200)
     assert.equal(calls.length, 0)
   })
 
@@ -118,7 +252,7 @@ describe('handleFormsparkWebhook', () => {
     }
 
     const response = await handleFormsparkWebhook(
-      makeRequest(SECRET, { email: 'a@b.co', newsletterConsent: true }),
+      makeRequest({ email: 'a@b.co', newsletterConsent: true }),
       { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
       fetchImpl as typeof fetch,
     )
@@ -140,7 +274,7 @@ describe('handleFormsparkWebhook', () => {
     }
 
     const response = await handleFormsparkWebhook(
-      makeRequest(SECRET, {}),
+      makeRequest({}),
       { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
       fetchImpl as typeof fetch,
     )
@@ -158,7 +292,7 @@ describe('handleFormsparkWebhook', () => {
     }
 
     const response = await handleFormsparkWebhook(
-      makeRequest(SECRET, 'not-json{'),
+      makeRequest('not-json{'),
       { FORMSPARK_WEBHOOK_SECRET: SECRET, BREVO_API_KEY: 'brevo-key' },
       fetchImpl as typeof fetch,
     )

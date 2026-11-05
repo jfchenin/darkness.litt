@@ -10,7 +10,7 @@ export const prerender = false
 
 export interface ContactEnv {
   BOTPOISON_SECRET_KEY?: string
-  PUBLIC_FORMSPARK_FORM_ID?: string
+  FORMSPARK_FORM_URL?: string
 }
 
 interface BotpoisonVerifyResponse {
@@ -93,9 +93,9 @@ export async function handleContactPost(
     }
 
     // Submit to Formspark
-    const formsparkId = env.PUBLIC_FORMSPARK_FORM_ID
-    if (!formsparkId) {
-      console.error('PUBLIC_FORMSPARK_FORM_ID not configured')
+    const formsparkUrl = env.FORMSPARK_FORM_URL
+    if (!formsparkUrl) {
+      console.error('FORMSPARK_FORM_URL not configured')
       return json({ error: 'Configuration formulaire incorrecte' }, 500)
     }
 
@@ -113,7 +113,7 @@ export async function handleContactPost(
       formParams.append(key, String(value))
     }
 
-    const formsparkResponse = await fetchImpl(formsparkId, {
+    const formsparkResponse = await fetchImpl(formsparkUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

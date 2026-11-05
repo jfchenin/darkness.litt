@@ -3,20 +3,26 @@
  * Receives form submissions from Formspark and adds contacts to Brevo
  * when newsletter consent is given.
  *
- * Formspark cannot set custom headers on webhooks, so the shared secret
- * is the `secret` query parameter on the webhook URL configured in Formspark.
+ * Formspark's webhook settings store a URL only. With "Sign deliveries"
+ * on, each POST carries Formspark-Timestamp and Formspark-Signature
+ * (`v1=` plus HMAC-SHA256 of `${timestamp}.${rawBody}`). A `secret`
+ * query parameter is rejected so the credential is not the request URL.
  *
  * Flow:
  * 1. Contact form submits to /api/contact
  * 2. /api/contact verifies Botpoison and forwards to Formspark
- * 3. Formspark sends webhook to this endpoint with ?secret=
+ * 3. Formspark signs the webhook and posts it here
  * 4. If newsletterConsent = true, add contact to Brevo
  *
  * Compatible with Cloudflare Workers/Pages
  */
 
 import type { APIRoute } from 'astro'
+import { createHmac } from 'node:crypto'
 import { secretsMatch } from '@/utils/secretsMatch'
+
+/** Formspark asks receivers to reject timestamps more than a few minutes old. */
+const SIGNATURE_MAX_SKEW_SECONDS = 5 * 60
 
 export const prerender = false
 
@@ -52,26 +58,69 @@ function json(body: Record<string, unknown>, status: number): Response {
   })
 }
 
-/** Handle a Formspark webhook POST after authenticating the query secret. */
+function unauthorized(): Response {
+  return json({ error: 'Unauthorized' }, 401)
+}
+
+/** Build the Formspark-Signature value for one raw webhook body. */
+function expectedSignature(secret: string, timestamp: string, rawBody: string): string {
+  const digest = createHmac('sha256', secret).update(`${timestamp}.${rawBody}`).digest('hex')
+  return `v1=${digest}`
+}
+
+/** Return true when the timestamp is within the allowed skew of now. */
+function timestampIsFresh(timestamp: string, nowMs: number): boolean {
+  if (!/^\d+$/.test(timestamp))
+    return false
+  const timestampSeconds = Number(timestamp)
+  if (!Number.isFinite(timestampSeconds))
+    return false
+  const skew = Math.abs(Math.floor(nowMs / 1000) - timestampSeconds)
+  return skew <= SIGNATURE_MAX_SKEW_SECONDS
+}
+
+/** Handle a Formspark webhook POST after verifying Formspark-Signature. */
 export async function handleFormsparkWebhook(
   request: Request,
   env: WebhookEnv,
   fetchImpl: typeof fetch = fetch,
 ): Promise<Response> {
+  if (new URL(request.url).searchParams.has('secret')) {
+    console.error('Formspark webhook rejected query secret')
+    return unauthorized()
+  }
+
   const configuredSecret = env.FORMSPARK_WEBHOOK_SECRET
-  const providedSecret = new URL(request.url).searchParams.get('secret') ?? ''
-  if (!configuredSecret || !secretsMatch(providedSecret, configuredSecret)) {
-    if (!configuredSecret)
-      console.error('FORMSPARK_WEBHOOK_SECRET not configured')
-    else
-      console.error('Formspark webhook authentication failed')
-    return json({ error: 'Unauthorized' }, 401)
+  if (!configuredSecret) {
+    console.error('FORMSPARK_WEBHOOK_SECRET not configured')
+    return unauthorized()
+  }
+
+  const signature = request.headers.get('Formspark-Signature') ?? ''
+  const timestamp = request.headers.get('Formspark-Timestamp') ?? ''
+  if (!signature || !timestampIsFresh(timestamp, Date.now())) {
+    console.error('Formspark webhook authentication failed')
+    return unauthorized()
+  }
+
+  let rawBody: string
+  try {
+    rawBody = await request.text()
+  }
+  catch {
+    console.error('Formspark webhook payload invalid')
+    return json({ error: 'Invalid data' }, 400)
+  }
+
+  if (!secretsMatch(signature, expectedSignature(configuredSecret, timestamp, rawBody))) {
+    console.error('Formspark webhook authentication failed')
+    return unauthorized()
   }
 
   try {
     let parsed: unknown
     try {
-      parsed = await request.json()
+      parsed = JSON.parse(rawBody)
     }
     catch {
       console.error('Formspark webhook payload invalid')

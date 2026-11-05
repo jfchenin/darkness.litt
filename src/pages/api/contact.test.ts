@@ -7,7 +7,7 @@ import { handleContactPost } from './contact.ts'
 const FORMSPARK_URL = 'https://submit-form.com/test-form'
 const ENV = {
   BOTPOISON_SECRET_KEY: 'server-secret',
-  PUBLIC_FORMSPARK_FORM_ID: FORMSPARK_URL,
+  FORMSPARK_FORM_URL: FORMSPARK_URL,
 }
 
 function makeRequest(body: unknown): Request {
