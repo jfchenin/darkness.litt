@@ -17,7 +17,7 @@
     "format-posts": "tsx scripts/format-posts.ts",
     "check-env": "node scripts/check-env.cjs",
     "test-botpoison": "node scripts/test-botpoison.cjs",
-    "test": "tsx --test src/utils/secretsMatch.test.ts src/pages/api/formspark-webhook.test.ts src/pages/api/contact.test.ts shared/literary-fields.test.ts shared/article-image.test.ts src/utils/feedSanitize.test.ts src/utils/markdoc.test.ts src/utils/description.test.ts scripts/apply-lqip.test.ts"
+    "test": "tsx --test src/utils/secretsMatch.test.ts src/pages/api/formspark-webhook.test.ts src/pages/api/contact.test.ts shared/literary-fields.test.ts shared/article-image.test.ts admin/keystatic.config.test.ts src/utils/feedSanitize.test.ts src/utils/markdoc.test.ts src/utils/description.test.ts scripts/apply-lqip.test.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",

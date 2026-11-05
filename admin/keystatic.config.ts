@@ -1,9 +1,21 @@
 // admin/keystatic.config.ts
 import { collection, config, fields, singleton } from '@keystatic/core'
 import { block } from '@keystatic/core/content-components'
+import { KEY_RE } from '../shared/article-image'
 import { abbrlinkPattern, defaultAuthor, proseEntries } from '../shared/literary-fields'
 
-const isGithubStorage = import.meta.env.KEYSTATIC_STORAGE === 'github'
+// Vite inlines import.meta.env.KEYSTATIC_STORAGE. Node has no import.meta.env, so tests fall back to process.env.
+function readKeystaticStorage() {
+  try {
+    return import.meta.env.KEYSTATIC_STORAGE || ''
+  }
+  catch {
+    // eslint-disable-next-line node/prefer-global/process -- Vite inlines the try path; only Node tests reach this
+    return process.env.KEYSTATIC_STORAGE || ''
+  }
+}
+
+const isGithubStorage = readKeystaticStorage() === 'github'
 const pathPrefix = isGithubStorage ? '' : 'fixtures/'
 
 const proseLabels = {
@@ -97,14 +109,17 @@ function createLiterarySchema() {
 }
 
 // Markdoc block rendering a bucket image (src is an R2 key, not a file path).
-const articleImageBlock = block({
+export const articleImageBlock = block({
   label: 'Image',
   schema: {
     src: fields.text({
       label: 'Clé R2',
       description:
         'darkness/fichier.jpg, darkness/dossier/fichier.jpg, ou emile-moselly/…. Téléversez d’abord le JPEG sur media.chenin.fr.',
-      validation: { isRequired: true },
+      validation: {
+        isRequired: true,
+        pattern: { regex: KEY_RE, message: 'darkness/…jpg ou emile-moselly/…jpg' },
+      },
     }),
     alt: fields.text({ label: 'Légende / alt', validation: { isRequired: true } }),
     orientation: fields.select({
@@ -170,29 +185,15 @@ export default config({
     ? { kind: 'github', repo: 'jfchenin/darkness.litt-content' }
     : { kind: 'local' },
   collections: {
-    darkness: collection({
-      label: 'Darkness',
-      path: `${pathPrefix}darkness/*`,
-      slugField: 'filename',
-      format: { contentField: 'content' },
-      schema: createLiterarySchema(),
-    }),
-    emileMoselly: collection({
-      label: 'Émile Moselly',
-      path: `${pathPrefix}emileMoselly/*`,
-      slugField: 'filename',
-      format: { contentField: 'content' },
-      schema: createLiterarySchema(),
-    }),
     darknessMarkdoc: collection({
-      label: 'Darkness (Markdoc)',
+      label: 'Darkness',
       path: `${pathPrefix}darkness/*`,
       slugField: 'filename',
       format: { contentField: 'content' },
       schema: createMarkdocLiterarySchema(),
     }),
     emileMosellyMarkdoc: collection({
-      label: 'Émile Moselly (Markdoc)',
+      label: 'Émile Moselly',
       path: `${pathPrefix}emileMoselly/*`,
       slugField: 'filename',
       format: { contentField: 'content' },

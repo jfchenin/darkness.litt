@@ -92,7 +92,7 @@ Key convention: `<collection>/<path>.jpg` with `<collection>` = `darkness` or `e
 Editorial flow:
 
 1. From the admin home page, open the médiathèque (`https://media.chenin.fr`) and upload the JPEG under the key above.
-2. In Keystatic, edit a `Darkness (Markdoc)` or `Émile Moselly (Markdoc)` entry and insert the `Image` block (fill the R2 key, alt text, orientation, caption option). Or paste the tag directly into the `.mdoc` body:
+2. In Keystatic, edit a `Darkness` or `Émile Moselly` entry and insert the `Image` block (fill the R2 key, alt text, orientation, caption option). Or paste the tag directly into the `.mdoc` body:
 
    ```markdoc
    {% articleImage
@@ -105,7 +105,6 @@ Editorial flow:
 
 Warnings:
 
-- Never reuse an existing `.md` filename when creating a Markdoc (`.mdoc`) entry on the same path: the `.md` and `.mdoc` collections share the same folder, so the two files would collide.
 - A public build failure after saving often means a bad R2 key or an incomplete `{% articleImage %}` tag (the build fetches `cdn.chenin.fr` at compile time).
 
 ## OAuth gate (verify after deploy)
@@ -127,14 +126,14 @@ If it still fails, **stop**. Do not upgrade Astro (the app is pinned to Astro 5 
 
 Keystatic provides the `Darkness` and `Émile Moselly` literary collections, plus the `À propos`, `Blogroll`, `Mentions légales` and `Politique de confidentialité` prose pages.
 
-- Literary and prose bodies use Keystatic's Markdoc editor and remain stored as `.md` files. After editing existing content, verify that images using `./_images/` paths still render; the serialized Markdown does not need to remain byte-identical.
+- Literary entries are `.mdoc` files in `darkness/` and `emileMoselly/`. The body is Markdoc, with an `articleImage` block (`src` = R2 key) and an `Ornement` block (`{% ornament /%}` for ⁂, or `{% ornament text="1" /%}` for other centered text). Local fixtures live under `admin/fixtures/darkness/` and `admin/fixtures/emileMoselly/`.
+- Prose pages stay `.md`. After editing them, verify that images using `./_images/` paths still render; the serialized Markdown does not need to remain byte-identical.
 - Saving in GitHub mode commits directly to `main` on `jfchenin/darkness.litt-content`. The content repository then dispatches the public-site update, which advances the content submodule and publishes the site.
 - `Brouillon` defaults to disabled and remains visible in the editor. When enabled, the entry is excluded from the public site and `/og/` in production.
 - Literary identity for editors: `Titre` = display text (does not rename the file); `Nom de fichier` = on-disk name (leave alone on existing entries); `Abbrlink` = public URL (when empty, the filename is used). `Aide fichier` only helps suggest the filename on create. A Keystatic save may add a `filename` frontmatter key; Zod accepts it and the site ignores it (URL stays `abbrlink || id`).
 - New literary filenames and `abbrlink` values must match `^[a-z0-9-]+$`. Legacy files with spaces or accents are renamed to `<abbrlink>.md` with `pnpm exec tsx scripts/normalize-content-filenames.ts --collection darkness|emileMoselly --apply` (dry-run by default), then committed on content `main`. Do not rename files by hand inside Keystatic during the transition.
 - The Cloudflare Git build command for the public site must remain `pnpm build`.
 - Local mode reads and writes only under `admin/fixtures/`; fixture content is never published.
-- The `Darkness (Markdoc)` and `Émile Moselly (Markdoc)` collections share the same paths as the `.md` collections (`darkness/*`, `emileMoselly/*`) but read and write `.mdoc` files with an `articleImage` block (`src` = R2 key) and an `Ornement` block (`{% ornament /%}` for ⁂, or `{% ornament text="1" /%}` for other centered text). Local fixtures under `admin/fixtures/darkness/` and `admin/fixtures/emileMoselly/` can hold `.mdoc` entries.
 
 ## Local development
 

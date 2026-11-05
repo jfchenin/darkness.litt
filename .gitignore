@@ -31,3 +31,6 @@ pnpm-debug.log*
 # Brainstorm / companion local sessions
 .superpowers/
 .worktrees/
+
+# local audit notes
+TECH_DEBT_AUDIT.md

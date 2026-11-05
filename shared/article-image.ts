@@ -12,7 +12,7 @@ export const MEDIA_HOST = 'https://cdn.chenin.fr'
 
 // Collection, then one or more [a-z0-9-]+ segments. Subfolders are allowed; "..", empty segments, and capitals are not.
 // `emile-moselly` is the public R2 prefix; `emileMoselly` remains accepted.
-const KEY_RE = /^(darkness|emileMoselly|emile-moselly)\/((?:[a-z0-9-]+\/)*[a-z0-9-]+)\.jpg$/
+export const KEY_RE = /^(darkness|emileMoselly|emile-moselly)\/((?:[a-z0-9-]+\/)*[a-z0-9-]+)\.jpg$/
 
 /** Accept a bucket key and return its collection plus the path after the prefix. */
 export function parseArticleImageKey(
